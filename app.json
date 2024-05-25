@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Shopwit",
+    "slug": "Shopwit",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./app/assets/a_icon.jpg",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./app/assets/custom_splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#1a2f56"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.niveellc.shopwit",
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./app/assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.niveellc.shopwit"
+    },
+    "web": {
+      "favicon": "./app/assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0663e219-24c1-4397-83b4-c0859560a4bb"
+      }
+    },
+    "owner": "eritteng",
+    "plugins": [
+      "expo-secure-store"
+    ]
+  }
+}

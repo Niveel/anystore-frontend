@@ -1,0 +1,16 @@
+export default Object.freeze({
+    CART: 'Cart',
+    FAVORITES: 'Favorites',
+    PRODUCT_DETAILS: 'ProductDetails',
+    SHARE_SCREEN: 'ShareScreen',
+    REGISTER: 'SignUp',
+    LOGIN: 'Login',
+    NAME_RESET: 'NameReset',
+    PASSWORD_RESET: 'PasswordReset',
+    EMAIL_RESET: 'EmailReset',
+    FORGOT_PASSWORD: 'ForgotPassword',
+    SHARE_TITLE_SCREEN: 'ShareTitleScreen',
+    CRIT: 'Crit',
+    RADAR_PRICE_CHECK: 'RadarPriceCheck',
+    PRODUCT_INFO: 'ProductInfoScreen', 
+})
