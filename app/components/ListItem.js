@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchacbleHighlight } from 'react-native'
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
 import React from 'react'
 import colors from '../config/colors'
 import Icon from './Icon' 
