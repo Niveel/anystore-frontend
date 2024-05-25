@@ -39,7 +39,7 @@ const LoginScreen = () => {
         <Screen style={styles.screen}>
             <View style={styles.headerContainer}>
                 <Image source={require("../assets/login.png")} style={styles.image} blurRadius={1.5} />
-                <Text style={styles.heading}>Store Search</Text>
+                <Text style={styles.heading}>Shopwit</Text>
                 <Text style={styles.subHeading}>Your one stop app for your shopping needs.</Text>
             </View>
             <View style={styles.loginContainer}>
