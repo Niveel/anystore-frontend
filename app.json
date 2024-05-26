@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.niveellc.shopwit",
+      "bundleIdentifier": "com.nivee.shopwit",
       "buildNumber": "1"
     },
     "android": {
@@ -24,7 +24,7 @@
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.niveellc.shopwit"
+      "package": "com.nivee.shopwit"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
