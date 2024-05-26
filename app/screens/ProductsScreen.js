@@ -37,7 +37,7 @@ const ProductsScreen = () => {
             timeout: 10000
         })
             .then(res => {
-                const result = res.data.map(product => ({ ...product, id: generateRandomId() }));
+                const result = res?.data.map(product => ({ ...product, id: generateRandomId() }));
                 setProducts([...result])
                 setLoading(false)
                 setProductLoaded(true)

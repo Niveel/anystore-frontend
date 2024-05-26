@@ -4,7 +4,7 @@ import AppText from './AppText'
 import colors from '../config/colors'
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 
-const ProductCard = ({name,image, desc, price, companycName, onPress, addToCart, addToCartOnPress, ...otherPops}) => {
+const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, addToCartOnPress, ...otherPops}) => {
 
   return (
     <TouchableHighlight style={styles.card} onPress={onPress} underlayColor="rgba(0,0,0,.3)">
