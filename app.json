@@ -2,7 +2,7 @@
   "expo": {
     "name": "Shopwit",
     "slug": "Shopwit",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./app/assets/a_icon.jpg",
     "userInterfaceStyle": "light",
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.nivee.shopwit",
-      "buildNumber": "1"
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,10 +31,10 @@
     },
     "extra": {
       "eas": {
-        "projectId": "0663e219-24c1-4397-83b4-c0859560a4bb"
+        "projectId": "f16d98e9-37c8-4f09-80cc-48b39654da97"
       }
     },
-    "owner": "eritteng",
+    "owner": "storebuffet",
     "plugins": [
       "expo-secure-store"
     ]
