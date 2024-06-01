@@ -5,6 +5,7 @@ import ProductDetails from '../screens/ProductDetailsScreen'
 import colors from '../config/colors'
 import ShareScreen from '../screens/ShareScreen'
 import BarcodeScreen from '../screens/BarcodeScreen'
+import BarcodePolicyScreen from '../screens/BarcodePolicyScreen'
 import ShareTitleScreen from '../screens/ShareTitleScreen'
 import ProductInfoScreen from '../screens/ProductInfoScreen'
 
@@ -53,11 +54,14 @@ const ProductNavigator = () => {
             }}
         />
         <Stack.Screen 
+            name='BarcodePolicyScreen' 
+            component={BarcodePolicyScreen}
+            options={{headerShown: false}}
+        />
+        <Stack.Screen 
             name='BarcodeScreen' 
             component={BarcodeScreen}
-            options={{
-                headerTitle: "Barcode / Qrcode scanner",
-            }}
+            options={{headerShown: false}}
         />
         <Stack.Screen 
             name='ProductInfoScreen' 

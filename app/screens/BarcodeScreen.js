@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, Linking, Alert} from 'react-native';
+import { View, StyleSheet, Linking, Alert, TouchableOpacity} from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
@@ -8,11 +9,15 @@ import colors from '../config/colors';
 import Screen from '../components/Screen';
 import CustomModal from '../components/CustomModal';
 
-function BarcodeScreen(props) {
+function BarcodeScreen({navigation}) {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [isScannedComplete, setIsScannedComplete] = useState(false);
     const [scannedData, setScannedData] = useState(null);
+
+    const goHome = () => {
+      navigation.navigate('Product');
+    }
 
     const getBarCodeScannerPermissions = async () => {
         try {
@@ -55,6 +60,26 @@ function BarcodeScreen(props) {
 
     return (
         <Screen style={styles.Screen}>
+          <View style={{
+            backgroundColor: colors.horizon,
+            padding: 5,
+            width: "100%",
+            gap: 20,
+            alignItems: 'center',
+            flexDirection: 'row',
+          }}>
+            <TouchableOpacity onPress={goHome}>
+              <MaterialCommunityIcons name="arrow-left" size={30} color={colors.amberGlow} />
+            </TouchableOpacity>
+            <View style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 10,
+            }}>
+              <MaterialCommunityIcons name="barcode-scan" size={30} color={colors.amberGlow} style={{alignSelf: 'center'}} />
+              <AppText style={{color: colors.white, fontSize: 18, textAlign: "center", marginVertical: 10}}>Barcode Scanner</AppText>
+            </View>
+          </View>
           <View style={styles.container}>
               <BarCodeScanner
               onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}

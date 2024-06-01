@@ -11,6 +11,7 @@ import OfflineNotice from './app/components/OfflineNotice';
 import AuthNavigation from './app/navigation/AuthNavigation';
 import AuthContext from './app/auth/context';
 import authStorage from './app/auth/storage';
+import BarcodePolicyProvider from './app/config/BarcodeContext';
 
 export default function App() {
   const [user, setUser] = useState()
@@ -26,10 +27,12 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
-      <OfflineNotice />
-      <NavigationContainer>
-        {user ? <AppNavigator /> : <AuthNavigation />}
-      </NavigationContainer>
+      <BarcodePolicyProvider>
+        <OfflineNotice />
+        <NavigationContainer>
+          {user ? <AppNavigator /> : <AuthNavigation />}
+        </NavigationContainer>
+      </BarcodePolicyProvider>
     </AuthContext.Provider>
   );
 }
