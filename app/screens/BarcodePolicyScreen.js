@@ -31,14 +31,14 @@ function BarcodePolicyScreen({navigation}) {
             underlayColor="rgba(250,0,0,0.7)"
             onPress={disallowPolicy}
           >
-            <AppText>Disallow</AppText>
+            <AppText>Disagree</AppText>
           </TouchableHighlight>
           <TouchableHighlight 
             style={[styles.button, styles.allow]}
             onPress={allowPolicy}
             underlayColor="rgba(0,250,0,0.6)"
           >
-            <AppText>Allow</AppText>
+            <AppText>Agree</AppText>
           </TouchableHighlight>
         </View>
       </View>
