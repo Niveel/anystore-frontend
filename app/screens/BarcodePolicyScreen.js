@@ -24,7 +24,7 @@ function BarcodePolicyScreen({navigation}) {
   return (
     <Screen style={styles.screen}>
       <View style={styles.container}>
-          <AppText style={styles.text}>Shopwit needs your camera access. Alternatively to a keyword search, you can do QR/Bar code search. Your camera will only be used to scan Bar/QR code. Click next to allow or disallow. Clicking allow means you consent to Shopwit to access your camera only to do a Bar/QR code scan and search. You will need to point your camera to a Bar/QR code for the scan and search to work.</AppText>
+          <AppText style={styles.text}>Shopwit needs your camera access. The app extracts QR/Bar Code information to search for the product and display the results similar to a keyword search. Shopwit does not save anything related to the QR/Bar Code or the search results on our server. This is just to provide users with alternative way to a keyword search. The camera will only be used to scan Bar/QR Code. Click next to allow or disallow. Clicking allow is a consent to Shopwit to access your camera only to do a Bar/QR Code scan and search. You will need to point your camera to a Bar/QR Code for the scan and search to work. For example, if you want to search for a particular type of water, instead of typing the long name of the manufacturer or the trade name, pointing the camera to the QR/Bar Code on the bottle of the water will generate the same search results as typing a keyword.</AppText>
         <View style={styles.wrapper}>
           <TouchableHighlight 
             style={[styles.button, styles.disallow]}
