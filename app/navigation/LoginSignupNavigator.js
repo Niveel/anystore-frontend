@@ -34,7 +34,7 @@ const LoginSignupStack = () => (
         </Stack.Navigator>
 );
 
-function LoginSignupNavigator(props) {
+function LoginSignupNavigator() {
   return (
     <NavigationContainer>
         <LoginSignupStack />
