@@ -5,17 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 
 import AppText from './AppText';
 import colors from '../config/colors';
-import { useBarcodePolicy } from '../config/BarcodeContext';
 
 const CodeSearch = () => {
   const navigation = useNavigation();
-  const { barcodeCameraAllow } = useBarcodePolicy();
 
   const handleCodeSearch = () => {
-    if(!barcodeCameraAllow){
-      navigation.navigate('BarcodePolicyScreen');
-      return;
-    }
     navigation.navigate('BarcodeScreen');
   };
 
