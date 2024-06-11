@@ -15,6 +15,9 @@
       "**/*"
     ],
     "ios": {
+      "infoPlist": {
+        "NSCameraUsageDescription": "Camera access is required to scan Bar/QR Codes to perform searches. Results are for your viewing only and are not saved or shared by Shopwit."
+      },
       "supportsTablet": true,
       "bundleIdentifier": "com.nivee.shopwit",
       "buildNumber": "2"
