@@ -534,6 +534,8 @@ function ChatroomScreen({route, navigation}) {
                         <TouchableOpacity 
                           key={msg?._id || index} 
                           activeOpacity={0.7}
+                          accessible={true}
+                          accessibilityLabel={`Message from ${isCurrentUser ? "you" : msg?.sender?.username} at ${formatTime(msg?.createdAt)}, ${msg?.content}`}
                           onLongPress={() => {
                             setSelectedMessageId(msg?._id)
                           }}
@@ -547,7 +549,6 @@ function ChatroomScreen({route, navigation}) {
                               justifyContent: justifyContent, 
                               marginBottom: 15,
                               marginTop: index === 0 ? 10 : 0,
-                              // set the width of the message box to 80% of the screen width
                             },
                             msg?._id === selectedMessageId && {backgroundColor: colors.mistyLight, borderWidth: 1, borderColor: colors.amberGlow, borderRadius: 5, padding: 2}
                           ]}>
@@ -618,29 +619,26 @@ function ChatroomScreen({route, navigation}) {
                               color: isCurrentUser ? colors.midnight : colors.white, 
                               fontSize: 16, 
                               fontWeight: 'bold',
-                              paddingBottom: 10,
+                              paddingBottom: 6,
                             }}>{msg?.content}</AppText>
                             {/* time and name */}
                             <View style={{
                               flexDirection: 'row',
                               justifyContent: 'space-between',
                               alignItems: 'center',
-                              backgroundColor: "red",
+                              backgroundColor: colors.amberGlowLight,
                             }}>
                               <AppText 
                                 style={{
                                   color: colors.white, fontSize: 8, fontWeight: 'bold'
                                 }}
-                                >{msg?.sender?.username}</AppText>
+                                >{isCurrentUser ? "You" : msg?.sender?.username}</AppText>
                               <AppText
                                 style={{
                                   color: isCurrentUser ? colors.horizon : colors.misty,
-                                  position: 'absolute',
-                                  bottom: 2,
                                   fontSize: 8,
-                                  right: isCurrentUser ? 10 : 'auto',
                                   fontWeight: 'bold',
-                                  marginHorizontal: 10,
+                                  marginHorizontal: 5,
                                 }}
                               >
                                 {formatTime(msg?.createdAt)}
@@ -669,7 +667,12 @@ function ChatroomScreen({route, navigation}) {
                 value={message}
                 onChangeText={text => setMessage(text)}
               />
-              <TouchableOpacity style={styles.sendBtn} onPress={() => handleSendMsg(groupId, message, user?._id)}>
+              <TouchableOpacity 
+                style={styles.sendBtn} 
+                onPress={() => handleSendMsg(groupId, message, user?._id)}
+                accessible={true}
+                accessibilityLabel="Send message"
+                >
                 <MaterialCommunityIcons name='send' size={35} color={colors.amberGlow} />
               </TouchableOpacity>
             </View>
