@@ -2,7 +2,7 @@ import {create} from 'apisauce';
 import authStorage from "../auth/storage";
 
 const apiClient = create({
-    baseURL: "https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api",
+    baseURL: "http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api",
     headers: {
         "Content-Type": "application/json",
     },

@@ -10,6 +10,7 @@ import AppText from '../components/AppText';
 import CustomModal from '../components/CustomModal';
 import chatGroupApi from '../api/chatGroup';
 import useAuth from '../auth/useAuth';
+import { useBarcodePolicy } from '../config/BarcodeContext';
 
 function FriendlyScreen({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -18,6 +19,7 @@ function FriendlyScreen({navigation}) {
   const [tabOption, setTabOption] = useState("Created")
 
   const { user } = useAuth();
+  const { barcodeCameraAllow } = useBarcodePolicy();
   const userId = user?._id;
 
   useEffect(() => {
@@ -49,7 +51,12 @@ function FriendlyScreen({navigation}) {
     return new Date(date).toLocaleDateString(undefined, options);
   }
   const openModal = () => {
-    setModalVisible(true);
+    if(!barcodeCameraAllow){
+      setModalVisible(false);
+      navigation.navigate('BarcodePolicyScreen');
+    } else {
+      setModalVisible(true);
+    }
   }
   const handleCreateGroup = () => {
     setModalVisible(false);
@@ -84,6 +91,7 @@ function FriendlyScreen({navigation}) {
 
   const sortedGroupsCreated = groups?.createdGroups?.sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt));
   const sortedGroupsJoined = groups?.joinedGroups?.sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt));
+
 
   return (
     <Screen style={styles.screen}>

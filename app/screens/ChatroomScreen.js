@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, ScrollView, TouchableWithoutFeedbac
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import {io} from 'socket.io-client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Screen from '../components/Screen';
 import AppText from '../components/AppText';
@@ -12,6 +13,7 @@ import SearchInput from '../components/SearchInput';
 import useAuth from '../auth/useAuth';
 import storage from '../auth/storage';
 import routes from '../navigation/routes';
+import {storeMessages, getMessages} from '../utils/socketMessages'
 
 function ChatroomScreen({route, navigation}) {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -23,27 +25,38 @@ function ChatroomScreen({route, navigation}) {
   const [selectedMessageId, setSelectedMessageId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [groupMembers, setGroupMembers] = useState([]);
+  const [groupMembers, setGroupMembers] = useState([]); 
   const [addedMembers, setAddedMembers] = useState([])
   
   const scrollViewRef = useRef(null)
   const { user } = useAuth();
-  const socket = io('https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com');
+  const socket = io('http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com');
 
   const { groupName, groupId, setGroups, isCreatedGroup } = route.params;
 
+  // socket message
   socket.on("connect", () => {
-    // console.log("Connected to the Socket.IO server");
+    console.log("Connected to the Socket.IO server");
     socket.emit('joinRoom', groupId);
   });
+  
+  socket.on('connect_error', (err) => {
+    console.error('Connection Error:', err.message);
+  });
+  
+  socket.on('disconnect', (reason) => {
+    console.warn('Disconnected:', reason);
+    if (reason) {
+      console.warn('Attempting to reconnect...');
+      socket.connect();
+    }
+  });
 
-  // socket message
   useEffect(() => {
     socket.on("message", (newMessage) => {
-      console.log('new message sent:', newMessage);
+      console.log('new message sent:', newMessage); 
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
-    
     return () => {
       socket.disconnect();
     };
@@ -61,7 +74,7 @@ function ChatroomScreen({route, navigation}) {
 
     const addMemberToGroup = async (memberId) => {
       try {
-        const response = await axios.post(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/groups/add-member`, 
+        const response = await axios.post(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/groups/add-member`, 
         { groupId: groupId, userId: memberId });
 
         if (response.data) {
@@ -84,7 +97,7 @@ function ChatroomScreen({route, navigation}) {
       }
     };
 
-    const handleAddMember = async () => {
+    const handleAddMember = () => {
       setMenuVisible(false);
       setAddMembersVisible(true);
     };
@@ -92,7 +105,7 @@ function ChatroomScreen({route, navigation}) {
     const handleRemoveMember = async (Id) => {
       const token = await storage.getToken();
       try {
-        const response = await axios.post(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/groups/remove-member`, 
+        const response = await axios.post(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/groups/remove-member`, 
         { groupId: groupId, memberId: Id }, { headers: { 'x-token': token } });
 
         if (response.data) {
@@ -120,7 +133,7 @@ function ChatroomScreen({route, navigation}) {
     const exitGroup = async () => {
       const token = await storage.getToken();
       try {
-        const response = await axios.post(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/groups/exit-member`, 
+        const response = await axios.post(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/groups/exit-member`, 
         { groupId: groupId, memberId: user?._id});
 
         console.log('exit group response:', response?.data);
@@ -169,7 +182,7 @@ function ChatroomScreen({route, navigation}) {
 
     const deleteGroup = async () => {
       try {
-        const response = await axios.post(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/delete-group`, { groupId: groupId })
+        const response = await axios.post(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/delete-group`, { groupId: groupId })
 
         if (response.data) {
            // Remove the deleted group from the state
@@ -208,19 +221,18 @@ function ChatroomScreen({route, navigation}) {
 
     }
 
-    const handleSendMsg = async (roomId, message, senderId) => {
-      console.log('message:', message, 'senderId:', senderId, 'roomId:', roomId)
+    const handleSendMsg = (roomId, message, senderId) => {
       try {
         if (message.trim().length === 0) return;
-
+        console.log('message:', message, 'senderId:', senderId, 'roomId:', roomId)
         socket.emit('sendMessage', { roomId, message, senderId });
         setMessage('');
         Keyboard.dismiss();
 
         // fetch messages
-        setTimeout(() => {
-          fetchMessages();
-        }, 200);
+        // setTimeout(() => {
+        //   fetchMessages();
+        // }, 200);
 
       } catch (error) {
         console.error('Error sending message:', error);
@@ -243,18 +255,21 @@ function ChatroomScreen({route, navigation}) {
 
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/group/messages/?groupId=${groupId}`)
+        const response = await axios.get(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/group/messages/?groupId=${groupId}`)
         if (response.data) {
-          setMessages(response.data);
+          console.log("the data is",response.data)
+          setMessages(response?.data);
         }
+        // const storedMessages = await getMessages();
+        // setMessages(storedMessages);
 
       } catch (error) {
-        console.error('Error fetching messages:', error);
+        console.error('Error fetching messages from server:', error);
       }
     }
     
     // fetch messages
-    useEffect(() => {
+    useEffect(() => { 
       fetchMessages();
     }, []);
 
@@ -310,10 +325,7 @@ function ChatroomScreen({route, navigation}) {
       fetchGroupMembers();
     }, [groupId, groupMembers]);
 
-    useEffect(() => {
-    console.log("messages", messages)
-  }, [messages])
-    
+    // console.log("messages are:", messages)
   return (
     <Screen style={styles.screen}>
         <View style={styles.header}>
@@ -405,7 +417,7 @@ function ChatroomScreen({route, navigation}) {
               <View style={styles.chatContainer}>
                 {/* messages */}
                 {
-                  messages.map((msg, index) => {
+                  messages?.map((msg, index) => {
                     const isCurrentUser = msg?.sender?._id === user?._id || msg?.sender === user?._id;
                     const justifyContent = isCurrentUser ? 'flex-end' : 'flex-start';
                   
@@ -415,7 +427,7 @@ function ChatroomScreen({route, navigation}) {
 
                       return (
                         <TouchableOpacity
-                          key={msg._id}
+                          key={msg._id || index}
                           onPress={() => {
                             navigation.navigate(routes.PRODUCT_DETAILS, product);
                           }}
@@ -505,7 +517,7 @@ function ChatroomScreen({route, navigation}) {
                     } else {
                       return (
                         <TouchableOpacity 
-                          key={msg?._id} 
+                          key={msg?._id || index} 
                           activeOpacity={0.8}
                           onLongPress={() => {
                             setSelectedMessageId(msg?._id)

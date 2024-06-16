@@ -33,7 +33,7 @@ const ProductsScreen = () => {
         setProductLoaded(true)
         Keyboard.dismiss()
 
-        axios.get(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/search/products/?query=${searchText}`, {
+        axios.get(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/search/products/?query=${searchText}`, {
             timeout: 10000
         })
             .then(res => {

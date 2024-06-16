@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, StyleSheet, TouchableHighlight, Linking } from 'react-native';
 
 // custom imports
 import Screen from '../components/Screen';
@@ -18,13 +18,29 @@ function BarcodePolicyScreen({navigation}) {
 
   const allowPolicy = () => {
     setBarcodeCameraAllow(true);
-    navigation.navigate('BarcodeScreen');
+    navigation.goBack();
+  }
+
+  const openPrivacyPolicy = () => {
+    Linking.openURL('https://www.niveel.com/privacy/');
   }
 
   return (
     <Screen style={styles.screen}>
       <View style={styles.container}>
-          <AppText style={styles.text}>Shopwit needs your camera access. The app extracts QR/Bar Code information to search for the product and display the results similar to a keyword search. Shopwit does not save anything related to the QR/Bar Code or the search results on our server. This is just to provide users with alternative way to a keyword search. The camera will only be used to scan Bar/QR Code. Click next to allow or disallow. Clicking allow is a consent to Shopwit to access your camera only to do a Bar/QR Code scan and search. You will need to point your camera to a Bar/QR Code for the scan and search to work. For example, if you want to search for a particular type of water, instead of typing the long name of the manufacturer or the trade name, pointing the camera to the QR/Bar Code on the bottle of the water will generate the same search results as typing a keyword.</AppText>
+          <AppText style={styles.text}>You are responsible for content you post on the App. You agree not to post content that is illegal, harmful, or violates any third-party rights. Depending on the severity of the content, Shopwit reserves the rights to flag such content, warn or remove you from the platform for such behavior. You have the right to report users that indulge in such behavior too. You can also choose to exit any group chat that you dislike or find offensive. To learn more visit our privacy policy:</AppText>
+          <TouchableHighlight
+            onPress={openPrivacyPolicy}
+            underlayColor="rgba(250,250,250,0.08)"
+            style={{
+              textAlign: 'center',
+              alignSelf: 'center',
+              padding: 5,
+              borderRadius: 5,
+            }}
+          >
+            <AppText style={{color: colors.amberGlow}}>Privacy Policy</AppText>
+          </TouchableHighlight>
         <View style={styles.wrapper}>
           <TouchableHighlight 
             style={[styles.button, styles.disallow]}

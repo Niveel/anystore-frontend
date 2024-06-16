@@ -24,7 +24,7 @@ const ShareScreen = ({navigation, route}) => {
   const fetchGroups = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/user/groups/?userId=${userId}`)
+      const response = await axios.get(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/user/groups/?userId=${userId}`)
   
       if(response.data) {
         setGroups(response.data);
@@ -37,7 +37,7 @@ const ShareScreen = ({navigation, route}) => {
   }
 
   const handleSendProductToGroup = (groupId) => {
-    axios.post(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/share-to-group`, {
+    axios.post(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/share-to-group`, {
       groupId: groupId,
       content: JSON.stringify(product),
       senderId: userId,

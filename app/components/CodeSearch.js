@@ -13,8 +13,6 @@ const CodeSearch = () => {
     navigation.navigate('BarcodeScreen');
   };
 
-
-
   return (
     <TouchableHighlight
       style={styles.searchBar}
