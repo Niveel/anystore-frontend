@@ -4,10 +4,14 @@ import {MaterialCommunityIcons} from '@expo/vector-icons'
 
 import colors from '../config/colors'
 
-function CustomModal({visible, onPress, children}) {
+function CustomModal({visible, onPress, children, ...otherProps}) {
 
   return (
-    <Modal visible={visible} animationType="slide" >
+    <Modal 
+        visible={visible} 
+        animationType="slide" 
+        {...otherProps}
+    >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <View style={styles.body}>

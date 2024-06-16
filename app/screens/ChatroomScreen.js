@@ -20,9 +20,11 @@ function ChatroomScreen({route, navigation}) {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [viewMembersModalVisible, setViewMembersModalVisible] = useState(false);
   const [addMembersVisible, setAddMembersVisible] = useState(false);
+  const [reportMsgModalVisible, setReportMsgModalVisible] = useState(false);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [selectedMessageId, setSelectedMessageId] = useState(null);
+  const [selectedMsgToReport, setSelectedMsgToReport] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [groupMembers, setGroupMembers] = useState([]); 
@@ -30,24 +32,37 @@ function ChatroomScreen({route, navigation}) {
   
   const scrollViewRef = useRef(null)
   const { user } = useAuth();
-  const socket = io('http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com');
+  const socket = io('http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com', {
+    transports: ['websocket'],
+    reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1000, // Start with 1 second delay
+    reconnectionDelayMax: 5000, // Maximum 5 seconds delay
+    timeout: 20000, // 20 seconds connection timeout
+    autoConnect: true,
+
+
+    pingInterval: 25000, // 25 seconds ping interval
+    pingTimeout: 60000 // 60 seconds ping timeout
+  });
 
   const { groupName, groupId, setGroups, isCreatedGroup } = route.params;
 
   // socket message
   socket.on("connect", () => {
-    console.log("Connected to the Socket.IO server");
+    // console.log("Connected to the Socket.IO server");
     socket.emit('joinRoom', groupId);
   });
   
   socket.on('connect_error', (err) => {
     console.error('Connection Error:', err.message);
+    socket.disconnect() // i have to remove this later
   });
   
   socket.on('disconnect', (reason) => {
-    console.warn('Disconnected:', reason);
+    console.log('Disconnected:', reason);
     if (reason) {
-      console.warn('Attempting to reconnect...');
+      console.log('Attempting to reconnect...');
       socket.connect();
     }
   });
@@ -248,7 +263,8 @@ function ChatroomScreen({route, navigation}) {
     }
 
     const handleDeleteMessage = (id) => {
-      const updatedMessages = messages.filter(msg => msg.id !== id);
+      console.log('deleting message:', id);
+      const updatedMessages = messages.filter(msg => msg._id !== id);
       setMessages(updatedMessages);
       setSelectedMessageId(null)
     }
@@ -257,7 +273,6 @@ function ChatroomScreen({route, navigation}) {
       try {
         const response = await axios.get(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/group/messages/?groupId=${groupId}`)
         if (response.data) {
-          console.log("the data is",response.data)
           setMessages(response?.data);
         }
         // const storedMessages = await getMessages();
@@ -518,7 +533,7 @@ function ChatroomScreen({route, navigation}) {
                       return (
                         <TouchableOpacity 
                           key={msg?._id || index} 
-                          activeOpacity={0.8}
+                          activeOpacity={0.7}
                           onLongPress={() => {
                             setSelectedMessageId(msg?._id)
                           }}
@@ -526,60 +541,114 @@ function ChatroomScreen({route, navigation}) {
                             setSelectedMessageId(null)
                             setMenuVisible(false)
                           }}
-                          style={{
-                            flexDirection: 'row', 
-                            justifyContent: justifyContent, 
-                            marginBottom: 15,
-                            marginTop: index === 0 ? 10 : 0,
-                          }}>
+                          style={[
+                            {
+                              flexDirection: 'row', 
+                              justifyContent: justifyContent, 
+                              marginBottom: 15,
+                              marginTop: index === 0 ? 10 : 0,
+                              // set the width of the message box to 80% of the screen width
+                            },
+                            msg?._id === selectedMessageId && {backgroundColor: colors.mistyLight, borderWidth: 1, borderColor: colors.amberGlow, borderRadius: 5, padding: 2}
+                          ]}>
+                            {msg?._id === selectedMessageId && (
+                              <View
+                                style={{
+                                  backgroundColor: colors.horizon,
+                                  padding: 8,
+                                  borderRadius: 5,
+                                  position: "absolute",
+                                  right: isCurrentUser ? "65%" : "20%",
+                                  gap: 5,
+                                  top: "2%",
+                                  elevation: 5,
+                                }}
+                              >
+                                <TouchableOpacity
+                                    onPress={() => handleDeleteMessage(msg?._id)}
+                                    style={{
+                                        backgroundColor: colors.mistyLight,
+                                        padding: 3,
+                                        borderRadius: 5,
+                                    }}
+                                    accessible={true}
+                                    accessibilityLabel="Delete message"
+                                >
+                                    <AppText style={{ color: colors.white, fontSize: 12 }}>Delete <MaterialCommunityIcons 
+                                    name='trash-can-outline'
+                                    size={10}
+                                    color={colors.white}
+                                    /></AppText>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                      setSelectedMsgToReport(msg);
+                                      setReportMsgModalVisible(true);
+                                    }}
+                                    style={{
+                                      backgroundColor: colors.mistyLight,
+                                      padding: 3,
+                                      borderRadius: 5,
+                                  }}
+                                    accessible={true}
+                                    accessibilityLabel="Report message"
+                                >
+                                    <AppText style={{ color: colors.white, fontSize: 12 }}>Report <MaterialCommunityIcons 
+                                    name='flag'
+                                    size={10}
+                                    color={colors.white}
+                                    /></AppText>
+                                </TouchableOpacity>
+                              </View>
+                          )}
+                          {/* message content */}
                           <View 
                             style={[
                               {
                                 backgroundColor: isCurrentUser ? colors.amberGlow : colors.horizon, 
                                 padding: 10, 
-                                paddingBottom: 20,
+                                paddingBottom: 5,
                                 borderRadius: 5, 
                                 maxWidth: '80%',
                                 minWidth: 80,
                               },
-                              msg?._id === selectedMessageId && {backgroundColor: colors.punch, borderWidth: 1, borderColor: colors.amberGlow, borderRadius: 5, padding: 9, paddingBottom: 19, maxWidth: '80%'}
+                              
                             ]}>
                             <AppText style={{
                               color: isCurrentUser ? colors.midnight : colors.white, 
                               fontSize: 16, 
                               fontWeight: 'bold',
+                              paddingBottom: 10,
                             }}>{msg?.content}</AppText>
-                          </View>
-                          <AppText
-                            style={{
-                              color: isCurrentUser ? colors.horizon : colors.misty,
-                              position: 'absolute',
-                              bottom: 2,
-                              fontSize: 10,
-                              right: isCurrentUser ? 10 : 'auto',
-                              fontWeight: 'bold',
-                              marginHorizontal: 10,
-                            }}
-                          >
-                            {formatTime(msg?.createdAt)}
-                          </AppText>
-                          {msg?._id === selectedMessageId && (
-                              <TouchableOpacity
-                                  onPress={() => handleDeleteMessage(msg?._id)}
-                                  style={{
-                                      backgroundColor: colors.amberGlow,
-                                      padding: 5,
-                                      paddingHorizontal: 10,
-                                      borderRadius: 5,
-                                      marginTop: 25,
-                                      position: "absolute",
-                                      right: "50%",
-                                      top: "40%",
-                                  }}
+                            {/* time and name */}
+                            <View style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              backgroundColor: "red",
+                            }}>
+                              <AppText 
+                                style={{
+                                  color: colors.white, fontSize: 8, fontWeight: 'bold'
+                                }}
+                                >{msg?.sender?.username}</AppText>
+                              <AppText
+                                style={{
+                                  color: isCurrentUser ? colors.horizon : colors.misty,
+                                  position: 'absolute',
+                                  bottom: 2,
+                                  fontSize: 8,
+                                  right: isCurrentUser ? 10 : 'auto',
+                                  fontWeight: 'bold',
+                                  marginHorizontal: 10,
+                                }}
                               >
-                                  <AppText style={{ color: colors.white }}>Delete</AppText>
-                              </TouchableOpacity>
-                          )}
+                                {formatTime(msg?.createdAt)}
+                              </AppText>
+                            </View>
+                            {/* end of time and name */}
+                          </View>
+                          
                         </TouchableOpacity>
                       )
                     }
@@ -613,6 +682,7 @@ function ChatroomScreen({route, navigation}) {
         <CustomModal
           visible={viewMembersModalVisible}
           onPress={() => setViewMembersModalVisible(false)}
+          onRequestClose={() => setViewMembersModalVisible(false)}
         >
           <View style={styles.memberBox}>
             <AppText style={{fontSize: 20, fontWeight: 'bold', color: colors.amberGlow, marginBottom: 10}}>Members in {groupName}</AppText>
@@ -664,6 +734,7 @@ function ChatroomScreen({route, navigation}) {
         <CustomModal
           visible={addMembersVisible}
           onPress={() => setAddMembersVisible(false)}
+          onRequestClose={() => setAddMembersVisible(false)}
         >
           <View style={styles.memberBox}>
             <AppText style={{fontSize: 18, fontWeight: 'bold', color: colors.white, marginBottom: 10, textAlign: "center"}}>Add members to {groupName}</AppText>
@@ -706,6 +777,59 @@ function ChatroomScreen({route, navigation}) {
           </View>
         </CustomModal>
               {/* end of add members modal */}
+              {/* report message modal */}
+        <CustomModal
+          visible={reportMsgModalVisible}
+          onPress={() => setReportMsgModalVisible(false)}
+          onRequestClose={() => setReportMsgModalVisible(false)}
+        >
+          <View style={styles.memberBox}>
+            <View style={{
+              backgroundColor: colors.horizon,
+            }}>
+              <AppText style={{fontSize: 18, fontWeight: 'bold', color: colors.white, marginBottom: 10, textAlign: "center"}}>Report Message</AppText>
+              <AppText style={{fontSize: 16, color: colors.white, marginBottom: 10, textAlign: "center"}}>Are you sure you want to report this message?</AppText>
+              <AppText style={{fontSize: 16, color: colors.white, marginBottom: 10, textAlign: "center"}}>We will review the message to see if it violates our policy.</AppText>
+            </View>
+            <View style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              gap: 10,
+              marginTop: 10,
+            }}>
+              <TouchableOpacity 
+                style={{
+                  backgroundColor: colors.punch,
+                  padding: 10,
+                  borderRadius: 5,
+                }}
+                onPress={() => {
+                  setReportMsgModalVisible(false);
+                  setSelectedMsgToReport(null);
+                  setSelectedMessageId(null);
+                }}
+              >
+                <AppText style={{color: colors.amberGlow, fontSize: 16}}>Cancel</AppText>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={{
+                  backgroundColor: colors.amberGlow,
+                  padding: 10,
+                  borderRadius: 5,
+                }}
+                onPress={() => {
+                  setReportMsgModalVisible(false);
+                  setSelectedMsgToReport(null);
+                  setSelectedMessageId(null);
+                }}
+              >
+                <AppText style={{color: colors.midnight, fontSize: 16}}>Report</AppText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </CustomModal>
+              {/* end of report message modal */}
+
         {/* end of modals */}
     </Screen>
   );

@@ -186,6 +186,7 @@ function FriendlyScreen({navigation}) {
       <CustomModal
         visible={modalVisible}
         onPress={() => setModalVisible(false)}
+        onRequestClose={() => setModalVisible(false)}
       >
         <SearchInput
           placeholder="Enter group name"
