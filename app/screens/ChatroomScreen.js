@@ -46,7 +46,7 @@ function ChatroomScreen({route, navigation}) {
 
   // socket message
   socket.on("connect", () => {
-    console.log("Connected to the Socket.IO server");
+    // console.log("Connected to the Socket.IO server");
     socket.emit('joinRoom', groupId);
   });
   
@@ -306,36 +306,36 @@ function ChatroomScreen({route, navigation}) {
       };
   
       fetchAppUsers();
+      console.log('app users fetched');
     }, [searchQuery]);
 
     // fetch group members
-    useEffect(() => {
-      const fetchGroupMembers = async () => {
-        try {
-          const response = await axios.get(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/group/members/?groupId=${groupId}`);
+    const fetchGroupMembers = async () => {
+      try {
+        const response = await axios.get(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/group/members/?groupId=${groupId}`);
 
-          if (response.data) {
-            const updatedMembers = response.data.map(member => {
-              return {...member, id: member._id}
-            });
-            const members = response.data.map(member => member._id);
+        if (response.data) {
+          const updatedMembers = response.data.map(member => {
+            return {...member, id: member._id}
+          });
+          const members = response.data.map(member => member._id);
 
-            if (isCreatedGroup) {
-              setGroupMembers([{...user, id: user._id, username: user.username}, ...updatedMembers]);
-              setAddedMembers(members);
-            } else {
-              setGroupMembers(updatedMembers);
-              setAddedMembers(members);
-            }
+          if (isCreatedGroup) {
+            setGroupMembers([{...user, id: user._id, username: user.username}, ...updatedMembers]);
+            setAddedMembers(members);
+          } else {
+            setGroupMembers(updatedMembers);
+            setAddedMembers(members);
           }
-
-        } catch (error) {
-          console.error('Error fetching group members:', error);
         }
-      }
 
-      fetchGroupMembers();
-    }, [groupId, groupMembers]);
+      } catch (error) {
+        console.error('Error fetching group members:', error);
+      }
+    }
+    useEffect(() => {
+      if(viewMembersModalVisible) fetchGroupMembers();
+    }, [viewMembersModalVisible]);
 
     // console.log("messages are:", messages)
   return (
@@ -536,9 +536,9 @@ function ChatroomScreen({route, navigation}) {
                           onLongPress={() => {
                             setSelectedMessageId(msg?._id)
                             AccessibilityInfo.announceForAccessibility('Message options');
-                            setTimeout(() => {
-                              AccessibilityInfo.setAccessibilityFocus(msg?._id);
-                            }, 200); 
+                            // setTimeout(() => {
+                            //   AccessibilityInfo.setAccessibilityFocus(msg?._id);
+                            // }, 200); 
                           }}
                           onPress={()=> {
                             setSelectedMessageId(null)
@@ -912,7 +912,7 @@ const styles = StyleSheet.create({
     padding: 10,
     height: "100%",
     backgroundColor: colors.midnight,
-    borderRadius: 5,
+    borderRadius: 10,
   },
   memberList: {
     flexDirection: 'row',
