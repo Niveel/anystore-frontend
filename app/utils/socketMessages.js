@@ -1,23 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const storeMessage = async (message) => {
+export const storeMessagesToStorage = async (messages) => {
     try {
-        const existingMessages = await AsyncStorage.getItem('messages');
-        let messages = existingMessages ? JSON.parse(existingMessages) : [];
-        messages = [...messages, message];
         await AsyncStorage.setItem('messages', JSON.stringify(messages))
     } catch (error) {
-        console.error('Error storing message:', error);
+        console.error('Error storing messages to storage:', error);
     }
 }
 
-const getMessages = async () => {
+export const getMessagesFromStorage = async () => {
     try {
         const messages = await AsyncStorage.getItem('messages')
         return messages ? JSON.parse(messages) : []
     } catch (error) {
-        console.error('Error getting messages:', error);
+        console.error('Error getting messages from storage:', error);
     }
 } 
-
-export default {storeMessage, getMessages};

@@ -1,9 +1,8 @@
 import React, {useState, useRef, useEffect} from 'react';
-import { View, StyleSheet, TouchableOpacity, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, TouchableHighlight, FlatList, Alert, TextInput, Keyboard, Image } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, TouchableHighlight, FlatList, Alert, TextInput, Keyboard, Image, AccessibilityInfo } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import {io} from 'socket.io-client';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Screen from '../components/Screen';
 import AppText from '../components/AppText';
@@ -13,7 +12,6 @@ import SearchInput from '../components/SearchInput';
 import useAuth from '../auth/useAuth';
 import storage from '../auth/storage';
 import routes from '../navigation/routes';
-import {storeMessages, getMessages} from '../utils/socketMessages'
 
 function ChatroomScreen({route, navigation}) {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -40,8 +38,6 @@ function ChatroomScreen({route, navigation}) {
     reconnectionDelayMax: 5000, // Maximum 5 seconds delay
     timeout: 20000, // 20 seconds connection timeout
     autoConnect: true,
-
-
     pingInterval: 25000, // 25 seconds ping interval
     pingTimeout: 60000 // 60 seconds ping timeout
   });
@@ -50,13 +46,13 @@ function ChatroomScreen({route, navigation}) {
 
   // socket message
   socket.on("connect", () => {
-    // console.log("Connected to the Socket.IO server");
+    console.log("Connected to the Socket.IO server");
     socket.emit('joinRoom', groupId);
   });
   
   socket.on('connect_error', (err) => {
-    console.error('Connection Error:', err.message);
-    socket.disconnect() // i have to remove this later
+    console.log('Connection Error:', err.message);
+    socket.connect()
   });
   
   socket.on('disconnect', (reason) => {
@@ -273,18 +269,19 @@ function ChatroomScreen({route, navigation}) {
       try {
         const response = await axios.get(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/group/messages/?groupId=${groupId}`)
         if (response.data) {
-          setMessages(response?.data);
+          setMessages(response.data);
+          // await storeMessagesToStorage(response?.data);
+          // await getAllMessagesFromStorage();
         }
-        // const storedMessages = await getMessages();
-        // setMessages(storedMessages);
 
       } catch (error) {
         console.error('Error fetching messages from server:', error);
       }
     }
-    
+
     // fetch messages
     useEffect(() => { 
+      // getAllMessagesFromStorage()
       fetchMessages();
     }, []);
 
@@ -535,9 +532,13 @@ function ChatroomScreen({route, navigation}) {
                           key={msg?._id || index} 
                           activeOpacity={0.7}
                           accessible={true}
-                          accessibilityLabel={`Message from ${isCurrentUser ? "you" : msg?.sender?.username} at ${formatTime(msg?.createdAt)}, ${msg?.content}`}
+                          accessibilityLabel={`${msg?.content}, Message from ${isCurrentUser ? "you" : msg?.sender?.username || "a group member"} at ${formatTime(msg?.createdAt)}`}
                           onLongPress={() => {
                             setSelectedMessageId(msg?._id)
+                            AccessibilityInfo.announceForAccessibility('Message options');
+                            setTimeout(() => {
+                              AccessibilityInfo.setAccessibilityFocus(msg?._id);
+                            }, 200); 
                           }}
                           onPress={()=> {
                             setSelectedMessageId(null)
@@ -552,6 +553,7 @@ function ChatroomScreen({route, navigation}) {
                             },
                             msg?._id === selectedMessageId && {backgroundColor: colors.mistyLight, borderWidth: 1, borderColor: colors.amberGlow, borderRadius: 5, padding: 2}
                           ]}>
+                            {/* popup on longPress */}
                             {msg?._id === selectedMessageId && (
                               <View
                                 style={{
@@ -563,7 +565,10 @@ function ChatroomScreen({route, navigation}) {
                                   gap: 5,
                                   top: "2%",
                                   elevation: 5,
+                                  zIndex: 5,
                                 }}
+                                accessible={true}
+                                accessibilityLabel="Message options"
                               >
                                 <TouchableOpacity
                                     onPress={() => handleDeleteMessage(msg?._id)}
@@ -626,7 +631,6 @@ function ChatroomScreen({route, navigation}) {
                               flexDirection: 'row',
                               justifyContent: 'space-between',
                               alignItems: 'center',
-                              backgroundColor: colors.amberGlowLight,
                             }}>
                               <AppText 
                                 style={{
@@ -945,8 +949,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   chatInput: {
-    height: "100%",
     width: "80%",
+    height: "100%",
     backgroundColor: colors.midnight,
     color: colors.white,
     fontSize: 16,
