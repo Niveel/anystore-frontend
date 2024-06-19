@@ -1,25 +1,25 @@
-import React,{useEffect, useState} from 'react'
+import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 import AccountNavigator from './AccountNavigator'
-import colors from '../config/colors'
 import ProductNavigator from './ProductNavigator'
 import RadarNavigation from './RadarNavigation'
-import FriendlyScreen from '../screens/FriendlyScreen'
 import CritNavigation from './CritNavigation'
+import { useTheme } from '../utils/ThemeContext'
 
 const Tab = createBottomTabNavigator()
 
 const AppNavigator = () => {
+  const {theme} = useTheme()
 
   return (
    <Tab.Navigator
         tabBarOptions={{
-            activeTintColor: colors.amberGlowLight,
-            activeBackgroundColor: colors.midnight,
-            inactiveBackgroundColor: colors.horizon, 
-            inactiveTintColor: colors.misty,
+            activeTintColor: theme?.amberGlowLight,
+            activeBackgroundColor: theme?.midnight,
+            inactiveBackgroundColor: theme?.horizon,  
+            inactiveTintColor: theme?.misty,
             labelStyle: {
                 fontSize: 14,
                 fontWeight: 'bold',

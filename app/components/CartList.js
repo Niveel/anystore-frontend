@@ -5,10 +5,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import CartItem from './cart/CartItem';
 import routes from '../navigation/routes';
-import colors from '../config/colors';
 import SearchInput from './SearchInput';
 import SearchNotFound from './SearchNotFound';
 import ItemEmpty from './ItemEmpty';
+import { useTheme } from '../utils/ThemeContext';
 
 const CardList = () => { 
   const [cartData, setCartData] = useState([]);
@@ -16,6 +16,7 @@ const CardList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [resultNotFound, setResultNotFound] = useState(false);
   const navigation = useNavigation();
+  const {theme} = useTheme();
 
   useEffect(() => {
     fetchCartItems();
@@ -74,7 +75,6 @@ const CardList = () => {
     }
   }
 
-
   if (loading) {
     // Display a loading indicator while data is being fetched
     return (
@@ -88,12 +88,13 @@ const CardList = () => {
     <View style={{
       height: "100%"
     }}>
-    {cartData.length > 0 && <View style={styles.headBox}>
+    {cartData.length > 0 && <View style={[styles.headBox, {backgroundColor: theme?.light}]}>
         <SearchInput 
           placeholder="Search Product" 
-          placeholderTextColor={colors.amberGlow} 
+          placeholderTextColor={theme?.amberGlow} 
           value={searchQuery}
           onChangeText={handleSearch}
+          inputStyle={{backgroundColor: theme?.midnight}}
         />
       </View>}
       {cartData.length === 0 && <ItemEmpty 
@@ -129,7 +130,6 @@ const CardList = () => {
 const styles = StyleSheet.create({
     headBox: {
       width: "100%",
-      backgroundColor: colors.light,
       padding: 10,
       gap: 5,
       marginBottom: 15,

@@ -2,13 +2,13 @@ import React, { useState, useRef } from 'react';
 import { View, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 
 import Screen from '../components/Screen';
-import colors from '../config/colors';
 import AppButton from '../components/AppButton';
 import { ErrorMessage } from '../components/forms';
 import usersApi from '../api/users';
 import authApi from '../api/auth';
 import useAuth from '../auth/useAuth';
 import AppText from '../components/AppText';
+import { useTheme } from '../utils/ThemeContext';
 
 function SignupVerifyScreen({ route }) {
   const [codes, setCodes] = useState(['', '', '', '']);
@@ -18,7 +18,10 @@ function SignupVerifyScreen({ route }) {
 
   const userInfo = route.params.userInfo;
   const auth = useAuth();
+  const {theme} = useTheme();
+
   const codeInputs = Array(4).fill(0).map((_, i) => useRef(null));
+
   const handleCodeChange = (index, value) => {
     const newCodes = [...codes];
     newCodes[index] = value;
@@ -73,19 +76,22 @@ function SignupVerifyScreen({ route }) {
   };
   
   return (
-    <Screen style={styles.screen}>
-      <ActivityIndicator animating={loading} size="large" color={colors.amberGlow} />
+    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
+      <ActivityIndicator animating={loading} size="large" color={theme?.amberGlow} />
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <>
           <ErrorMessage error={error} visible={hasError} />
           <View>
-            <AppText style={{color: colors.amberGlow, marginVertical: 20}}>Enter the 4-digit code sent to your email {userInfo.email}</AppText>
+            <AppText style={{color: theme?.amberGlow, marginVertical: 20}}>Enter the 4-digit code sent to your email {userInfo.email}</AppText>
             <View style={styles.codeContainer}>
               {codes.map((code, index) => (
                 <TextInput
                   key={index}
                   ref={codeInputs[index]}
-                  style={styles.codeInput}
+                  style={[styles.codeInput, {
+                    borderColor: theme?.white,
+                    color: theme?.white,
+                  }]}
                   maxLength={1}
                   value={code}
                   onChangeText={value => handleCodeChange(index, value)}
@@ -94,7 +100,7 @@ function SignupVerifyScreen({ route }) {
             </View>
             <AppButton
               title="Submit Code"
-              color={colors.amberGlowLight}
+              color={theme?.amberGlowLight}
               width='100'
               onPress={handleSignup}
             />
@@ -109,7 +115,6 @@ const styles = StyleSheet.create({
   screen: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.midnight,
   },
   codeContainer: {
     flexDirection: 'row',
@@ -125,9 +130,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: colors.white,
     textAlign: 'center',
-    color: colors.white,
   },
 });
 

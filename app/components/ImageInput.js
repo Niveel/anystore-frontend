@@ -4,11 +4,12 @@ import * as ImagePicker from 'expo-image-picker'
 import axios from 'axios'
 
 import Icon from './Icon';
-import colors from '../config/colors';
+import {useTheme} from '../utils/ThemeContext';
 import useAuth from '../auth/useAuth';
 
 function ImageInput({imageUri, onChangeImage}) {
     const {user} = useAuth()
+    const {colors} = useTheme()
 
     const requestPermission = async () => {
         const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -78,11 +79,11 @@ function ImageInput({imageUri, onChangeImage}) {
 
   return (
     <TouchableWithoutFeedback onPress={handlePress}>
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: theme?.mistyLight,}]}>
             {!imageUri && <Icon
                             iconName="camera"
                             size={50}
-                            color={colors.amberGlow}
+                            color={theme?.amberGlow}
                             />
             }
             {imageUri && <Image 
@@ -100,7 +101,6 @@ const styles = StyleSheet.create({
      width: 100,
      height: 100,
      alignSelf: "center",
-     backgroundColor: colors.mistyLight,
      borderRadius: 50,
      justifyContent: "center",
      alignItems: "center",

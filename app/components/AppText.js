@@ -2,9 +2,13 @@ import { StyleSheet, Text } from 'react-native'
 import React from 'react'
 
 import appStyles from '../config/appStyles'
-const AppText = ({children, style, ...otherProps}) => {
+import { useTheme } from '../utils/ThemeContext'
+
+const AppText = ({children, style,color, ...otherProps}) => {
+  const {theme} = useTheme()
+  color = color || theme?.text
   return (
-   <Text style={[appStyles.text,style]} {...otherProps}>{children}</Text>
+   <Text style={[appStyles.text,style, {color: color}]} {...otherProps}>{children}</Text>
   )
 }
 

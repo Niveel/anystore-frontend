@@ -6,9 +6,9 @@ import { View } from 'react-native'
  
 import FavoriteCard from './FavoriteCard'
 import SearchInput from './SearchInput'
-import colors from '../config/colors'
 import SearchNotFound from './SearchNotFound'
 import ItemEmpty from './ItemEmpty'
+import { useTheme } from '../utils/ThemeContext'
  
 const FavoriteStoreList = () => {
     const [favStore, setFavStore] = useState([]);
@@ -16,6 +16,7 @@ const FavoriteStoreList = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [resultNotFound, setResultNotFound] = useState(false);
     const navigation = useNavigation();
+    const { theme } = useTheme();
     
     useEffect(() => {
         fetchFavoriteStores();
@@ -63,10 +64,10 @@ const FavoriteStoreList = () => {
     
     return (
         <>
-         {favStore.length > 0 && <View style={styles.headBox}>
+         {favStore.length > 0 && <View style={[styles.headBox, {backgroundColor: theme?.light,}]}>
           <SearchInput 
             placeholder="Search Store" 
-            placeholderTextColor={colors.amberGlow} 
+            placeholderTextColor={theme?.amberGlow} 
             autoCapitalize="none"
             autoCorrect={false}
             value={searchQuery}
@@ -103,7 +104,6 @@ const FavoriteStoreList = () => {
 const styles = StyleSheet.create({
     headBox: {
         width: "100%",
-        backgroundColor: colors.light,
         padding: 10,
         marginBottom: 10,
         gap: 5,

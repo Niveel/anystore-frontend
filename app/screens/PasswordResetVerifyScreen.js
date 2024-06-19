@@ -2,13 +2,11 @@ import React, { useState, useRef } from 'react';
 import { View, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 
 import Screen from '../components/Screen';
-import colors from '../config/colors';
 import AppButton from '../components/AppButton';
 import { ErrorMessage } from '../components/forms';
 import usersApi from '../api/users';
-import authApi from '../api/auth';
 import AppText from '../components/AppText';
-import passwordReset from '../api/passwordReset';
+import { useTheme } from '../utils/ThemeContext';
 
 function PasswordResetVerifyScreen({navigation, route}) {
     const [codes, setCodes] = useState(['', '', '', '']);
@@ -18,8 +16,10 @@ function PasswordResetVerifyScreen({navigation, route}) {
     const [disableButton, setDisableButton] = useState(true);
 
     const userEmail = route.params.email;
+    const { theme } = useTheme();
 
     const codeInputs = Array(4).fill(0).map((_, i) => useRef(null));
+
   const handleCodeChange = (index, value) => {
     const newCodes = [...codes];
     newCodes[index] = value;
@@ -66,19 +66,22 @@ function PasswordResetVerifyScreen({navigation, route}) {
     }
 
   return (
-    <Screen style={styles.screen}>
-      <ActivityIndicator animating={loading} size="large" color={colors.amberGlow} />
+    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
+      <ActivityIndicator animating={loading} size="large" color={theme?.amberGlow} />
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View>
           <ErrorMessage error={error} visible={hasError} />
           <View style={{height: "100%"}}>
-            <AppText style={{color: colors.amberGlow, marginVertical: 20, textAlign: "center"}}>Enter the 4-digit code sent to your email</AppText>
+            <AppText style={{color: theme?.amberGlow, marginVertical: 20, textAlign: "center"}}>Enter the 4-digit code sent to your email</AppText>
             <View style={styles.codeContainer}>
               {codes.map((code, index) => (
                 <TextInput
                   key={index}
                   ref={codeInputs[index]}
-                  style={styles.codeInput}
+                  style={[styles.codeInput, {
+                    borderColor: theme?.white,
+                    color: theme?.white,
+                  }]}
                   maxLength={1}
                   value={code}
                   onChangeText={value => handleCodeChange(index, value)}
@@ -91,7 +94,7 @@ function PasswordResetVerifyScreen({navigation, route}) {
               onPress={handleResetPassword}
               disabled={disableButton}
               style={
-                disableButton ? {backgroundColor: colors.misty} : {backgroundColor: colors.amberGlow}
+                disableButton ? {backgroundColor: theme?.misty} : {backgroundColor: theme?.amberGlow}
               }
             />
           </View>
@@ -105,7 +108,6 @@ const styles = StyleSheet.create({
     screen: {
         padding: 10,
         paddingTop: 0,
-        backgroundColor: colors.midnight,
       },
       codeContainer: {
         flexDirection: 'row',
@@ -121,9 +123,7 @@ const styles = StyleSheet.create({
         height: 50,
         borderWidth: 1,
         borderRadius: 5,
-        borderColor: colors.white,
         textAlign: 'center',
-        color: colors.white,
       },
 });
 

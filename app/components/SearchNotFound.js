@@ -1,18 +1,20 @@
 import React from 'react';
 import { View, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+
 import AppText from './AppText';
-import colors from '../config/colors';
+import { useTheme } from '../utils/ThemeContext';
 
 function SearchNotFound(props) {
+  const {theme} = useTheme()
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={[StyleSheet.absoluteFillObject,styles.container]}>
-            <FontAwesome5 name="frown-open" size={85} color={colors.amberGlow} />
+            <FontAwesome5 name="frown-open" size={85} color={theme?.amberGlow} />
             <AppText style={{
                 fontSize: 24,
                 fontWeight: "bold",
-                color: colors.punch,
+                color: theme?.punch,
                 marginTop: 10
             }}>No results found</AppText>
         </View>

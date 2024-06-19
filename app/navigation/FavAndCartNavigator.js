@@ -1,21 +1,21 @@
 import { createStackNavigator } from '@react-navigation/stack'
 
-import FavoriteStoreScreen from '../screens/FavoriteStoreScreen'
 import CartScreen from '../screens/CartScreen'
 import ProductsScreen from '../screens/ProductsScreen'
 import StoreNavigator from './StoreNavigator'
-import colors from '../config/colors'
+import { useTheme } from '../utils/ThemeContext'
 
 const Stack = createStackNavigator()
 
 const FavAndCartNavigator = () => {
+    const {theme} = useTheme()
   return (
    <Stack.Navigator
         screenOptions={{
             headerStyle: {
-                backgroundColor: colors.horizon,
+                backgroundColor: theme?.horizon,
             },
-            headerTintColor: colors.amberGlow,
+            headerTintColor: theme?.amberGlow,
             headerTitleStyle: {
                 fontWeight: 'bold',
             },

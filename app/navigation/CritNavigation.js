@@ -3,24 +3,25 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import FriendlyScreen from '../screens/FriendlyScreen'
 import ChatroomScreen from '../screens/ChatroomScreen'
-import colors from '../config/colors'
+import { useTheme } from '../utils/ThemeContext'
 
 const Stack = createStackNavigator()
 
 const CritNavigation = () => {
+    const {theme} = useTheme()
     return (
         <Stack.Navigator
             screenOptions={{
                 presentation: "modal",
                 headerStyle: {
-                    backgroundColor: colors.horizon,
+                    backgroundColor: theme?.horizon,
                     height: 80,   
                 },
                 headerTitleStyle: {
                     fontSize: 20,
                     fontWeight: 'bold',
                 },
-                headerTintColor: colors.amberGlow,
+                headerTintColor: theme?.amberGlow,
             }}
         >
             <Stack.Screen 

@@ -2,13 +2,14 @@ import { View, StyleSheet } from 'react-native'
 import React from 'react'
 
 import Screen from '../components/Screen'
-import colors from '../config/colors'
 import CartList from '../components/CartList'
+import { useTheme } from '../utils/ThemeContext'
 
 const CartScreen = () => {
 
+  const {theme} = useTheme()
   return (
-    <Screen style={styles.screen}>
+    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
         <View style={{paddingBottom: 15, height: "100%"}}>
             <CartList/>
         </View>
@@ -19,7 +20,6 @@ const CartScreen = () => {
 const styles = StyleSheet.create({
     
     screen: {
-        backgroundColor: colors.midnight,
         padding: 10,
         paddingTop: 10,
     }

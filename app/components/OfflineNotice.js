@@ -3,21 +3,23 @@ import { View, StyleSheet } from 'react-native';
 import Constants  from 'expo-constants';
 import {useNetInfo} from '@react-native-community/netinfo'
 
-import colors from '../config/colors';
+import { useTheme } from '../utils/ThemeContext';
 import AppText from './AppText';
 import Screen from './Screen';
 import Icon from './Icon';
 
 function OfflineNotice(props) {
+    const {theme} = useTheme()
   const  netInfo = useNetInfo()
+
     if(netInfo.type !== 'unknown' && netInfo.isInternetReachable === false)
         return (
-            <Screen style={styles.screen}>
-                <View style={styles.container}>
-                    <Icon name='wifi-off' backgroundColor={colors.punch} color={colors.amberGlow} size={45} />
-                    <AppText style={styles.text}>No Internet Connection</AppText>
-                    <AppText style={styles.text}>Please check your connection</AppText>
-                    <AppText style={styles.infoText}>you need an Internet connection to use Anystore.</AppText>
+            <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
+                <View style={[styles.container, {backgroundColor: theme?.punch,}]}>
+                    <Icon name='wifi-off' backgroundColor={theme?.punch} color={theme?.amberGlow} size={45} />
+                    <AppText style={[styles.text, {color: theme?.white,}]}>No Internet Connection</AppText>
+                    <AppText style={[styles.text, {color: theme?.white,}]}>Please check your connection</AppText>
+                    <AppText style={[styles.infoText, {color: theme?.white,}]}>you need an Internet connection to use Anystore.</AppText>
                 </View>
             </Screen>
         );
@@ -27,7 +29,6 @@ function OfflineNotice(props) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: colors.punch,
     height: 160,
     justifyContent: 'center',
     position: 'absolute',
@@ -37,19 +38,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
     infoText: {
-        color: colors.white,
         fontSize: 12,
         fontWeight: 'bold',
         textAlign: "center",
         marginVertical: 5,
     },
     text: {
-        color: colors.white,
         fontSize: 16,
         fontWeight: 'bold',
     },
     screen: {
-        backgroundColor: colors.midnight,
         padding: 10,
         minHeight: "100%"
     },

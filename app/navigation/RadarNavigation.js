@@ -5,24 +5,25 @@ import RadarScreen from '../screens/RadarScreen'
 import RadarList from '../components/RadarList'
 import ProductDetails from '../screens/ProductDetailsScreen'
 import RadarPriceCheckScreen from '../components/RadarPriceCheckScreen'
-import colors from '../config/colors'
+import { useTheme } from '../utils/ThemeContext'
 
 const Stack = createStackNavigator()
 
 const RadarNavigation = () => {
+    const {theme} = useTheme()
   return (
     <Stack.Navigator
         screenOptions={{
             presentation: "modal",
             headerStyle: {
-                backgroundColor: colors.horizon,
+                backgroundColor: theme?.horizon,
                 height: 80,   
             },
             headerTitleStyle: {
                 fontSize: 20,
                 fontWeight: 'bold',
             },
-            headerTintColor: colors.amberGlow,
+            headerTintColor: theme?.amberGlow,
         }}
     >
         <Stack.Screen 

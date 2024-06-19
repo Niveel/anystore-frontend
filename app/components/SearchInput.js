@@ -2,17 +2,19 @@ import { View, StyleSheet, TouchableHighlight, TextInput } from 'react-native'
 import React from 'react'
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 
-import AppInput from './AppInput'
-import colors from '../config/colors'
+import { useTheme } from '../utils/ThemeContext'
 
-const SearchInput = ({iconColor = colors.amberGlow, searchPress, onChangeText, value, ...otherProps}) => {
+const SearchInput = ({iconColor, searchPress, onChangeText, value,inputStyle, ...otherProps}) => {
+  const {theme} = useTheme()
+  iconColor = iconColor || theme?.amberGlow
   return (
-    <View style={styles.searchBox}>
+    <View style={[styles.searchBox,inputStyle, {borderColor: theme?.amberGlow,}]}>
       <TextInput 
         {...otherProps} 
-        style={styles.textInput} 
+        style={[styles.textInput, {color: theme?.amberGlow,}]} 
         value={value}
         onChangeText={onChangeText}
+        selectionColor={theme?.text}
       />
       {searchPress &&<TouchableHighlight onPress={searchPress}>
         <MaterialCommunityIcons name='store-search' size={30} color={iconColor} />
@@ -25,11 +27,6 @@ const SearchInput = ({iconColor = colors.amberGlow, searchPress, onChangeText, v
 }
 
 const styles = StyleSheet.create({
-    mic: {
-        backgroundColor: colors.light,
-        padding: 3,
-        borderRadius: 5,
-    },
     searchBox: {
         width: "90%",
         alignSelf: "center",
@@ -38,15 +35,13 @@ const styles = StyleSheet.create({
         gap: 15,
         padding: 10,
         height: 50,
-        borderColor: colors.amberGlow,
-        borderWidth: 1,
+        borderWidth: 2,
         borderRadius: 5,
     },
     textInput: {
         flex: 1,
         height: "100%",
-        padding: 5,
-        color: colors.amberGlow,
+        padding: 2,
     },
 
 })

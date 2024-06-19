@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Keyboard, TouchableWithoutFeedback, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import axios from 'axios';
 
-import colors from '../config/colors';
 import Screen from '../components/Screen';
 import AppText from '../components/AppText';
 import useAuth from '../auth/useAuth';
 import SearchInput from '../components/SearchInput';
+import { useTheme } from '../utils/ThemeContext';
 
 const ShareScreen = ({navigation, route}) => {
   const [groups, setGroups] = useState([]);
@@ -16,6 +16,7 @@ const ShareScreen = ({navigation, route}) => {
   const product = route.params;
   const { user } = useAuth();
   const userId = user?._id;
+  const { theme } = useTheme();
 
   useEffect(() => {
     fetchGroups();
@@ -86,8 +87,8 @@ const ShareScreen = ({navigation, route}) => {
   const joinedGroups = groups?.joinedGroups;
 
   return (
-    <Screen style={styles.screen}>
-      <ActivityIndicator animating={loading} size="large" color={colors.amberGlow} />
+    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
+      <ActivityIndicator animating={loading} size="large" color={theme?.amberGlow} />
       <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
@@ -98,7 +99,7 @@ const ShareScreen = ({navigation, route}) => {
         <View style={styles.search}>
           <SearchInput 
             placeholder="Search Group" 
-            placeholderTextColor={colors.amberGlow} 
+            placeholderTextColor={theme?.amberGlow} 
             autoCapitalize="none"
             autoCorrect={false}
             value={searchQuery}
@@ -106,20 +107,20 @@ const ShareScreen = ({navigation, route}) => {
           />
         </View>
         {/* end of search */}
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: theme?.midnight,}]}>
           {/* groups */}
           <ScrollView>
             <View>
               {createdGroups && createdGroups?.length > 0 && (
                 <View>
-                  <AppText style={{ color: colors.white, marginVertical: 10 }}>Created Groups</AppText>
+                  <AppText style={{ color: theme?.white, marginVertical: 10 }}>Created Groups</AppText>
                   {createdGroups?.map((group) => (
                     <TouchableOpacity 
                       key={group?._id} 
-                      style={styles.item} 
+                      style={[styles.item, {backgroundColor: theme?.amberGlow,}]} 
                       onPress={() => handleSendProductToGroup(group?._id)}
                     >
-                      <AppText style={{ color: colors.white, fontWeight: "bold" }}>{group?.groupName}</AppText>
+                      <AppText style={{ color: theme?.white, fontWeight: "bold" }}>{group?.groupName}</AppText>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -132,20 +133,20 @@ const ShareScreen = ({navigation, route}) => {
                     justifyContent: "center",
                     alignItems: "center",
                   }}>
-                    <AppText style={{ color: colors.white }}>You have not created or joined any group yet. Please create a group in <AppText style={{color: colors.amberGlow}}>crit</AppText> and add a member/members before you can share.</AppText>
+                    <AppText style={{ color: theme?.white }}>You have not created or joined any group yet. Please create a group in <AppText style={{color: theme?.amberGlow}}>crit</AppText> and add a member/members before you can share.</AppText>
                   </View>
                 )
               }
               {joinedGroups && joinedGroups?.length > 0 && (
                 <View>
-                  <AppText style={{ color: colors.white, marginVertical: 10 }}>Joined Groups</AppText>
+                  <AppText style={{ color: theme?.white, marginVertical: 10 }}>Joined Groups</AppText>
                   {joinedGroups?.map((group) => (
                     <TouchableOpacity 
                       key={group?._id} 
                       style={styles?.item}
                       onPress={() => handleSendProductToGroup(group?._id)}
                     >
-                      <AppText style={{ color: colors.white, fontWeight: "bold" }}>{group?.groupName}</AppText>
+                      <AppText style={{ color: theme?.white, fontWeight: "bold" }}>{group?.groupName}</AppText>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -161,13 +162,11 @@ const ShareScreen = ({navigation, route}) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.midnight,
     padding: 10,
   },
   item: {
     width: "65%",
     height: 50,
-    backgroundColor: colors.amberGlow,
     marginVertical: 10,
     borderRadius: 5,
     alignItems: "center",
@@ -179,20 +178,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   screen: {
-    backgroundColor: colors.midnight,
     padding: 10,
     paddingTop: 0,
-  },
-  header: {
-    backgroundColor: colors.midnight,
-    padding: 10,
-  },
-  text: {
-    color: colors.midnight,
-    fontSize: 25,
-    textTransform: "capitalize",
-    fontWeight: "700",
-    letterSpacing: 1,
   },
 });
 

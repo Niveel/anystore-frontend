@@ -3,11 +3,11 @@ import React, {useState} from 'react'
 import * as Yup from 'yup'
 
 import {AppForm, AppFormField, SubmitButton, ErrorMessage} from '../components/forms'
-import colors from '../config/colors'
 import Screen from '../components/Screen'
 import resetPassword from '../api/changePassword'
 import storage from '../auth/storage' 
 import useAuth from '../auth/useAuth'
+import { useTheme } from '../utils/ThemeContext'
 
 const validationSchema = Yup.object().shape({
   oldPassword: Yup.string().required("Enter your previous password").min(8).label("Password").matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, "Must contain at least one uppercase, one lowercase, one number and one symbol"),
@@ -23,6 +23,7 @@ const PasswordResetScreen = ({navigation}) => {
   const [loading, setLoading] = useState(false)
 
   const {user, logOut} = useAuth()
+  const { theme } = useTheme();
 
   const handleChangePassword = async ({ oldPassword, newPassword1 }) => {
     setLoading(true);
@@ -61,13 +62,13 @@ const PasswordResetScreen = ({navigation}) => {
   };
 
   return (
-    <Screen style={styles.screen}>
+    <Screen style={{backgroundColor: theme?.midnight,}}>
       {loading && <ActivityIndicator 
         size="large"
-        color={colors.amberGlow} 
+        color={theme?.amberGlow} 
       />}
       <KeyboardAvoidingView>
-      <View style={styles.container}>
+      <View style={[styles.container, {backgroundColor: theme?.midnight,}]}>
         <AppForm 
           initialValues={{oldPassword: "", newPassword1: "", newPassword2: ""}} 
           onSubmit={handleChangePassword}
@@ -81,11 +82,11 @@ const PasswordResetScreen = ({navigation}) => {
                 textContentType="password"
                 icon={isOldSecure ? "eye" : "eye-off"}
                 placeholder="Enter old password" 
-                placeholderTextColor={colors.misty}
+                placeholderTextColor={theme?.misty}
                 label="Old Password"
                 secureTextEntry={isOldSecure} 
                 onPress={() => setIsOldSecure(!isOldSecure)}
-                selectionColor={colors.amberGlow}
+                selectionColor={theme?.amberGlow}
             />
             <AppFormField 
                 name="newPassword1"
@@ -94,11 +95,11 @@ const PasswordResetScreen = ({navigation}) => {
                 textContentType="password"
                 icon={isNewSecure ? "eye" : "eye-off"}
                 placeholder="Enter new password" 
-                placeholderTextColor={colors.misty}
+                placeholderTextColor={theme?.misty}
                 label="new password"
                 secureTextEntry={isNewSecure}
                 onPress={() => setIsNewSecure(!isNewSecure)} 
-                selectionColor={colors.amberGlow}
+                selectionColor={theme?.amberGlow}
             />
             <AppFormField 
                 name="newPassword2"
@@ -107,11 +108,11 @@ const PasswordResetScreen = ({navigation}) => {
                 textContentType="password"
                 icon={isNewConfirmSecure ? "eye" : "eye-off"} 
                 placeholder="Confirm new password" 
-                placeholderTextColor={colors.misty}
+                placeholderTextColor={theme?.misty}
                 label="Confirm new password"
                 secureTextEntry={isNewConfirmSecure}
                 onPress={() => setIsNewConfirmSecure(!isNewConfirmSecure)} 
-                selectionColor={colors.amberGlow}
+                selectionColor={theme?.amberGlow}
             />
           <SubmitButton title="Change Password" width="90%" />
         </AppForm>
@@ -124,14 +125,11 @@ const PasswordResetScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    backgroundColor: colors.midnight,
     gap: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  screen: {
-    backgroundColor: colors.midnight,
-  },
+
 })
 
 export default PasswordResetScreen

@@ -4,7 +4,6 @@ import * as ImagePicker from 'expo-image-picker'
 
 import useAuth from '../auth/useAuth'
 import Screen from '../components/Screen'
-import colors from '../config/colors'
 import ListItem from '../components/ListItem' 
 import Icon from '../components/Icon'
 import AppButton from '../components/AppButton'
@@ -12,12 +11,14 @@ import ImageInput from '../components/ImageInput'
 import routes from '../navigation/routes'
 import deleteAccount from '../api/deleteAccount'
 import storage from '../auth/storage'
+import { useTheme } from '../utils/ThemeContext'
 
 const AccountSettingsScreen = ({navigation}) => {
   const {user, logOut} = useAuth()
   const [imageUri, setImageUri] = useState()
 
   const {email} = user;
+  const {theme} = useTheme()
 
   const logoutAlert = () => {
     Alert.alert(
@@ -58,9 +59,9 @@ const AccountSettingsScreen = ({navigation}) => {
   }
 
   return (
-    <Screen style={styles.screen}>
+    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
       <View>
-        <Text style={styles.heading}>Account Settings</Text>
+        <Text style={[styles.heading, {color: theme?.amberGlow, backgroundColor: theme?.horizon,}]}>Account Settings</Text>
       </View>
       <View style={styles.itemsContainer}>
         {/* <View style={{marginBottom: 20,}}>
@@ -73,26 +74,32 @@ const AccountSettingsScreen = ({navigation}) => {
           <ListItem 
             title="Name"
             subtitle={user?.username?.toUpperCase()}
-            IconComponent={<Icon name="account" size={30} color={colors.amberGlow} />}
+            IconComponent={<Icon name="account" size={30} color={theme?.amberGlow} />}
             // onPress={()=> navigation.navigate(routes.NAME_RESET)}
           />
           <ListItem 
             title="Email"
             subtitle={user?.email}
-            IconComponent={<Icon name="email" size={30} color={colors.amberGlow} />}
+            IconComponent={<Icon name="email" size={30} color={theme?.amberGlow} />}
             // onPress={()=> navigation.navigate(routes.EMAIL_RESET)}
           />
            <ListItem 
             title="Password"
             subtitle="*********"
-            IconComponent={<Icon name="email" size={30} color={colors.amberGlow} />}
+            IconComponent={<Icon name="lock" size={30} color={theme?.amberGlow} />}
             onPress={()=> navigation.navigate(routes.PASSWORD_RESET)}
+          />
+           <ListItem 
+            title="Other Settings"
+            subtitle="Change theme and more"
+            IconComponent={<Icon name="wrench" size={30} color={theme?.amberGlow} />}
+            onPress={()=> navigation.navigate(routes.OTHER_SETTINGS)}
           />
           <ListItem
             title="Delete account"
             subtitle="Delete your account permanently. This action cannot be undone."
-            style={{color: colors.punch, backgroundColor: colors.midnight, borderRadius: 5, padding: 5,}}
-            IconComponent={<Icon name="delete" size={30} color={colors.punch} />}
+            style={{color: theme?.punch, backgroundColor: theme?.midnight === "#f0f8ff" ? theme?.horizon :theme?.midnight, borderRadius: 5, padding: 5,}}
+            IconComponent={<Icon name="delete" size={30} color={theme?.punch} />}
             onPress={()=> Alert.alert(
               "Account Termination",
               "Are you sure you want to delete your account? This action cannot be undone!",
@@ -106,7 +113,7 @@ const AccountSettingsScreen = ({navigation}) => {
         </View>
         <AppButton 
           title="Log Out" 
-          color={colors.amberGlowLight} 
+          color={theme?.amberGlowLight} 
           onPress={logoutAlert} 
           style={{marginTop:"auto"}}
         />
@@ -122,11 +129,9 @@ const styles = StyleSheet.create({
     gap : 10, 
   },
   heading: {
-    color: colors.amberGlow,
     fontSize: 24,
     fontWeight: "bold",
     marginVertical: 10,
-    backgroundColor: colors.horizon,
     padding: 10,
     borderRadius: 5,
   },
@@ -135,7 +140,6 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   screen: {
-    backgroundColor: colors.midnight,
     padding: 10,
   }
 })

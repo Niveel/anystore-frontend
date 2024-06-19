@@ -4,12 +4,10 @@ import * as Yup from 'yup'
 import { ActivityIndicator } from 'react-native'
 
 import { AppForm, AppFormField, SubmitButton, ErrorMessage } from '../components/forms'
-import colors from '../config/colors'
 import routes from '../navigation/routes'
 import Screen from '../components/Screen'
 import usersApi from '../api/users'
-import authApi from '../api/auth'
-import useAuth from '../auth/useAuth';
+import { useTheme } from '../utils/ThemeContext'
 
 const validationSchema = Yup.object().shape({
     username: Yup.string().required("Enter your name").label("Username").min(3, "Name too short").max(40, "Name too long"),
@@ -23,7 +21,8 @@ const SignUpScreen = ({ navigation }) => {
     const [isSecure, setIsSecure] = useState(true)
     const [isConfirmSecure, setIsConfirmSecure] = useState(true)
     const [loading, setLoading] = useState(false)
-    const auth = useAuth()
+    
+    const { theme } = useTheme()
 
     const handleSubmit = (userInfo) => {
         usersApi.register(userInfo)
@@ -31,13 +30,13 @@ const SignUpScreen = ({ navigation }) => {
     }
 
     return (
-        <Screen style={{ backgroundColor: colors.midnight }}>
+        <Screen style={{ backgroundColor: theme?.midnight }}>
             <View style={styles.headerContainer}>
                 <Image source={require("../assets/signup.png")} style={styles.image} blurRadius={10} />
-                <Text style={styles.heading}>Shopwit</Text>
-                <Text style={styles.subHeading}>Create an account</Text>
+                <Text style={[styles.heading, {color: theme?.white,}]}>Shopwit</Text>
+                <Text style={[styles.subHeading, {color: theme?.white,}]}>Create an account</Text>
             </View>
-            <View style={styles.signUpContainer}>
+            <View style={[styles.signUpContainer, {backgroundColor: theme?.horizon,}]}>
                 <KeyboardAvoidingView
                     behavior="position"
                     keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
@@ -54,7 +53,7 @@ const SignUpScreen = ({ navigation }) => {
                             name="username"
                             icon="account"
                             placeholder="Username"
-                            placeholderTextColor={colors.white}
+                            placeholderTextColor={theme?.white}
                             label="Username"
                             autoCapitalize="none"
                             autoCorrect={false}
@@ -63,7 +62,7 @@ const SignUpScreen = ({ navigation }) => {
                             name="email"
                             icon="email"
                             placeholder="Email"
-                            placeholderTextColor={colors.white}
+                            placeholderTextColor={theme?.white}
                             label="email"
                             autoCapitalize="none"
                             autoCorrect={false}
@@ -73,7 +72,7 @@ const SignUpScreen = ({ navigation }) => {
                             name="password"
                             icon={isSecure ? "eye" : "eye-off"}
                             placeholder="Password"
-                            placeholderTextColor={colors.white}
+                            placeholderTextColor={theme?.white}
                             label="password"
                             autoCapitalize="none"
                             autoCorrect={false}
@@ -85,7 +84,7 @@ const SignUpScreen = ({ navigation }) => {
                             name="confirmPassword"
                             icon={isConfirmSecure ? "eye" : "eye-off"}
                             placeholder="Confirm Password"
-                            placeholderTextColor={colors.white}
+                            placeholderTextColor={theme?.white}
                             label="confirm password"
                             autoCapitalize="none"
                             autoCorrect={false}
@@ -97,10 +96,10 @@ const SignUpScreen = ({ navigation }) => {
                     </AppForm>
                 </KeyboardAvoidingView>
                 <View style={styles.loginBox}>
-                    <Text style={{ color: colors.white, alignSelf: "center", marginBottom: 10 }}>Already have an account?
+                    <Text style={{ color: theme?.white, alignSelf: "center", marginBottom: 10 }}>Already have an account?
                     </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate(routes.LOGIN)} style={styles.login}>
-                        <Text style={styles.text}> Login</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate(routes.LOGIN)} style={[styles.login, {backgroundColor: theme?.midnight,}]}>
+                        <Text style={[styles.text, {color: theme?.amberGlow,}]}> Login</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -118,7 +117,6 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: 25,
         fontWeight: '900',
-        color: colors.white,
         marginTop: 5,
     },
     image: {
@@ -136,24 +134,20 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 5,
-        backgroundColor: colors.midnight,
     },
     signUpContainer: {
         width: '100%',
         height: "75%",
-        backgroundColor: colors.horizon,
         borderTopRightRadius: 20,
         borderTopLeftRadius: 20,
         padding: 10,
     },
     subHeading: {
         fontSize: 16,
-        color: colors.white,
         marginTop: 10,
         textAlign: "center",
     },
     text: {
-        color: colors.amberGlow,
         fontSize: 14,
         fontWeight: "bold",
         padding: 0,

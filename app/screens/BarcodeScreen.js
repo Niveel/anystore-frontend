@@ -5,15 +5,16 @@ import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
-import colors from '../config/colors';
 import Screen from '../components/Screen';
 import CustomModal from '../components/CustomModal';
+import { useTheme } from '../utils/ThemeContext';
 
 function BarcodeScreen({navigation}) {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [isScannedComplete, setIsScannedComplete] = useState(false);
     const [scannedData, setScannedData] = useState(null);
+    const {theme} = useTheme()
 
     const goHome = () => {
       navigation.navigate('Product');
@@ -59,9 +60,9 @@ function BarcodeScreen({navigation}) {
       }
 
     return (
-        <Screen style={styles.Screen}>
+        <Screen style={{backgroundColor: theme?.midnight,}}>
           <View style={{
-            backgroundColor: colors.horizon,
+            backgroundColor: theme?.horizon,
             padding: 5,
             width: "100%",
             gap: 20,
@@ -69,15 +70,15 @@ function BarcodeScreen({navigation}) {
             flexDirection: 'row',
           }}>
             <TouchableOpacity onPress={goHome}>
-              <MaterialCommunityIcons name="arrow-left" size={30} color={colors.amberGlow} />
+              <MaterialCommunityIcons name="arrow-left" size={30} color={theme?.amberGlow} />
             </TouchableOpacity>
             <View style={{
               flexDirection: 'row',
               alignItems: 'center',
               gap: 10,
             }}>
-              <MaterialCommunityIcons name="barcode-scan" size={30} color={colors.amberGlow} style={{alignSelf: 'center'}} />
-              <AppText style={{color: colors.white, fontSize: 18, textAlign: "center", marginVertical: 10}}>Barcode Scanner</AppText>
+              <MaterialCommunityIcons name="barcode-scan" size={30} color={theme?.amberGlow} style={{alignSelf: 'center'}} />
+              <AppText style={{color: theme?.white, fontSize: 18, textAlign: "center", marginVertical: 10}}>Barcode Scanner</AppText>
             </View>
           </View>
           <View style={styles.container}>
@@ -85,7 +86,7 @@ function BarcodeScreen({navigation}) {
               onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
               style={{width: "100%", height: "100%"}}
               />
-              {!scanned && <AppText style={{color: colors.white, textAlign: "center", fontSize: 14, marginVertical: 10}}>Point your camera at the BAR/QR Code</AppText>}
+              {!scanned && <AppText style={{color: theme?.white, textAlign: "center", fontSize: 14, marginVertical: 10}}>Point your camera at the BAR/QR Code</AppText>}
               {scanned && <AppButton title={'Tap to Scan Again'} style={{
                 marginTop: 20,
               }} onPress={() => setScanned(false)} />}
@@ -98,8 +99,8 @@ function BarcodeScreen({navigation}) {
             >
               <View>
                 <View>
-                  <AppText style={{color: colors.white, fontSize: 18, textAlign: "center"}}>Scan Complete</AppText>
-                  <AppText style={{color: colors.white, fontSize: 16, textAlign: "center"}}>Scanned Data: {scannedData}</AppText>
+                  <AppText style={{color: theme?.white, fontSize: 18, textAlign: "center"}}>Scan Complete</AppText>
+                  <AppText style={{color: theme?.white, fontSize: 16, textAlign: "center"}}>Scanned Data: {scannedData}</AppText>
                   <AppButton title={'Open Link'} style={{
                     marginTop: 20,
                   }} onPress={() => openLink(scannedData)} />
@@ -117,9 +118,6 @@ const styles = StyleSheet.create({
     height: 400,
     alignSelf: 'center',
     padding: 10,
-  },
-  Screen: {
-    backgroundColor: colors.midnight,
   },
 });
 

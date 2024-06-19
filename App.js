@@ -12,6 +12,7 @@ import AuthNavigation from './app/navigation/AuthNavigation';
 import AuthContext from './app/auth/context';
 import authStorage from './app/auth/storage';
 import BarcodePolicyProvider from './app/config/BarcodeContext';
+import {ThemeProvider} from './app/utils/ThemeContext';
 
 export default function App() {
   const [user, setUser] = useState()
@@ -26,14 +27,16 @@ export default function App() {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
-      <BarcodePolicyProvider>
-        <OfflineNotice />
-        <NavigationContainer>
-          {user ? <AppNavigator /> : <AuthNavigation />}
-        </NavigationContainer>
-      </BarcodePolicyProvider>
-    </AuthContext.Provider>
+    <ThemeProvider>
+      <AuthContext.Provider value={{ user, setUser }}>
+        <BarcodePolicyProvider>
+          <OfflineNotice />
+          <NavigationContainer>
+            {user ? <AppNavigator /> : <AuthNavigation />}
+          </NavigationContainer>
+        </BarcodePolicyProvider>
+      </AuthContext.Provider>
+    </ThemeProvider>
   );
 }
 

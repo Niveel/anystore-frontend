@@ -5,19 +5,22 @@ import AccountSettingsScreen from '../screens/AccountSettingsScreen';
 import PasswordResetScreen from '../screens/PasswordResetScreen';
 import EmailResetScreen from '../screens/EmailResetScreen';
 import NameResetScreen from '../screens/NameResetScreen';
-import colors from '../config/colors';
+import OtherSettingsScreen from '../screens/OtherSettingsScreen';
+import routes from './routes';
+import { useTheme } from '../utils/ThemeContext';
 
 const Stack = createStackNavigator();
 
 const AccountNavigator = () => {
+    const {theme} = useTheme()
   return (
     <Stack.Navigator
         screenOptions={{
             presentation: "modal",
             headerStyle: {
-                backgroundColor: colors.horizon,
+                backgroundColor: theme?.horizon,
             },
-            headerTintColor: colors.amberGlow,
+            headerTintColor: theme?.amberGlow,
             headerTitleStyle: {
                 fontWeight: "bold",
             },
@@ -51,6 +54,13 @@ const AccountNavigator = () => {
             component={EmailResetScreen} 
             options={{
                 title: "Email Reset",
+            }}
+        />
+        <Stack.Screen 
+            name={routes.OTHER_SETTINGS} 
+            component={OtherSettingsScreen} 
+            options={{
+                title: "Other Settings",
             }}
         />
     </Stack.Navigator>

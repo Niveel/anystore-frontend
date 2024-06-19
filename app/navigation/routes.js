@@ -13,4 +13,5 @@ export default Object.freeze({
     CRIT: 'Crit',
     RADAR_PRICE_CHECK: 'RadarPriceCheck',
     PRODUCT_INFO: 'ProductInfoScreen', 
+    OTHER_SETTINGS: 'OtherSettingsScreen',
 })

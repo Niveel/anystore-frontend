@@ -3,10 +3,11 @@ import React from 'react'
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 
 import AppText from './AppText'
-import colors from '../config/colors'
+import { useTheme } from '../utils/ThemeContext'
 import AppButton from './AppButton'
 
 const ProductCard = ({shopName, onPress, removeFavorite}) => {
+    const {theme} = useTheme()
     
     const removeAlert = () => {
         Alert.alert(
@@ -22,14 +23,14 @@ const ProductCard = ({shopName, onPress, removeFavorite}) => {
 
   return (
         <View style={styles.storeContainer}>
-            <TouchableHighlight style={styles.card} onPress={onPress} underlayColor="rgba(0,0,0,.3)">
+            <TouchableHighlight style={[styles.card, {backgroundColor: theme?.white,}]} onPress={onPress} underlayColor="rgba(0,0,0,.3)">
                 <View style={styles.cardInner}>
-                    <View style={styles.image}>
-                        <MaterialCommunityIcons name="store" size={80} color={colors.midnight} />
+                    <View style={[styles.image, {backgroundColor: theme?.amberGlowLight,}]}>
+                        <MaterialCommunityIcons name="store" size={80} color={theme?.midnight} />
                     </View>
                     <View style={styles.details}>
-                        <AppText style={styles.name} numberOfLines={1}>{shopName}</AppText>
-                        <AppButton title="Remove" onPress={removeAlert} color={colors.black} />
+                        <AppText style={styles.name} color={theme?.amberGlow} numberOfLines={1}>{shopName}</AppText>
+                        <AppButton title="Remove" onPress={removeAlert} color={theme?.black} />
                     </View>
                 </View>
             </TouchableHighlight>
@@ -45,7 +46,6 @@ const styles = StyleSheet.create({
     },
    card: {
        borderRadius: 15,
-       backgroundColor: colors.white,
        overflow: "hidden",
        paddingVertical: 15,
        paddingHorizontal: 10,
@@ -64,13 +64,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
         padding: 5,
-        backgroundColor: "red",
     },
     image: {
         width: "100%",
         height: "60%",
         borderRadius: 25,
-        backgroundColor: colors.amberGlowLight,
         overflow: "hidden",
         justifyContent: "center",
         alignItems: "center",
@@ -83,7 +81,6 @@ const styles = StyleSheet.create({
     },
     name: {
         fontWeight: "bold",
-        color: colors.amberGlow,
         fontSize: 16,
         letterSpacing: 1,
         textAlign: "center",

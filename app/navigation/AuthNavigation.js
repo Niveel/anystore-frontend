@@ -8,11 +8,12 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen'
 import SignupVerifyScreen from '../screens/SignupVerifyScreen'
 import PasswordResetVerifyScreen from '../screens/PasswordResetVerifyScreen'
 import NewPasswordScreen from '../screens/NewPasswordScreen'
-import colors from '../config/colors'
+import { useTheme } from '../utils/ThemeContext'
 
 const Stack = createStackNavigator()
 
 const AuthNavigation = () => {
+    const {theme} = useTheme()
   return (
     <Stack.Navigator>
         <Stack.Screen 
@@ -34,8 +35,8 @@ const AuthNavigation = () => {
             name='SignupVerify' 
             component={SignupVerifyScreen}
             options={{
-                headerStyle: {backgroundColor: colors.horizon},
-                headerTintColor: colors.amberGlow,
+                headerStyle: {backgroundColor: theme?.horizon},
+                headerTintColor: theme?.amberGlow,
                 title: 'Email verification'
             }}
         />
@@ -43,8 +44,8 @@ const AuthNavigation = () => {
             name='ForgotPassword' 
             component={ForgotPasswordScreen}
             options={{
-                headerStyle: {backgroundColor: colors.horizon},
-                headerTintColor: colors.amberGlow,
+                headerStyle: {backgroundColor: theme?.horizon},
+                headerTintColor: theme?.amberGlow,
                 title: 'Password Reset'
             }}
         />
@@ -52,8 +53,8 @@ const AuthNavigation = () => {
             name='PasswordResetVerify' 
             component={PasswordResetVerifyScreen}
             options={{
-                headerStyle: {backgroundColor: colors.horizon},
-                headerTintColor: colors.amberGlow,
+                headerStyle: {backgroundColor: theme?.horizon},
+                headerTintColor: theme?.amberGlow,
                 title: 'Password Reset Verification'
             }}
         />

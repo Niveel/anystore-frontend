@@ -7,12 +7,12 @@ import axios from 'axios'
 
 import ActivityIndicator from '../components/ActivityIndicator'
 import Screen from '../components/Screen'
-import colors from '../config/colors'
 import CodeSearch from '../components/CodeSearch'
 import SearchInput from '../components/SearchInput'
 import routes from '../navigation/routes'
 import CardProducts from '../components/CardProducts'
 import ListItem from '../components/ListItem'
+import { useTheme } from '../utils/ThemeContext'
 
 const ProductsScreen = () => {
     const [searchText, setSearchText] = useState("")
@@ -21,6 +21,7 @@ const ProductsScreen = () => {
     const [loading, setLoading] = useState(false)
     const [productLoaded, setProductLoaded] = useState(true)
     const navigation = useNavigation()
+    const { theme } = useTheme();
 
     // generate random id
     const generateRandomId = () => {
@@ -65,25 +66,25 @@ const ProductsScreen = () => {
     }
 
     return (
-        <Screen style={{ backgroundColor: colors.midnight }}>
+        <Screen style={{ backgroundColor: theme?.midnight }}>
             {/* top bar */}
             <View style={styles.topBarContainer}>
                 <View style={styles.navbar}>
-                    <Text style={{ color: colors.white, fontSize: 20, fontWeight: '900', marginLeft: 10 }}>Store Search</Text>
+                    <Text style={{ color: theme?.white, fontSize: 20, fontWeight: '900', marginLeft: 10 }}>Store Search</Text>
                     <View style={styles.iconBox}>
                         <TouchableOpacity
                             onPress={handleFavorite}
                             accessible={true}
                             accessibilityLabel='Favorite stores'
                         >
-                            <MaterialCommunityIcons name="heart" size={30} color={colors.punch} />
+                            <MaterialCommunityIcons name="heart" size={30} color={theme?.punch} />
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={handleCart}
                             accessible={true}
                             accessibilityLabel='Cart'
                         >
-                            <MaterialCommunityIcons name="cart" size={30} color={colors.amberGlow} />
+                            <MaterialCommunityIcons name="cart" size={30} color={theme?.amberGlow} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -91,7 +92,7 @@ const ProductsScreen = () => {
                     autoCapitalize="none"
                     autoCorrect={false}
                     placeholder="Search Products by Keyword"
-                    placeholderTextColor={colors.misty}
+                    placeholderTextColor={theme?.misty}
                     onChangeText={text => setSearchText(text)}
                     searchPress={handleSearch}
                 />
@@ -99,7 +100,7 @@ const ProductsScreen = () => {
             </View>
             {/* end of top bar */}
             {/* main body */}
-            <View style={styles.mainBody}>
+            <View style={[styles.mainBody, {backgroundColor: theme?.horizon,}]}>
                 <ActivityIndicator visible={loading} />
                 <CardProducts
                     productData={products}
@@ -113,9 +114,9 @@ const ProductsScreen = () => {
                         <ListItem
                             title="No result found"
                             subtitle="Try searching with another keyword"
-                            style={{ color: colors.white, fontSize: 18, fontWeight: "bold" }}
+                            style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
                             IconComponent={
-                                <MaterialCommunityIcons name="alert-circle" size={35} color={colors.punch} />
+                                <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
                             }
                         />
                     </View>}
@@ -128,9 +129,9 @@ const ProductsScreen = () => {
                         <ListItem
                             title="No product loaded"
                             subtitle="There was an error loading products, please try again later."
-                            style={{ color: colors.white, fontSize: 18, fontWeight: "bold" }}
+                            style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
                             IconComponent={
-                                <MaterialCommunityIcons name="alert-circle" size={35} color={colors.punch} />
+                                <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
                             }
                         />
                     </View>}
@@ -149,7 +150,6 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '80%',
         marginTop: 35,
-        backgroundColor: colors.horizon,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 15,

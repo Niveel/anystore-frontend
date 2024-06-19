@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
 import axios from 'axios';
+import { Audio } from 'expo-av';
 
-import colors from '../config/colors';
 import Screen from '../components/Screen';
 import AppButton from '../components/AppButton';
 import SearchInput from '../components/SearchInput';
@@ -11,16 +11,39 @@ import CustomModal from '../components/CustomModal';
 import chatGroupApi from '../api/chatGroup';
 import useAuth from '../auth/useAuth';
 import { useBarcodePolicy } from '../config/BarcodeContext';
+import { useTheme } from '../utils/ThemeContext';
+
+const open_sound = '../assets/sounds/open_sound.mp3';
 
 function FriendlyScreen({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [groups, setGroups] = useState([]);
   const [groupName, setGroupName] = useState('');
   const [tabOption, setTabOption] = useState("Created")
+  const [sound, setSound] = useState();
 
   const { user } = useAuth();
   const { barcodeCameraAllow } = useBarcodePolicy();
   const userId = user?._id;
+  const { theme } = useTheme();
+
+  // sound
+  const PlayOpenSound = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+        require(open_sound)
+    );
+    setSound(sound);
+    await sound.playAsync();
+  }
+
+  // Unload sound when component unmounts
+  useEffect(() => {
+      return sound
+        ? () => {
+            sound.unloadAsync();
+          }
+        : undefined;
+    }, [sound]);
 
   useEffect(() => {
     fetchGroups();
@@ -51,6 +74,7 @@ function FriendlyScreen({navigation}) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(date).toLocaleDateString(undefined, options);
   }
+
   const openModal = () => {
     if(!barcodeCameraAllow){
       setModalVisible(false);
@@ -59,6 +83,7 @@ function FriendlyScreen({navigation}) {
       setModalVisible(true);
     }
   }
+
   const handleCreateGroup = () => {
     setModalVisible(false);
     setGroupName('');
@@ -86,6 +111,7 @@ function FriendlyScreen({navigation}) {
         console.error('Error creating group:', error);
       });
   }
+  
   const openChat = (name, id, isCreatedGroup) => {
     navigation.navigate('Chatroom', {groupName: name.trim(), groupId: id, setGroups: setGroups, isCreatedGroup: isCreatedGroup});
   }
@@ -95,11 +121,11 @@ function FriendlyScreen({navigation}) {
 
 
   return (
-    <Screen style={styles.screen}>
-      <View style={styles.heading}>
-        <Text style={styles.headingText}>GROUPS</Text>
-        <TouchableOpacity style={styles.button} onPress={openModal}>
-          <AppText style={styles.buttonText}>Create group</AppText>
+    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
+      <View style={[styles.heading, {backgroundColor: theme?.horizon,}]}>
+        <Text style={[styles.headingText, {color: theme?.amberGlow,}]}>GROUPS</Text>
+        <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={openModal}>
+          <AppText style={styles.buttonText} color={theme?.midnight}>Create group</AppText>
         </TouchableOpacity>
       </View>
           {/* tab */}
@@ -107,26 +133,26 @@ function FriendlyScreen({navigation}) {
             <TouchableOpacity 
               onPress={()=>setTabOption("Created")}
               style={{
-                backgroundColor: tabOption === "Created" ? colors.amberGlow : colors.mistyLight,
+                backgroundColor: tabOption === "Created" ? theme?.amberGlow : theme?.mistyLight,
                 padding: 10,
                 borderRadius: 5,
               }}
               accessible={true}
               accessibilityLabel="Groups created tab"
             >
-              <AppText style={{color: tabOption === "Created" ? colors.midnight : colors.amberGlowLight}}>Groups Created</AppText>
+              <AppText color={tabOption === "Created" ? theme?.midnight : theme?.amberGlowLight}>Groups Created</AppText>
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={()=>setTabOption("Joined")}
               style={{
-                backgroundColor: tabOption === "Joined" ? colors.amberGlow : colors.mistyLight,
+                backgroundColor: tabOption === "Joined" ? theme?.amberGlow : theme?.mistyLight,
                 padding: 10,
                 borderRadius: 5,
               }}
               accessible={true}
               accessibilityLabel="Groups joined tab"
             >
-              <AppText style={{color: tabOption === "Joined" ? colors.midnight : colors.amberGlowLight}}>Groups Joined</AppText>
+              <AppText style={{color: tabOption === "Joined" ? theme?.midnight : theme?.amberGlowLight}}>Groups Joined</AppText>
             </TouchableOpacity>
           </View>
           {/* end of tab */}
@@ -142,15 +168,18 @@ function FriendlyScreen({navigation}) {
                   justifyContent: "center",
                   alignItems: "center",
                 }}>
-                  <AppText style={{ color: colors.white }}>You have not created any group yet.</AppText>
+                  <AppText style={{ color: theme?.white }}>You have not created any group yet.</AppText>
                 </View>
               )
             }
             {
               groups?.createdGroups?.map((group) => (
-                <TouchableOpacity key={group._id} style={styles.groupCard} onPress={()=>openChat(group.groupName, group._id, true)}>
+                <TouchableOpacity key={group._id} style={[styles.groupCard, {backgroundColor: theme?.mistyLight,}]} onPress={()=>{
+                  openChat(group.groupName, group._id, true)
+                  PlayOpenSound();
+                }}>
                   <AppText style={styles.name} numberOfLines={1}>{group.groupName}</AppText>
-                  <AppText style={styles.date}>{formatDate(group.createdAt)}</AppText>
+                  <AppText style={[styles.date, {color: theme?.amberGlow,}]}>{formatDate(group.createdAt)}</AppText>
                 </TouchableOpacity>
               ))
             }
@@ -167,15 +196,18 @@ function FriendlyScreen({navigation}) {
                     justifyContent: "center",
                     alignItems: "center",
                   }}>
-                    <AppText style={{ color: colors.white }}>You have not joined any group yet.</AppText>
+                    <AppText style={{ color: theme?.white }}>You have not joined any group yet.</AppText>
                   </View>
                 )
               }
               {
                 groups?.joinedGroups?.map((group) => (
-                  <TouchableOpacity key={group?._id} style={styles.groupCard} onPress={()=>openChat(group?.groupName, group?._id, false)}>
+                  <TouchableOpacity key={group?._id} style={[styles.groupCard, {backgroundColor: theme?.mistyLight,}]} onPress={()=>{
+                    openChat(group?.groupName, group?._id, false)
+                    PlayOpenSound();
+                  }}>
                     <AppText style={styles.name} numberOfLines={1}>{group.groupName}</AppText>
-                    <AppText style={styles.date}>{formatDate(group.createdAt)}</AppText>
+                    <AppText style={[styles.date, {color: theme?.amberGlow,}]}>{formatDate(group.createdAt)}</AppText>
                   </TouchableOpacity>
                 ))
               }
@@ -191,15 +223,15 @@ function FriendlyScreen({navigation}) {
       >
         <SearchInput
           placeholder="Enter group name"
-          placeholderTextColor={colors.amberGlow}
+          placeholderTextColor={theme?.amberGlow}
           value={groupName}
           maxLength={25}
           onChangeText={(text) => setGroupName(text)}
-          style={styles.input}
+          style={[styles.input, {color: theme?.amberGlow,}]}
         />
         <AppButton
             title="Create"
-            color={colors.amberGlowLight}
+            color={theme?.amberGlowLight}
             style={{
                 marginTop: 20,
                 alignSelf: "center"
@@ -214,12 +246,10 @@ function FriendlyScreen({navigation}) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.amberGlow,
     padding: 10,
     borderRadius: 5,
   },
   buttonText: {
-    color: colors.midnight,
     fontSize: 15,
     fontWeight: 'bold',
   },
@@ -238,11 +268,9 @@ const styles = StyleSheet.create({
     paddingBottom: 190,
   },
   date: {
-    color: colors.amberGlow,
     fontSize: 12,
   },
   groupCard: {
-    backgroundColor: colors.mistyLight,
     padding: 10,
     height: 100,
     justifyContent: "space-between",
@@ -255,7 +283,6 @@ const styles = StyleSheet.create({
   },
   heading: {
     marginVertical: 10,
-    backgroundColor: colors.horizon,
     padding: 10,
     borderRadius: 5,
     flexDirection: 'row',
@@ -263,7 +290,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headingText: {
-    color: colors.amberGlow,
     fontSize: 24,
     fontWeight: 'bold',
   },
@@ -271,10 +297,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 50,
     paddingHorizontal: 15,
-    color: colors.amberGlow,
   },
   screen: {
-    backgroundColor: colors.midnight,
     padding: 10,
   },
   scrollView: {

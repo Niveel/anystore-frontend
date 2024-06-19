@@ -2,20 +2,24 @@ import { View, Text, StyleSheet, ImageBackground } from 'react-native'
 import React from 'react'
 
 import AppButton from '../components/AppButton'
-import colors from '../config/colors'
 import routes from '../navigation/routes'
+import { useTheme } from '../utils/ThemeContext'
 
 const WelcomeScreen = ({ navigation }) => {
+    const { theme } = useTheme()
 
     return (
         < ImageBackground style={styles.background} source={require('../assets/welcome_bg.png')} blurRadius={4}>
             <View style={styles.headerContainer}>
-                <Text style={styles.header}>Shopwit</Text>
-                <Text style={styles.text}>Discover and shop for your needs!</Text>
+                <Text style={[styles.header, {color: theme?.white,}]}>Shopwit</Text>
+                <Text style={[styles.text, {
+                    color: theme?.white,
+                    backgroundColor: theme?.blackLight,
+                }]}>Discover and shop for your needs!</Text>
             </View>
             <View style={styles.buttonBox}>
-                <AppButton title="Login" color={colors.horizon} onPress={() => navigation.navigate(routes.LOGIN)} />
-                <AppButton title="Register" color={colors.amberGlow} onPress={() => navigation.navigate(routes.REGISTER)} />
+                <AppButton title="Login" color={theme?.horizon} onPress={() => navigation.navigate(routes.LOGIN)} />
+                <AppButton title="Register" color={theme?.amberGlow} onPress={() => navigation.navigate(routes.REGISTER)} />
             </View>
         </ImageBackground>
     )
@@ -46,15 +50,12 @@ const styles = StyleSheet.create({
     header: {
         fontSize: 50,
         textAlign: 'center',
-        color: colors.white,
         fontWeight: '900',
         marginBottom: 20,
     },
     text: {
         fontSize: 20,
         textAlign: 'center',
-        color: colors.white,
-        backgroundColor: "rgba(1,4,9,.2)",
         borderRadius: 10,
         paddingHorizontal: 10,
         fontWeight: 'bold',

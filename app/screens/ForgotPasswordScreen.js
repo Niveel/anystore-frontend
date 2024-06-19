@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import { View, StyleSheet,ActivityIndicator, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import * as Yup from 'yup';
 
-import colors from '../config/colors';
 import Screen from '../components/Screen';
 import passwordResetApi from '../api/passwordReset'
 import { AppForm, AppFormField, SubmitButton, ErrorMessage } from '../components/forms';
+import { useTheme } from '../utils/ThemeContext';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required("Please enter a valid email").email().label("Email"), 
@@ -15,6 +15,8 @@ function ForgotPasswordScreen({navigation}) {
   const [error, setError] = useState("");
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const { theme } = useTheme();
 
   const handleEmailReset = async ({ email }) => {
     try {
@@ -38,11 +40,11 @@ function ForgotPasswordScreen({navigation}) {
   }
 
   return (
-    <Screen style={styles.screen}>
+    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.container}>
-          <ActivityIndicator animating={loading} size="large" color={colors.amberGlow} />
-          <View style={styles.box}>
+          <ActivityIndicator animating={loading} size="large" color={theme?.amberGlow} />
+          <View style={[styles.box, {backgroundColor: theme?.midnight, borderColor: theme?.amberGlow,}]}>
             <AppForm
                   initialValues={{email: ""}}
                   onSubmit={handleEmailReset}
@@ -56,14 +58,14 @@ function ForgotPasswordScreen({navigation}) {
                     icon="email"
                     keyboardType="email-address"
                     placeholder="Enter your email"
-                    placeholderTextColor={colors.misty}
+                    placeholderTextColor={theme?.misty}
                     textContentType="emailAddress"
                 />
                 <SubmitButton 
                     title="Submit" 
                     width="90%"
-                    color={colors.amberGlow}
-                    textColor={colors.midnight}
+                    color={theme?.amberGlow}
+                    textColor={theme?.midnight}
                 />
             </AppForm>
           </View>
@@ -78,8 +80,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 20,
     alignItems: 'center',
-    backgroundColor: colors.midnight,
-    borderColor: colors.amberGlow,
     borderRadius: 10,
     borderWidth: 1,
     padding: 5,
@@ -92,19 +92,11 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   screen: {
-    backgroundColor: colors.midnight,
     paddingTop: 0,
   },
   sendLink: {
     alignSelf: "center",
     marginTop: 10,
-  },
-  text: {
-    color: colors.amberGlow,
-    fontWeight: 'bold',
-    padding: 0,
-    textAlign: 'center',
-    marginBottom: 20,
   },
 });
 

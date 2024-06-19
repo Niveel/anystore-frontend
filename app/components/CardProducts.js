@@ -1,4 +1,4 @@
-import { FlatList, Alert } from 'react-native'
+import { FlatList } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'; 

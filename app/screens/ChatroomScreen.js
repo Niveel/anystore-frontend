@@ -1,17 +1,22 @@
 import React, {useState, useRef, useEffect} from 'react';
-import { View, StyleSheet, TouchableOpacity, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, TouchableHighlight, FlatList, Alert, TextInput, Keyboard, Image, AccessibilityInfo } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, TouchableHighlight, FlatList, Alert, TextInput, Keyboard, Image, BackHandler, ToastAndroid } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import {io} from 'socket.io-client';
+import { Audio } from 'expo-av';
 
 import Screen from '../components/Screen';
 import AppText from '../components/AppText';
-import colors from '../config/colors';
 import CustomModal from '../components/CustomModal';
 import SearchInput from '../components/SearchInput';
 import useAuth from '../auth/useAuth';
 import storage from '../auth/storage';
 import routes from '../navigation/routes';
+import MsgLongPressOptions from '../components/MsgLongPressOptions';
+import { useTheme } from '../utils/ThemeContext';
+
+const receive_sound = '../assets/sounds/receive_sound.wav';
+const send_sound = '../assets/sounds/send_sound.mp3';
 
 function ChatroomScreen({route, navigation}) {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -21,12 +26,14 @@ function ChatroomScreen({route, navigation}) {
   const [reportMsgModalVisible, setReportMsgModalVisible] = useState(false);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [selectedMessageId, setSelectedMessageId] = useState(null);
-  const [selectedMsgToReport, setSelectedMsgToReport] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [groupMembers, setGroupMembers] = useState([]); 
   const [addedMembers, setAddedMembers] = useState([])
+  const [selectedMessages, setSelectedMessages] = useState([]);
+  const [longPressMsgState, setLongPressMsgState] = useState(false);
+  const [receiveSound, setReceiveSound] = useState();
+  const [sendSound, setSendSound] = useState();
   
   const scrollViewRef = useRef(null)
   const { user } = useAuth();
@@ -43,6 +50,34 @@ function ChatroomScreen({route, navigation}) {
   });
 
   const { groupName, groupId, setGroups, isCreatedGroup } = route.params;
+  const { theme } = useTheme();
+
+  // sounds
+  const PlayReceiveSound = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+        require(receive_sound)
+    );
+    setReceiveSound(sound);
+    await sound.playAsync();
+  }
+
+  const PlaySendSound = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+        require(send_sound)
+    );
+    setSendSound(sound);
+    await sound.playAsync();
+  }
+
+  // useEffect to unload sounds when component unmounts
+  useEffect(() => {
+    return receiveSound && sendSound
+      ? () => {
+          receiveSound.unloadAsync(); 
+          sendSound.unloadAsync();
+        }
+      : undefined;
+  }, [receiveSound, sendSound]);
 
   // socket message
   socket.on("connect", () => {
@@ -67,6 +102,7 @@ function ChatroomScreen({route, navigation}) {
     socket.on("message", (newMessage) => {
       console.log('new message sent:', newMessage); 
       setMessages((prevMessages) => [...prevMessages, newMessage]);
+      PlayReceiveSound();
     });
     return () => {
       socket.disconnect();
@@ -239,6 +275,7 @@ function ChatroomScreen({route, navigation}) {
         socket.emit('sendMessage', { roomId, message, senderId });
         setMessage('');
         Keyboard.dismiss();
+        PlaySendSound();
 
         // fetch messages
         // setTimeout(() => {
@@ -257,12 +294,25 @@ function ChatroomScreen({route, navigation}) {
         }
       }
     }
+    const resetSelectedMessages = () => setSelectedMessages([]);
 
-    const handleDeleteMessage = (id) => {
-      console.log('deleting message:', id);
-      const updatedMessages = messages.filter(msg => msg._id !== id);
-      setMessages(updatedMessages);
-      setSelectedMessageId(null)
+    const handleDeleteMessage = (msgArr) => {
+      const selectedMessageIds = msgArr.map(msg => msg?._id)
+      setMessages(prevMessages => prevMessages.filter(msg => !selectedMessageIds.includes(msg._id)));
+
+      resetSelectedMessages();
+    }
+
+    const showReportToast = () => {
+      ToastAndroid.show('Messages reported.', ToastAndroid.SHORT);
+    }
+
+    const handleReportMessages = (msgArr) => {
+      const selectedMessages = msgArr.map(msg => msg?.content)
+      console.log('selected messages to report:', selectedMessages);
+      resetSelectedMessages();
+      setReportMsgModalVisible(false);
+      showReportToast();
     }
 
     const fetchMessages = async () => {
@@ -279,6 +329,22 @@ function ChatroomScreen({route, navigation}) {
       }
     }
 
+    const handleSelectMessageLongPress = (msg) => {
+      setLongPressMsgState(true);
+      setSelectedMessages([...selectedMessages, msg]);
+    }
+
+    const handleSelectMessage = (msg) => {
+      if (longPressMsgState) {
+        setSelectedMessages([...selectedMessages, msg]);
+        // if the message is already selected, deselect it
+        if(selectedMessages.includes(msg)) {
+          setSelectedMessages(selectedMessages.filter(message => message !== msg));
+        }
+        if(selectedMessages.length === 0) setLongPressMsgState(false);
+      }
+    }
+    
     // fetch messages
     useEffect(() => { 
       // getAllMessagesFromStorage()
@@ -301,12 +367,11 @@ function ChatroomScreen({route, navigation}) {
           const filteredResults = response.data.filter((result) => result.username.trim() !== user.username.trim());
           setSearchResults(filteredResults);
         } catch (error) {
-          console.error('Error fetching members results:', error);
+          console.log('Error fetching members results:', error);
         }
       };
   
       fetchAppUsers();
-      console.log('app users fetched');
     }, [searchQuery]);
 
     // fetch group members
@@ -337,18 +402,41 @@ function ChatroomScreen({route, navigation}) {
       if(viewMembersModalVisible) fetchGroupMembers();
     }, [viewMembersModalVisible]);
 
+    // Effect to handle back button press
+    useEffect(() => {
+      const backAction = () => {
+        if (longPressMsgState) {
+          setLongPressMsgState(false); 
+          return true; 
+        }
+        return false; 
+      };
+
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+      return () => backHandler.remove(); 
+    }, [longPressMsgState]); 
+
+    // useEffect to deselect messages when longPressMsgState is false
+    useEffect(() => {
+      if (!longPressMsgState) {
+        setSelectedMessages([]);
+      }
+    }, [longPressMsgState]); 
+
     // console.log("messages are:", messages)
+    // console.log("selected messages are:", selectedMessages)
   return (
-    <Screen style={styles.screen}>
-        <View style={styles.header}>
+    <Screen style={{backgroundColor: theme?.midnight,}}>
+        <View style={[styles.header, {backgroundColor: theme?.horizon,}]}>
           <View style={styles.box}>
             <TouchableOpacity 
               onPress={() => navigation.navigate('CritScreen')} 
-              style={styles.backBtn}
+              style={[styles.backBtn, {backgroundColor: theme?.midnight,}]}
               accessible={true}
               accessibilityLabel="Back"
             >
-              <MaterialCommunityIcons name="arrow-left" size={30} color={colors.amberGlow} />
+              <MaterialCommunityIcons name="arrow-left" size={30} color={theme?.amberGlow} />
             </TouchableOpacity>
             <View style={styles.infoBox}>
               <AppText style={styles.groupName} numberOfLines={1}>{groupName}</AppText>
@@ -362,40 +450,56 @@ function ChatroomScreen({route, navigation}) {
             {isCreatedGroup && 
             <TouchableOpacity 
               onPress={handleAddMember} 
-              style={styles.moreBtn} 
+              style={[styles.moreBtn, {backgroundColor: theme?.midnight,}]} 
               activeOpacity={0.8}
               accessible={true}
               accessibilityLabel="Add member"
             >
-                <MaterialCommunityIcons name="account-plus" size={30} color={colors.amberGlow} />
+                <MaterialCommunityIcons name="account-plus" size={30} color={theme?.amberGlow} />
             </TouchableOpacity>}
             <TouchableOpacity 
               onPress={handleMorePress} 
-              style={styles.moreBtn} 
+              style={[styles.moreBtn, {backgroundColor: theme?.midnight,}]} 
               activeOpacity={0.8}
               accessible={true}
               accessibilityLabel="More options"
             >
-                <MaterialCommunityIcons name="dots-vertical" size={30} color={colors.amberGlow} />
+                <MaterialCommunityIcons name="dots-vertical" size={30} color={theme?.amberGlow} />
             </TouchableOpacity>
           </View>
+
+          {/* longPressing messages options */}
+          {selectedMessages.length > 0 && <MsgLongPressOptions
+            style={{
+              position: 'absolute',
+              width: "100%",
+              height: "100%",
+              backgroundColor: theme?.midnight,
+              zIndex: 20,
+            }}
+            messages={selectedMessages}
+            deleteMsg={() => handleDeleteMessage(selectedMessages)}
+            reportMsg={() => setReportMsgModalVisible(true)}
+            deselectMsgs={() => setSelectedMessages([])}
+          />}
+          {/* end of longPressing messages options */}
         </View>
 
             {menuVisible && (
-              <View style={[styles.menuContainer, { top: menuPosition.y + 10, left: menuPosition.x - 150, backgroundColor: colors.midnight, zIndex: 3, elevation: 5 }]}>
+              <View style={[styles.menuContainer, { top: menuPosition.y + 10, left: menuPosition.x - 150, backgroundColor: theme?.midnight, zIndex: 3, elevation: 5, backgroundColor: theme?.midnight, }]}>
                 <TouchableHighlight 
                   style={styles.menuItem} 
                   onPress={handleViewMembers}
                   underlayColor="rgba(0, 0, 0, 0.1)"
                 >
-                  <AppText style={styles.menuItemText}>View Members</AppText>
+                  <AppText style={[styles.menuItemText, {color: theme?.amberGlow,}]}>View Members</AppText>
                 </TouchableHighlight>
                 {!isCreatedGroup && <TouchableHighlight 
                   style={styles.menuItem} 
                   onPress={handleExitGroup}
                   underlayColor="rgba(0, 0, 0, 0.1)"
                 >
-                  <AppText style={styles.menuItemText}>Exit Group</AppText>
+                  <AppText style={[styles.menuItemText, {color: theme?.amberGlow,}]}>Exit Group</AppText>
                 </TouchableHighlight>}
 
                 {isCreatedGroup &&  <TouchableHighlight 
@@ -403,7 +507,7 @@ function ChatroomScreen({route, navigation}) {
                   onPress={handleDeleteGroup}
                   underlayColor="rgba(0, 0, 0, 0.1)"
                 >
-                  <AppText style={styles.menuItemText}>Delete Group</AppText>
+                  <AppText style={[styles.menuItemText, {color: theme?.amberGlow,}]}>Delete Group</AppText>
                 </TouchableHighlight>}
                 {/* Add more menu items as needed */}
               </View>
@@ -416,15 +520,12 @@ function ChatroomScreen({route, navigation}) {
             <KeyboardAvoidingView 
               // behavior='padding' 
               // keyboardVerticalOffset={-200} 
-              style={{ backgroundColor: colors.midnight, padding: 10, paddingRight: 5, height: "90%", paddingBottom: 70}}
+              style={{ backgroundColor: theme?.midnight, padding: 10, paddingRight: 5, height: "90%", paddingBottom: 70}}
             >
             <ScrollView 
               contentContainerStyle={styles.scrollViewContent}
               ref={scrollViewRef}
-              onPress={()=> {
-                setSelectedMessageId(null)
-                console.log('message deselected')
-              }}
+              // onPress={()=> setSelectedMessages([])}
             >
               <View style={styles.chatContainer}>
                 {/* messages */}
@@ -432,118 +533,112 @@ function ChatroomScreen({route, navigation}) {
                   messages?.map((msg, index) => {
                     const isCurrentUser = msg?.sender?._id === user?._id || msg?.sender === user?._id;
                     const justifyContent = isCurrentUser ? 'flex-end' : 'flex-start';
+                    const selectedMessageIds = selectedMessages.map(msg => msg._id)
                   
                     // if the message is a shared product it is treated as a product card
                     if (msg?.isShared) {
                       const product = JSON.parse(msg.content);
 
                       return (
-                        <TouchableOpacity
+                        <TouchableHighlight
                           key={msg._id || index}
-                          onPress={() => {
-                            navigation.navigate(routes.PRODUCT_DETAILS, product);
-                          }}
-                          onLongPress={() => setSelectedMessageId(msg?._id)}
-                          style={{
+                          style={[
+                            {
                             flexDirection: 'row',
                             justifyContent: justifyContent,
                             marginBottom: 15,
                             marginTop: index === 0 ? 10 : 0,
+                          },
+                          msg?._id && selectedMessageIds.includes(msg?._id) && {backgroundColor: theme?.mistyLight, borderWidth: 1, borderColor: theme?.amberGlow, borderRadius: 5, padding: 2}
+                        ]}
+                          onPress={() => {
+                            setSelectedMessages([])
+                            setMenuVisible(false);
                           }}
+                          underlayColor="rgba(0, 0, 0, 0.05)"
                         >
-                          <View
+                          <TouchableOpacity
                             style={[
                               {
-                                backgroundColor: isCurrentUser ? colors.amberGlowLight : colors.horizon,
+                                backgroundColor: isCurrentUser ? theme?.amberGlowLight : theme?.horizon,
                                 padding: 10,
-                                paddingBottom: 20,
                                 borderRadius: 5,
                                 maxWidth: '80%',
                                 minWidth: 80,
-                              },
-                              msg?._id === selectedMessageId && {
-                                backgroundColor: colors.punch,
-                                borderWidth: 1,
-                                borderColor: colors.amberGlow,
-                                borderRadius: 5,
-                                padding: 9,
-                                paddingBottom: 19,
-                                maxWidth: '80%',
-                              },
+                              }
+                              
                             ]}
+                            onLongPress={() => handleSelectMessageLongPress(msg)}
+                            onPress={() => {
+                              if(longPressMsgState) {
+                                setSelectedMessages([...selectedMessages, msg]);
+                                // if the message is already selected, deselect it
+                                if(selectedMessages.includes(msg)) {
+                                  setSelectedMessages(selectedMessages.filter(message => message !== msg));
+                                }
+                                return;
+                              }
+                              navigation.navigate(routes.PRODUCT_DETAILS, product);
+                            }}
                           >
                             {/* Render product image and title */}
                             <Image 
                               source={{ uri: product?.imageUrl || "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais" }} 
                               style={{ 
                                 width: 200, 
-                                height: 240, 
+                                height: 250, 
                                 marginBottom: 5,
                                 borderRadius: 5,
                                 resizeMode: 'cover',
                               }} 
                             />
                             <AppText style={{ 
-                                color: colors.white, 
+                                color: theme?.white, 
                                 fontSize: 16, 
                                 fontWeight: 'bold', 
                                 textTransform: "capitalize" 
                               }} 
                               numberOfLines={1}
                             >{product?.title}</AppText>
-                          </View>
-                          <AppText
-                            style={{
-                              color: isCurrentUser ? colors.horizon : colors.misty,
-                              position: 'absolute',
-                              bottom: 2,
-                              fontSize: 10,
-                              right: isCurrentUser ? 10 : 'auto',
-                              fontWeight: 'bold',
-                              marginHorizontal: 10,
-                            }}
-                          >
-                            {formatTime(msg?.createdAt)}
-                          </AppText>
-
-                          {msg?._id === selectedMessageId && (
-                              <TouchableOpacity
-                                  onPress={() => handleDeleteMessage(msg?._id)}
-                                  style={{
-                                      backgroundColor: colors.amberGlow,
-                                      padding: 5,
-                                      paddingHorizontal: 10,
-                                      borderRadius: 5,
-                                      marginTop: 25,
-                                      position: "absolute",
-                                      right: "50%",
-                                      top: "40%",
-                                  }}
+                            {/* time and name */}
+                            <View style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                            }}>
+                              <AppText 
+                                style={{
+                                  color: theme?.white, fontSize: 8, fontWeight: 'bold'
+                                }}
+                                >{isCurrentUser ? "You" : msg?.sender?.username}</AppText>
+                              <AppText
+                                style={{
+                                  color: isCurrentUser ? theme?.horizon : theme?.misty,
+                                  fontSize: 8,
+                                  fontWeight: 'bold',
+                                  marginHorizontal: 5,
+                                }}
                               >
-                                  <AppText style={{ color: colors.white }}>Delete</AppText>
-                              </TouchableOpacity>
-                          )}
-                        </TouchableOpacity>
+                                {formatTime(msg?.createdAt)}
+                              </AppText>
+                            </View>
+                            {/* end of time and name */}
+                          </TouchableOpacity>
+                        </TouchableHighlight>
                       );
 
                     } else {
                       return (
-                        <TouchableOpacity 
+                        <TouchableHighlight 
                           key={msg?._id || index} 
-                          activeOpacity={0.7}
                           accessible={true}
                           accessibilityLabel={`${msg?.content}, Message from ${isCurrentUser ? "you" : msg?.sender?.username || "a group member"} at ${formatTime(msg?.createdAt)}`}
-                          onLongPress={() => {
-                            setSelectedMessageId(msg?._id)
-                            AccessibilityInfo.announceForAccessibility('Message options');
-                            // setTimeout(() => {
-                            //   AccessibilityInfo.setAccessibilityFocus(msg?._id);
-                            // }, 200); 
+                          accessibilityHint={`${selectedMessages.includes(msg?._id) ? "Message selected" : "Message not selected"}`}
+                          onPress={() => {
+                            setSelectedMessages([])
+                            setMenuVisible(false);
                           }}
-                          onPress={()=> {
-                            setSelectedMessageId(null)
-                            setMenuVisible(false)
-                          }}
+                          underlayColor="rgba(0, 0, 0, 0.05)"
                           style={[
                             {
                               flexDirection: 'row', 
@@ -551,67 +646,12 @@ function ChatroomScreen({route, navigation}) {
                               marginBottom: 15,
                               marginTop: index === 0 ? 10 : 0,
                             },
-                            msg?._id === selectedMessageId && {backgroundColor: colors.mistyLight, borderWidth: 1, borderColor: colors.amberGlow, borderRadius: 5, padding: 2}
+                           msg?._id && selectedMessageIds.includes(msg?._id) && {backgroundColor: theme?.mistyLight, borderWidth: 1, borderColor: theme?.amberGlow, borderRadius: 5, padding: 2}
                           ]}>
-                            {/* popup on longPress */}
-                            {msg?._id === selectedMessageId && (
-                              <View
-                                style={{
-                                  backgroundColor: colors.horizon,
-                                  padding: 8,
-                                  borderRadius: 5,
-                                  position: "absolute",
-                                  right: isCurrentUser ? "65%" : "20%",
-                                  gap: 5,
-                                  top: "2%",
-                                  elevation: 5,
-                                  zIndex: 5,
-                                }}
-                                accessible={true}
-                                accessibilityLabel="Message options"
-                              >
-                                <TouchableOpacity
-                                    onPress={() => handleDeleteMessage(msg?._id)}
-                                    style={{
-                                        backgroundColor: colors.mistyLight,
-                                        padding: 3,
-                                        borderRadius: 5,
-                                    }}
-                                    accessible={true}
-                                    accessibilityLabel="Delete message"
-                                >
-                                    <AppText style={{ color: colors.white, fontSize: 12 }}>Delete <MaterialCommunityIcons 
-                                    name='trash-can-outline'
-                                    size={10}
-                                    color={colors.white}
-                                    /></AppText>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                      setSelectedMsgToReport(msg);
-                                      setReportMsgModalVisible(true);
-                                    }}
-                                    style={{
-                                      backgroundColor: colors.mistyLight,
-                                      padding: 3,
-                                      borderRadius: 5,
-                                  }}
-                                    accessible={true}
-                                    accessibilityLabel="Report message"
-                                >
-                                    <AppText style={{ color: colors.white, fontSize: 12 }}>Report <MaterialCommunityIcons 
-                                    name='flag'
-                                    size={10}
-                                    color={colors.white}
-                                    /></AppText>
-                                </TouchableOpacity>
-                              </View>
-                          )}
-                          {/* message content */}
-                          <View 
+                          <TouchableOpacity 
                             style={[
                               {
-                                backgroundColor: isCurrentUser ? colors.amberGlow : colors.horizon, 
+                                backgroundColor: isCurrentUser ? theme?.amberGlow : theme?.horizon, 
                                 padding: 10, 
                                 paddingBottom: 5,
                                 borderRadius: 5, 
@@ -619,9 +659,12 @@ function ChatroomScreen({route, navigation}) {
                                 minWidth: 80,
                               },
                               
-                            ]}>
+                            ]}
+                            onLongPress={() => handleSelectMessageLongPress(msg)}
+                            onPress={()=> handleSelectMessage(msg)}
+                          >
                             <AppText style={{
-                              color: isCurrentUser ? colors.midnight : colors.white, 
+                              color: isCurrentUser ? theme?.midnight : theme?.white, 
                               fontSize: 16, 
                               fontWeight: 'bold',
                               paddingBottom: 6,
@@ -634,12 +677,12 @@ function ChatroomScreen({route, navigation}) {
                             }}>
                               <AppText 
                                 style={{
-                                  color: colors.white, fontSize: 8, fontWeight: 'bold'
+                                  color: theme?.white, fontSize: 8, fontWeight: 'bold'
                                 }}
                                 >{isCurrentUser ? "You" : msg?.sender?.username}</AppText>
                               <AppText
                                 style={{
-                                  color: isCurrentUser ? colors.horizon : colors.misty,
+                                  color: isCurrentUser ? theme?.horizon : theme?.misty,
                                   fontSize: 8,
                                   fontWeight: 'bold',
                                   marginHorizontal: 5,
@@ -649,9 +692,9 @@ function ChatroomScreen({route, navigation}) {
                               </AppText>
                             </View>
                             {/* end of time and name */}
-                          </View>
+                          </TouchableOpacity>
                           
-                        </TouchableOpacity>
+                        </TouchableHighlight>
                       )
                     }
                   
@@ -661,28 +704,28 @@ function ChatroomScreen({route, navigation}) {
               </View>
             </ScrollView>
             {/* Chat input */}
-            <View style={styles.chatInputContainer}>
+            <View style={[styles.chatInputContainer, { backgroundColor: theme?.horizon,}]}>
               <TextInput
                 placeholder='Type your message here...'
-                placeholderTextColor={colors.white}
-                style={styles.chatInput}
+                placeholderTextColor={theme?.white}
+                style={[styles.chatInput, {backgroundColor: theme?.midnight, color: theme?.white,}]}
                 multiline
                 autoCapitalize='none'
                 value={message}
                 onChangeText={text => setMessage(text)}
               />
               <TouchableOpacity 
-                style={styles.sendBtn} 
+                style={[styles.sendBtn, {backgroundColor: theme?.midnight,}]} 
                 onPress={() => handleSendMsg(groupId, message, user?._id)}
                 accessible={true}
                 accessibilityLabel="Send message"
                 >
-                <MaterialCommunityIcons name='send' size={35} color={colors.amberGlow} />
+                <MaterialCommunityIcons name='send' size={35} color={theme?.amberGlow} />
               </TouchableOpacity>
             </View>
             {/* End of chat input */}
         </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
         
         {/* modals */}
                 {/* view members modal */}
@@ -691,26 +734,26 @@ function ChatroomScreen({route, navigation}) {
           onPress={() => setViewMembersModalVisible(false)}
           onRequestClose={() => setViewMembersModalVisible(false)}
         >
-          <View style={styles.memberBox}>
-            <AppText style={{fontSize: 20, fontWeight: 'bold', color: colors.amberGlow, marginBottom: 10}}>Members in {groupName}</AppText>
+          <View style={[styles.memberBox, {backgroundColor: theme?.midnight,}]}>
+            <AppText style={{fontSize: 20, fontWeight: 'bold', color: theme?.amberGlow, marginBottom: 10}}>Members in {groupName}</AppText>
             {!isCreatedGroup && <AppText style={{fontSize: 15, textAlign: "center", marginBottom: 10}}>Group creator is hidden</AppText>}
               <FlatList
                 data={groupMembers}
                 keyExtractor={member => member?.id?.toString()}
                 renderItem={({ item }) => (
-                  <View style={styles.memberList}>
-                    <AppText style={{color: colors.white, fontSize: 16}}>{item.username}</AppText>
+                  <View style={[styles.memberList, {backgroundColor: theme?.horizon,}]}>
+                    <AppText style={{color: theme?.white, fontSize: 16}}>{item.username}</AppText>
                     {item.id === user._id && <View>
-                      <MaterialCommunityIcons name="account" size={24} color={colors.amberGlow} />
-                      <AppText style={{color: colors.white, fontSize: 12}}>You</AppText>
+                      <MaterialCommunityIcons name="account" size={24} color={theme?.amberGlow} />
+                      <AppText style={{color: theme?.white, fontSize: 12}}>You</AppText>
                     </View>}
                     {isCreatedGroup && item.id !== user._id && <TouchableHighlight
                       style={{
-                        backgroundColor: colors.punch,
+                        backgroundColor: theme?.mistyLight,
                         padding: 5,
                         borderRadius: 5,
                       }}
-                      underlayColor={colors.midnight}
+                      underlayColor={theme?.midnight}
                       onPress={() => {
                         Alert.alert(
                           'Remove Member',
@@ -729,7 +772,7 @@ function ChatroomScreen({route, navigation}) {
                         
                       }}
                     >
-                      <MaterialCommunityIcons name="account-remove" size={24} color={colors.amberGlow} />
+                      <MaterialCommunityIcons name="account-remove" size={24} color={theme?.amberGlow} />
                     </TouchableHighlight>}
                   </View>
                 )}
@@ -743,14 +786,14 @@ function ChatroomScreen({route, navigation}) {
           onPress={() => setAddMembersVisible(false)}
           onRequestClose={() => setAddMembersVisible(false)}
         >
-          <View style={styles.memberBox}>
-            <AppText style={{fontSize: 18, fontWeight: 'bold', color: colors.white, marginBottom: 10, textAlign: "center"}}>Add members to {groupName}</AppText>
+          <View style={[styles.memberBox, {backgroundColor: theme?.midnight,}]}>
+            <AppText style={{fontSize: 18, fontWeight: 'bold', color: theme?.white, marginBottom: 10, textAlign: "center"}}>Add members to {groupName}</AppText>
             <View style={{
               marginVertical: 10,
             }}>
               <SearchInput
                 placeholder="Search username"
-                placeholderTextColor={colors.amberGlow}
+                placeholderTextColor={theme?.amberGlow}
                 value={searchQuery}
                 onChangeText={(text) => setSearchQuery(text)}
               />
@@ -762,7 +805,7 @@ function ChatroomScreen({route, navigation}) {
               renderItem={({ item }) => (
                 <TouchableOpacity 
                   style={{
-                    backgroundColor: addedMembers.includes(item.id) ? colors.midnightLight : colors.amberGlow,
+                    backgroundColor: addedMembers.includes(item.id) ? theme?.blackLight : theme?.amberGlow,
                     padding: 10,
                     borderRadius: 5,
                     marginBottom: 10,
@@ -774,7 +817,7 @@ function ChatroomScreen({route, navigation}) {
                 >
                   <AppText 
                     style={{
-                      color: colors.white, 
+                      color: theme?.white, 
                       fontSize: 16, 
                       fontWeight: "bold"
                     }}>{item?.username}</AppText>
@@ -790,13 +833,13 @@ function ChatroomScreen({route, navigation}) {
           onPress={() => setReportMsgModalVisible(false)}
           onRequestClose={() => setReportMsgModalVisible(false)}
         >
-          <View style={styles.memberBox}>
+          <View style={[styles.memberBox, {backgroundColor: theme?.midnight,}]}>
             <View style={{
-              backgroundColor: colors.horizon,
+              backgroundColor: theme?.horizon,
             }}>
-              <AppText style={{fontSize: 18, fontWeight: 'bold', color: colors.white, marginBottom: 10, textAlign: "center"}}>Report Message</AppText>
-              <AppText style={{fontSize: 16, color: colors.white, marginBottom: 10, textAlign: "center"}}>Are you sure you want to report this message?</AppText>
-              <AppText style={{fontSize: 16, color: colors.white, marginBottom: 10, textAlign: "center"}}>We will review the message to see if it violates our policy.</AppText>
+              <AppText style={{fontSize: 18, fontWeight: 'bold', color: theme?.white, marginBottom: 10, textAlign: "center"}}>Report Message</AppText>
+              <AppText style={{fontSize: 16, color: theme?.white, marginBottom: 10, textAlign: "center"}}>Are you sure you want to report {`${selectedMessages.length > 1 ? "these messages": "This message"}`}?</AppText>
+              <AppText style={{fontSize: 16, color: theme?.white, marginBottom: 10, textAlign: "center"}}>Allow up to 24 hours for us to review and get back to you.</AppText>
             </View>
             <View style={{
               flexDirection: 'row',
@@ -806,31 +849,26 @@ function ChatroomScreen({route, navigation}) {
             }}>
               <TouchableOpacity 
                 style={{
-                  backgroundColor: colors.punch,
+                  backgroundColor: theme?.punch,
                   padding: 10,
                   borderRadius: 5,
                 }}
                 onPress={() => {
                   setReportMsgModalVisible(false);
-                  setSelectedMsgToReport(null);
-                  setSelectedMessageId(null);
+                  setSelectedMessages([]);
                 }}
               >
-                <AppText style={{color: colors.amberGlow, fontSize: 16}}>Cancel</AppText>
+                <AppText style={{color: theme?.amberGlow, fontSize: 16}}>Cancel</AppText>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={{
-                  backgroundColor: colors.amberGlow,
+                  backgroundColor: theme?.amberGlow,
                   padding: 10,
                   borderRadius: 5,
                 }}
-                onPress={() => {
-                  setReportMsgModalVisible(false);
-                  setSelectedMsgToReport(null);
-                  setSelectedMessageId(null);
-                }}
+                onPress={() => handleReportMessages(selectedMessages)}
               >
-                <AppText style={{color: colors.midnight, fontSize: 16}}>Report</AppText>
+                <AppText style={{color: theme?.midnight, fontSize: 16}}>Report</AppText>
               </TouchableOpacity>
             </View>
           </View>
@@ -847,7 +885,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: colors.punch,
     padding: 10,
     position: 'absolute',
     bottom: 0,
@@ -860,13 +897,11 @@ const styles = StyleSheet.create({
     width: "70%",
   },
   backBtn: {
-    backgroundColor: colors.midnight,
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
   },
   header: {
-    backgroundColor: colors.horizon,
     padding: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -883,7 +918,6 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     position: 'absolute',
-    backgroundColor: colors.midnight,
     borderRadius: 5,
     paddingVertical: 5,
     paddingHorizontal: 10,
@@ -893,11 +927,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   menuItemText: {
-    color: colors.amberGlow,
     fontSize: 16,
   },
   moreBtn: {
-    backgroundColor: colors.midnight,
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
@@ -911,20 +943,15 @@ const styles = StyleSheet.create({
   memberBox: {
     padding: 10,
     height: "100%",
-    backgroundColor: colors.midnight,
     borderRadius: 10,
   },
   memberList: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: colors.horizon,
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
-  },
-  screen: {
-    backgroundColor: colors.midnight,
   },
   scrollViewContent: {
     minHeight: '100%',
@@ -944,21 +971,17 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     width: '100%',
     height: 80,
-    backgroundColor: colors.horizon,
     borderRadius: 5,
     elevation: 5,
   },
   chatInput: {
     width: "80%",
     height: "100%",
-    backgroundColor: colors.midnight,
-    color: colors.white,
     fontSize: 16,
     borderRadius: 5,
     paddingHorizontal: 10,
   },
   sendBtn: {
-    backgroundColor: colors.midnight,
     padding: 10,
     borderRadius: 5,
     width: "20%",

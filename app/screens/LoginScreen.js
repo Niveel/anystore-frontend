@@ -6,11 +6,11 @@ import { useNavigation } from '@react-navigation/native'
 import { ActivityIndicator } from 'react-native'
 
 import Screen from '../components/Screen'
-import colors from '../config/colors'
 import routes from '../navigation/routes'
 import { AppForm, AppFormField, SubmitButton, ErrorMessage } from '../components/forms'
 import authApi from '../api/auth'
 import useAuth from '../auth/useAuth'
+import { useTheme } from '../utils/ThemeContext'
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().required().email().label("Email"),
@@ -24,6 +24,8 @@ const LoginScreen = () => {
     const [loading, setLoading] = useState(false)
     const navigation = useNavigation()
 
+    const { theme } = useTheme()
+
     const handleSubmit = async ({ email, password }) => {
         setLoading(true)
         const result = await authApi.login(email, password)
@@ -36,13 +38,13 @@ const LoginScreen = () => {
     }
 
     return (
-        <Screen style={styles.screen}>
+        <Screen style={{backgroundColor: theme?.midnight,}}>
             <View style={styles.headerContainer}>
                 <Image source={require("../assets/login.png")} style={styles.image} blurRadius={1.5} />
-                <Text style={styles.heading}>Shopwit</Text>
-                <Text style={styles.subHeading}>Your one stop app for your shopping needs.</Text>
+                <Text style={[styles.heading, {color: theme?.white,}]}>Shopwit</Text>
+                <Text style={[styles.subHeading, {color: theme?.white,}]}>Your one stop app for your shopping needs.</Text>
             </View>
-            <View style={styles.loginContainer}>
+            <View style={[styles.loginContainer, {backgroundColor: theme?.horizon,}]}>
                 <ActivityIndicator animating={loading} size="large" />
                 <AppForm
                     initialValues={{ email: "", password: "" }}
@@ -74,17 +76,17 @@ const LoginScreen = () => {
                 </AppForm>
                 <View style={styles.actionWrapper}>
                     <View style={{ alignItems: "center", gap: 5 }}>
-                        <Text style={{ color: colors.white, alignSelf: "center", marginTop: 10 }}>Don't have an account?
+                        <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Don't have an account?
                         </Text>
-                        <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)} style={styles.signup}>
+                        <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)} style={[styles.signup, {backgroundColor: theme?.midnight,}]}>
                             <Text style={styles.text}> Sign up</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={{ alignItems: "center", gap: 5 }}>
-                        <Text style={{ color: colors.white, alignSelf: "center", marginTop: 10 }}>Forgot password?
+                        <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Forgot password?
                         </Text>
-                        <TouchableOpacity onPress={() => navigation.navigate(routes.FORGOT_PASSWORD)} style={styles.reset}>
-                            <Text style={[styles.text, { color: colors.midnight, fontWeight: "bold" }]}>Reset</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate(routes.FORGOT_PASSWORD)} style={[styles.reset, {backgroundColor: theme?.misty,}]}>
+                            <Text style={[styles.text, { color: theme?.midnight, fontWeight: "bold" }]}>Reset</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -97,12 +99,10 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: 40,
         fontWeight: "900",
-        color: colors.white,
         marginTop: 20,
     },
     subHeading: {
         fontSize: 16,
-        color: colors.white,
         marginTop: 10,
         textAlign: "center",
     },
@@ -121,16 +121,11 @@ const styles = StyleSheet.create({
     loginContainer: {
         width: "100%",
         height: "70%",
-        backgroundColor: colors.horizon,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         padding: 20,
     },
-    screen: {
-        backgroundColor: colors.midnight,
-    },
     text: {
-        color: colors.amberGlow,
         fontSize: 14,
         fontWeight: "bold",
         padding: 0,
@@ -151,14 +146,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 5,
         marginTop: 10,
-        backgroundColor: colors.midnight,
     },
     reset: {
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 5,
         marginTop: 10,
-        backgroundColor: colors.misty,
     }
 
 })

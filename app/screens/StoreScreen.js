@@ -1,12 +1,13 @@
 import React, {useLayoutEffect} from 'react';
 import { View, StyleSheet, TouchableWithoutFeedback, Keyboard} from 'react-native';
 
-import colors from '../config/colors';
 import Screen from '../components/Screen';
 import StoreList from '../components/StoreList';
+import { useTheme } from '../utils/ThemeContext';
 
 function StoreScreen({route, navigation}) {
   const { shopName } = route.params;
+  const { theme } = useTheme();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -15,7 +16,10 @@ function StoreScreen({route, navigation}) {
   }, [navigation, shopName]);
 
   return (
-    <Screen style={styles.screen}>
+    <Screen style={{
+      backgroundColor: theme?.midnight,
+      paddingTop: 0,
+    }}>
       <TouchableWithoutFeedback
         onPress={() => Keyboard.dismiss()}
       >
@@ -29,13 +33,9 @@ function StoreScreen({route, navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-        padding: 10,
+    padding: 10,
   },
   
-    screen: {
-        backgroundColor: colors.midnight,
-        paddingTop: 0,
-    }
 });
 
 export default StoreScreen;

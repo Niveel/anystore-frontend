@@ -3,13 +3,14 @@ import { View, StyleSheet, TouchableHighlight, Linking } from 'react-native';
 
 // custom imports
 import Screen from '../components/Screen';
-import colors from '../config/colors';
 import AppText from '../components/AppText';
 import {useBarcodePolicy} from '../config/BarcodeContext';
+import { useTheme } from '../utils/ThemeContext';
 
 function BarcodePolicyScreen({navigation}) {
 
   const {setBarcodeCameraAllow} = useBarcodePolicy();
+  const {theme} = useTheme();
 
   const disallowPolicy = () => {
     setBarcodeCameraAllow(false);
@@ -26,8 +27,8 @@ function BarcodePolicyScreen({navigation}) {
   }
 
   return (
-    <Screen style={styles.screen}>
-      <View style={styles.container}>
+    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
+      <View style={[styles.container, {backgroundColor: theme?.horizon,}]}>
           <AppText style={styles.text}>You are responsible for content you post on the App. You agree not to post content that is illegal, harmful, or violates any third-party rights. Depending on the severity of the content, Shopwit reserves the rights to flag such content, warn or remove you from the platform for such behavior. You have the right to report users that indulge in such behavior too. You can also choose to exit any group chat that you dislike or find offensive. To learn more visit our privacy policy:</AppText>
           <TouchableHighlight
             onPress={openPrivacyPolicy}
@@ -39,18 +40,18 @@ function BarcodePolicyScreen({navigation}) {
               borderRadius: 5,
             }}
           >
-            <AppText style={{color: colors.amberGlow}}>Privacy Policy</AppText>
+            <AppText style={{color: theme?.amberGlow}}>Privacy Policy</AppText>
           </TouchableHighlight>
         <View style={styles.wrapper}>
           <TouchableHighlight 
-            style={[styles.button, styles.disallow]}
+            style={[styles.button, {backgroundColor: theme?.punch}]}
             underlayColor="rgba(250,0,0,0.7)"
             onPress={disallowPolicy}
           >
             <AppText>Disagree</AppText>
           </TouchableHighlight>
           <TouchableHighlight 
-            style={[styles.button, styles.allow]}
+            style={[styles.button, {backgroundColor: theme?.amberGlow,}]}
             onPress={allowPolicy}
             underlayColor="rgba(0,250,0,0.6)"
           >
@@ -63,9 +64,6 @@ function BarcodePolicyScreen({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  allow: {
-    backgroundColor: colors.amberGlow,
-  },
   button: {
     width: '48%',
     paddingVertical: 5,
@@ -74,16 +72,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 5,
   },
-  disallow: {
-    backgroundColor: colors.punch,
-  },
   container: {
-    backgroundColor: colors.horizon,
     padding: 10,
     borderRadius: 5,
   },
   screen: {
-    backgroundColor: colors.midnight,
     padding: 10,
     justifyContent: "center",
   },

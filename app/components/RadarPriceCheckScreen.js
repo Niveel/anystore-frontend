@@ -2,14 +2,14 @@ import React, {useState} from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 
-import colors from '../config/colors';
 import Screen from './Screen';
 import AppText from './AppText';
 import AppButton from './AppButton';
-import routes from '../navigation/routes';
+import { useTheme } from '../utils/ThemeContext';
 
 function RadarPriceCheckScreen({route, navigation}) {
   const {price} = route.params;
+  const {theme} = useTheme()
 
   const [thePrice, setThePrice] = useState(parseFloat(price))
 
@@ -26,36 +26,37 @@ function RadarPriceCheckScreen({route, navigation}) {
   }
 
   return (
-    <Screen style={styles.screen}>
+    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
       <View style={styles.container}>
         <AppText style={{fontSize: 20}}>Current Price</AppText>
-        <View style={styles.currentPrice}>
+        <View style={[styles.currentPrice, {backgroundColor: theme?.light,}]}>
           <AppText style={{fontSize: 25}}>${price}</AppText>
         </View>
       </View>
-      <View style={styles.setPriceContainer}>
+      <View style={[styles.setPriceContainer, {backgroundColor: theme?.light,}]}>
         <View style={styles.setPriceBox}>
           <AppText style={{fontSize: 20}}>Notify me when price drops to:</AppText>
           <View style={styles.priceDropBox}>
             <TouchableOpacity
-              style={styles.controlBtn}
+              style={[styles.controlBtn, {backgroundColor: theme?.amberGlow,}]}
               onPress={handleDecPrice}
             >
-              <MaterialCommunityIcons name="minus" size={30} color={colors.primary} />
+              <MaterialCommunityIcons name="minus" size={30} color={theme?.text} />
             </TouchableOpacity>
             <View style={styles.currentPrice}>
               <AppText style={{fontSize: 25}}>${thePrice.toFixed(0)}</AppText>
             </View>
             <TouchableOpacity
-              style={styles.controlBtn}
+              style={[styles.controlBtn, {backgroundColor: theme?.amberGlow,}]}
               onPress={handleIncPrice}
             >
-              <MaterialCommunityIcons name="plus" size={30} color={colors.primary} />
+              <MaterialCommunityIcons name="plus" size={30} color={theme?.text} />
             </TouchableOpacity>
           </View>
           <AppButton 
             title="Set Price" 
             onPress={() => {
+              if(!thePrice) return;
               Alert.alert(
                 'Price Set',
                 'You will be notified when the price drops to $' + thePrice.toFixed(0),
@@ -89,13 +90,11 @@ const styles = StyleSheet.create({
     gap: 10
   },
   currentPrice: {
-    backgroundColor: colors.light,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 5
   },
   controlBtn: {
-    backgroundColor: colors.amberGlow,
     padding: 10,
     borderRadius: 5
   },
@@ -108,14 +107,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10
   },
   screen: {
-    backgroundColor: colors.midnight,
     paddingTop: 0,
   },
   setPriceContainer: {
     borderTopEndRadius: 40,
     borderTopStartRadius: 40,
     height: "100%",
-    backgroundColor: colors.light,
     borderRadius: 5,
     marginTop: 10,
     paddingHorizontal: 30,

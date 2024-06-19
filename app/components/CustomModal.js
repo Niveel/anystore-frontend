@@ -2,9 +2,10 @@ import React from 'react';
 import { View, StyleSheet, Modal, TouchableHighlight, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 
-import colors from '../config/colors'
+import { useTheme } from '../utils/ThemeContext';
 
 function CustomModal({visible, onPress, children, ...otherProps}) {
+    const {theme} = useTheme();
 
   return (
     <Modal 
@@ -13,7 +14,7 @@ function CustomModal({visible, onPress, children, ...otherProps}) {
         {...otherProps}
     >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.container}>
+            <View style={[styles.container, {backgroundColor: theme?.horizon}]}>
                 <View style={styles.body}>
                 {children}
                 </View>
@@ -21,7 +22,7 @@ function CustomModal({visible, onPress, children, ...otherProps}) {
                     style={styles.closeBtn}
                     onPress={onPress}
                 >
-                    <MaterialCommunityIcons name="close" size={40} color={colors.amberGlow} />
+                    <MaterialCommunityIcons name="close" size={40} color={theme?.amberGlow} />
                 </TouchableHighlight>
             </View>
         </TouchableWithoutFeedback>
@@ -40,7 +41,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 40,
         flex: 1,
-        backgroundColor: colors.horizon,
     },
     closeBtn: {
         position: 'absolute',

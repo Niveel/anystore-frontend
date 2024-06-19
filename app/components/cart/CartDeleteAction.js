@@ -1,13 +1,14 @@
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'react'
 import {MaterialCommunityIcons} from '@expo/vector-icons'
-import colors from '../../config/colors'
+import { useTheme } from '../../utils/ThemeContext'
 
 const CartDeleteAction = ({onPress}) => {
+  const {theme} = useTheme()
   return (
     <TouchableWithoutFeedback onPress={onPress} >
-        <View style={styles.container}>
-            <MaterialCommunityIcons name='trash-can' size={50} color={colors.punch}/>
+        <View style={[styles.container, {backgroundColor: theme?.amberGlowLight}]}>
+            <MaterialCommunityIcons name='trash-can' size={50} color={theme?.punch}/>
         </View>
     </TouchableWithoutFeedback>
   )
@@ -17,7 +18,6 @@ const styles = StyleSheet.create({
     container: {
         width: 100,
         height: "90%",
-        backgroundColor: colors.amberGlowLight,
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 5,

@@ -3,11 +3,12 @@ import React from 'react'
 
 import FavoriteStoreList from '../components/FavoriteStoreList'
 import Screen from '../components/Screen'
-import colors from '../config/colors'
+import { useTheme } from '../utils/ThemeContext'
 
 const FavoriteStoreScreen = () => { 
+    const {theme} = useTheme();
   return (
-    <Screen style={styles.screen}>
+    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
         <View style={{paddingBottom: 15,paddingTop: 15, height: "100%",}}>
             <FavoriteStoreList />
         </View>
@@ -18,7 +19,6 @@ const FavoriteStoreScreen = () => {
 const styles = StyleSheet.create({
     
     screen: {
-        backgroundColor: colors.midnight,
         paddingTop: 10,
     }
 })

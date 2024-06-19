@@ -5,12 +5,14 @@ import * as Yup from 'yup';
 import colors from '../config/colors';
 import { AppForm, AppFormField, SubmitButton } from '../components/forms';
 import Screen from '../components/Screen';
+import { useTheme } from '../utils/ThemeContext';
 
 const validationSchema = Yup.object().shape({
     username: Yup.string().required().label("Name").min(3),
 })
 
 const NameResetScreen = ({navigation}) => {
+    const { theme } = useTheme();
 
     const handleChangeName = (name) => {
         console.log(name)

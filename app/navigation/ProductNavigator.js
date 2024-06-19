@@ -2,29 +2,30 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import FavAndCartNavigator from './FavAndCartNavigator'
 import ProductDetails from '../screens/ProductDetailsScreen'
-import colors from '../config/colors'
 import ShareScreen from '../screens/ShareScreen'
 import BarcodeScreen from '../screens/BarcodeScreen'
 import BarcodePolicyScreen from '../screens/BarcodePolicyScreen'
 import ShareTitleScreen from '../screens/ShareTitleScreen'
 import ProductInfoScreen from '../screens/ProductInfoScreen'
+import { useTheme } from '../utils/ThemeContext'
 
 const Stack = createStackNavigator()
 
 const ProductNavigator = () => {
+    const {theme} = useTheme()
   return (
     <Stack.Navigator
         screenOptions={{
             presentation: "modal",
             headerStyle: {
-                backgroundColor: colors.horizon,
+                backgroundColor: theme?.horizon,
                 height: 80,   
             },
             headerTitleStyle: {
                 fontSize: 20,
                 fontWeight: 'bold',
             },
-            headerTintColor: colors.amberGlow,
+            headerTintColor: theme?.amberGlow,
         }}
     >
         <Stack.Screen 

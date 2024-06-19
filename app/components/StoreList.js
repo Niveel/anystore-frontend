@@ -7,10 +7,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import ProductCard from '../components/ProductCard';
 import SearchInput from './SearchInput';
-import colors from '../config/colors';
 import { addToCart } from '../hooks/utils';
 import ActivityIndicator from './ActivityIndicator';
 import ListItem from './ListItem';
+import { useTheme } from '../utils/ThemeContext';
 
 function StoreList() {
     const [storeProducts, setStoreProducts] = useState([])
@@ -23,6 +23,7 @@ function StoreList() {
     const navigation = useNavigation()
     const route = useRoute()
     const storeName = route.params.shopName
+    const {theme} = useTheme()
 
     useEffect(() => {
       fetchCartItems();
@@ -98,7 +99,7 @@ function StoreList() {
         <View style={styles.header}>
             <SearchInput 
                 placeholder="Search within this Store"  
-                placeholderTextColor={colors.misty}
+                placeholderTextColor={theme?.misty}
                 searchPress={handleSearch}
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -132,9 +133,9 @@ function StoreList() {
                     <ListItem
                         title="No result found"
                         subtitle="Try searching with another keyword"
-                        style={{color: colors.midnight, fontSize: 18, fontWeight: "bold"}}
+                        style={{color: theme?.midnight, fontSize: 18, fontWeight: "bold"}}
                         IconComponent={
-                            <MaterialCommunityIcons name="alert-circle" size={35} color={colors.punch} />
+                            <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
                         }
                     />
                 </View>}
@@ -147,9 +148,9 @@ function StoreList() {
                     <ListItem
                         title="No product loaded"
                         subtitle="There was an error loading products, please try again later."
-                        style={{color: colors.midnight, fontSize: 18, fontWeight: "bold"}}
+                        style={{color: theme?.midnight, fontSize: 18, fontWeight: "bold"}}
                         IconComponent={
-                            <MaterialCommunityIcons name="alert-circle" size={35} color={colors.punch} />
+                            <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
                         }
                     />
                 </View>}

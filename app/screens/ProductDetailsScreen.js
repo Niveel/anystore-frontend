@@ -3,17 +3,18 @@ import { View, StyleSheet, Image, TouchableOpacity, Alert, Linking } from 'react
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 import AppText from '../components/AppText';
-import colors from '../config/colors';
 import AppButton from '../components/AppButton'; 
 import Icon from '../components/Icon';
 import Screen from '../components/Screen';
 import routes from '../navigation/routes';
+import { useTheme } from '../utils/ThemeContext';
 
 function ProductDetails({route, navigation}) {
     const [cartItemAdded, setCartItemAdded] = useState([]);
     const [favStoreAdded, setFavStoreAdded] = useState([]);
     const [radarItemAdded, setRadarItemAdded] = useState([]);
     const product = route.params;
+    const { theme } = useTheme();
     
     useEffect(() => {
         fetchFavStores()
@@ -147,9 +148,9 @@ function ProductDetails({route, navigation}) {
   };
 
   return (
-    <Screen style={styles.screen}>
+    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
         <View style={styles.container}>
-            <View style={styles.image}>
+            <View style={[styles.image, {backgroundColor: theme?.horizon,}]}>
                 <Image 
                     source={{uri: product?.imageUrl || "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"}} 
                     style={{width: "100%", height: "100%", resizeMode: "contain"}}
@@ -160,11 +161,11 @@ function ProductDetails({route, navigation}) {
                     <AppText style={{
                         textTransform: "capitalize",
                     }} numberOfLines={1}>{websiteNameRegex(product?.title)}</AppText>
-                    <AppText style={styles.price}>${product?.price || "N/A"}</AppText>
+                    <AppText style={[styles.price, {color: theme?.amberGlow,}]}>${product?.price || "N/A"}</AppText>
                 </View>
                 {product?.websiteName && 
                     <View style={styles.storeWrapper}>
-                        <AppText style={styles.store}>{websiteNameRegex(product?.websiteName)}</AppText>
+                        <AppText style={[styles.store, {color: theme?.misty,}]}>{websiteNameRegex(product?.websiteName)}</AppText>
                         <TouchableOpacity 
                             style={{flexDirection: "row", alignItems: "center"}} 
                             onPress={()=> handleAddToFavStores(websiteNameRegex(product?.websiteName))}
@@ -173,14 +174,14 @@ function ProductDetails({route, navigation}) {
                             <Icon
                                 name="heart"
                                 size={25}
-                                color={colors.punch}
+                                color={theme?.punch}
                             />
                         </TouchableOpacity>
                     </View>
                 }
                 <AppButton
                     title="Product Information"
-                    color={colors.amberGlowLight}
+                    color={theme?.amberGlowLight}
                     style={{
                         borderRadius: 5,
                         marginVertical: 10,
@@ -196,12 +197,12 @@ function ProductDetails({route, navigation}) {
                     onPress={()=> navigation.navigate(routes.PRODUCT_INFO, {productDetails: product?.websiteDescription})}
                 />
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity style={styles.addToCartButton} onPress={()=> handleAddToCart(product?.id)}>
+                    <TouchableOpacity style={[styles.addToCartButton, {backgroundColor: theme?.misty,}]} onPress={()=> handleAddToCart(product?.id)}>
                         <AppText style={styles.cartText}>Add to cart</AppText>
                         <Icon
                             name="cart"
                             size={25}
-                            color={colors.amberGlow}
+                            color={theme?.amberGlow}
                         />
                     </TouchableOpacity>
                     <AppButton 
@@ -216,14 +217,14 @@ function ProductDetails({route, navigation}) {
                     
                 </View>
                 <View style={styles.radarShareWrapper}>
-                    <TouchableOpacity style={styles.button} onPress={()=> openBuyNowLink(product?.originalUrl)}>
-                        <AppText style={styles.buttonText}>Buy Now</AppText>
+                    <TouchableOpacity style={[styles.button, {backgroundColor: theme?.horizon,}]} onPress={()=> openBuyNowLink(product?.originalUrl)}>
+                        <AppText style={[styles.buttonText, {color: theme?.amberGlow,}]}>Buy Now</AppText>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.share} onPress={()=> handleShare(product)}>
+                    <TouchableOpacity style={[styles.share, {backgroundColor: theme?.horizon,}]} onPress={()=> handleShare(product)}>
                         <Icon 
                             name="share"
                             size={20}
-                            color={colors.amberGlow}
+                            color={theme?.amberGlow}
                         />
                         <AppText style={styles.shareText}>SHARE</AppText>
                     </TouchableOpacity>
@@ -243,7 +244,6 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 10,
         borderRadius: 5,
-        backgroundColor: colors.misty,
     },
     button: {
         borderRadius: 5,
@@ -251,12 +251,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: colors.horizon,
     },
     buttonText: {
         textTransform: "uppercase",
         fontWeight: "normal",
-        color: colors.amberGlow,
         fontSize: 14,
     },
     buttonWrapper: {
@@ -298,7 +296,6 @@ const styles = StyleSheet.create({
         height: "35%",
         borderRadius: 5,
         overflow: "hidden",
-        backgroundColor: colors.horizon,
     },
     name: {
         fontSize: 20,
@@ -309,7 +306,6 @@ const styles = StyleSheet.create({
     price: {
         fontSize: 16,
         fontWeight: "900",
-        color: colors.amberGlow,
     },
     radar: {
         borderRadius: 5,
@@ -328,12 +324,10 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     screen: {
-        backgroundColor: colors.midnight,
         paddingTop: 0,
     },
     share: {
         borderRadius: 5,
-        backgroundColor: colors.horizon,
         paddingVertical: 2,
         width: "20%",
         justifyContent: "center",
@@ -344,7 +338,6 @@ const styles = StyleSheet.create({
     },
     store: {
         fontSize: 18,
-        color: colors.misty,
         textTransform: "capitalize",
     },
     storeWrapper: {

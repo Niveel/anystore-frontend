@@ -3,14 +3,15 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 
 import Screen from '../components/Screen';
 import AppText from '../components/AppText';
-import colors from '../config/colors';
+import { useTheme } from '../utils/ThemeContext';
 
 function ProductInfoScreen({route}) {
 
   const details = route.params.productDetails;
+  const { theme } = useTheme();
 
   return (
-      <Screen style={styles.screen}>
+      <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
         <ScrollView>
             <View>
                 <AppText>{details}</AppText>
@@ -23,7 +24,6 @@ function ProductInfoScreen({route}) {
 const styles = StyleSheet.create({
   screen: {
     padding: 10,
-    backgroundColor: colors.midnight,
   },
 });
 

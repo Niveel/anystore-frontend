@@ -6,10 +6,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import CartItem from './cart/CartItem'
 import SearchInput from './SearchInput'
 import routes from '../navigation/routes'
-import colors from '../config/colors'
 import ItemEmpty from './ItemEmpty'
 import SearchNotFound from './SearchNotFound'
 import AppText from './AppText'
+import { useTheme } from '../utils/ThemeContext'
 
 function RadarList(props) {
   const [radarData, setRadarData] = useState([])
@@ -17,6 +17,8 @@ function RadarList(props) {
   const [searchQuery, setSearchQuery] = useState("")
   const [resultNotFound, setResultNotFound] = useState(false)
   const [loading, setLoading] = useState(true)
+
+  const {theme} = useTheme()
 
   const fetchRadarItems = async () => {
     try {
@@ -98,11 +100,12 @@ function RadarList(props) {
     >
       <AppText style={[styles.text, {
         fontSize: radarData.length > 0 ? 12 : 20,
+        color: theme?.white,
       }]}>Track your products to get notified of price changes.</AppText>
-      {radarData.length > 0 && <View style={styles.headBox}>
+      {radarData.length > 0 && <View style={[styles.headBox, {backgroundColor: theme?.light,}]}>
         <SearchInput 
           placeholder="Search Product" 
-          placeholderTextColor={colors.amberGlow} 
+          placeholderTextColor={theme?.amberGlow} 
           value={searchQuery}
           onChangeText={handleSearch}
         />
@@ -138,7 +141,6 @@ function RadarList(props) {
 const styles = StyleSheet.create({
   headBox: {
     width: "100%",
-    backgroundColor: colors.light,
     padding: 10,
     gap: 5,
     marginBottom: 15,
@@ -150,7 +152,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    color: colors.white,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10

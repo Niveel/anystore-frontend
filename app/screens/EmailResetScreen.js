@@ -3,12 +3,12 @@ import { View, StyleSheet, Alert, TouchableWithoutFeedback, Keyboard } from 'rea
 import * as Yup from 'yup';
 import { useNavigation } from '@react-navigation/native';
 
-import colors from '../config/colors';
 import { AppForm, AppFormField, SubmitButton, ErrorMessage } from '../components/forms';
 import Screen from '../components/Screen';
 import changeEmail from '../api/changeEmail';
 import storage from '../auth/storage';
 import useAuth from '../auth/useAuth';
+import { useTheme } from '../utils/ThemeContext';
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().required().email().label("Email"), 
@@ -18,6 +18,7 @@ function EmailResetScreen(props) {
     const [error, setError] = useState()
     const navigation = useNavigation()
     const {user} = useAuth()
+    const {theme} = useTheme();
 
     const handleChangeEmail = async ({ email }) => {
         try {
@@ -60,11 +61,11 @@ function EmailResetScreen(props) {
     
 
   return (
-    <Screen style={styles.screen}>
+    <Screen style={{backgroundColor: theme?.midnight,}}>
         <TouchableWithoutFeedback
             onPress={Keyboard.dismiss}
         >
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: theme?.midnight},]}>
             <AppForm
                 initialValues={{email: ""}}
                 onSubmit={handleChangeEmail}
@@ -78,14 +79,14 @@ function EmailResetScreen(props) {
                     icon="email"
                     keyboardType="email-address"
                     placeholder="Enter new email"
-                    placeholderTextColor={colors.misty}
+                    placeholderTextColor={theme?.misty}
                     textContentType="emailAddress"
                 />
                 <SubmitButton 
                     title="Change email" 
                     width="90%"
-                    color={colors.amberGlow}
-                    textColor={colors.midnight}
+                    color={theme?.amberGlow}
+                    textColor={theme?.midnight}
                 />
             </AppForm>
         </View>
@@ -96,13 +97,9 @@ function EmailResetScreen(props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.midnight,
     alignItems: 'center',
     justifyContent: 'center',
   },
-    screen: {
-        backgroundColor: colors.midnight,
-    },
 });
 
 export default EmailResetScreen;
