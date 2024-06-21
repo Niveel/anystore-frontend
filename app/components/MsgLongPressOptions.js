@@ -58,13 +58,13 @@ function MsgLongPressOptions({style, deleteMsg, reportMsg, messages, deselectMsg
     >
         <View style={styles.row}>
             <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={deleteMsg}>
-                <AppText style={[styles.buttonText, {color: theme?.midnight,}]}>Delete</AppText>
+                <AppText style={styles.buttonText} color={theme?.midnight}>Delete</AppText>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={handleCopyMessages}>
-                <AppText style={[styles.buttonText, {color: theme?.midnight,}]}>Copy</AppText>
+                <AppText style={styles.buttonText} color={theme?.midnight}>Copy</AppText>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={reportMsg}>
-                <AppText style={[styles.buttonText, {color: theme?.midnight,}]}>Report</AppText>
+                <AppText style={styles.buttonText} color={theme?.midnight}>Report</AppText>
             </TouchableOpacity>
         </View>
     </View>

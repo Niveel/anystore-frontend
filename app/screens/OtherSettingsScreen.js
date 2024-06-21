@@ -20,15 +20,8 @@ const OtherSettingsScreen = () => {
         backgroundColor: theme.horizon,
       }]}>
         <View style={styles.box}>
-          <AppText style={[
-            styles.headingText,
-            {
-              color: theme.text,
-            }
-          ]}>Change Theme</AppText>
-          <AppText style={{ color: theme.text }}>
-            Change the app's theme base.
-          </AppText>
+          <AppText color={theme.text} style={styles.headingText}>Change Theme</AppText>
+          <AppText color={theme.text}>Change the app's theme base.</AppText>
 
           <View style={styles.colorWrapper}>
             <TouchableOpacity 

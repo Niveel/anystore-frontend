@@ -1,11 +1,10 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import React, { useState, } from 'react'
 import { TouchableOpacity, Keyboard } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 
-import ActivityIndicator from '../components/ActivityIndicator'
 import Screen from '../components/Screen'
 import CodeSearch from '../components/CodeSearch'
 import SearchInput from '../components/SearchInput'
@@ -52,6 +51,13 @@ const ProductsScreen = () => {
             })
             .catch(err => {
                 console.log("error getting products", err)
+                if(err.response) {
+                    console.log("error response", err.response.data)
+                } else if(err.request) {
+                    console.log("error request", err.request)
+                } else {
+                    console.log("error message", err.message)
+                }
                 setLoading(false)
                 setProductLoaded(false)
             })
@@ -101,7 +107,10 @@ const ProductsScreen = () => {
             {/* end of top bar */}
             {/* main body */}
             <View style={[styles.mainBody, {backgroundColor: theme?.horizon,}]}>
-                <ActivityIndicator visible={loading} />
+                 <ActivityIndicator 
+                    animating={loading} 
+                    size="large"
+                />
                 <CardProducts
                     productData={products}
                 />

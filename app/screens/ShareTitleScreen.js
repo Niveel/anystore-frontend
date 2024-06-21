@@ -28,7 +28,7 @@ function ShareTitleScreen({navigation, route}) {
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
-              <AppText style={{color: theme?.amberGlow, marginVertical: 20}}>Enter chat group name. This will create a group where you can chat with users.</AppText>
+              <AppText style={{marginVertical: 20}} color={theme?.amberGlow}>Enter chat group name. This will create a group where you can chat with users.</AppText>
               <SearchInput
                 autoCapitalize="none"
                 autoCorrect={false}

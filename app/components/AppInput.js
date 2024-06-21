@@ -11,7 +11,7 @@ const AppInput = ({color, icon, size = 30,label,onPress,style, ...otherProps }) 
   return (
 
     <View style={styles.inputContainer}>
-        {label && <Text style={styles.text}>{label}</Text>}
+        {label && <Text style={[styles.text, {color: theme?.text}]}>{label}</Text>}
         <View style={[styles.inputBox, {borderColor: theme?.amberGlow}]}>
             <TextInput style={[appStyles.text, styles.input, style, {color: theme?.amberGlow}]} {...otherProps} />
             {icon && <MaterialCommunityIcons name={icon} size={size} color={color} onPress={onPress} />}

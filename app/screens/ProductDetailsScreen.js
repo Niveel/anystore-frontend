@@ -161,11 +161,11 @@ function ProductDetails({route, navigation}) {
                     <AppText style={{
                         textTransform: "capitalize",
                     }} numberOfLines={1}>{websiteNameRegex(product?.title)}</AppText>
-                    <AppText style={[styles.price, {color: theme?.amberGlow,}]}>${product?.price || "N/A"}</AppText>
+                    <AppText style={styles.price} color={theme?.amberGlow}>${product?.price || "N/A"}</AppText>
                 </View>
                 {product?.websiteName && 
                     <View style={styles.storeWrapper}>
-                        <AppText style={[styles.store, {color: theme?.misty,}]}>{websiteNameRegex(product?.websiteName)}</AppText>
+                        <AppText style={styles.store} color={theme?.misty}>{websiteNameRegex(product?.websiteName)}</AppText>
                         <TouchableOpacity 
                             style={{flexDirection: "row", alignItems: "center"}} 
                             onPress={()=> handleAddToFavStores(websiteNameRegex(product?.websiteName))}
@@ -218,7 +218,7 @@ function ProductDetails({route, navigation}) {
                 </View>
                 <View style={styles.radarShareWrapper}>
                     <TouchableOpacity style={[styles.button, {backgroundColor: theme?.horizon,}]} onPress={()=> openBuyNowLink(product?.originalUrl)}>
-                        <AppText style={[styles.buttonText, {color: theme?.amberGlow,}]}>Buy Now</AppText>
+                        <AppText style={styles.buttonText} color={theme?.amberGlow}>Buy Now</AppText>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.share, {backgroundColor: theme?.horizon,}]} onPress={()=> handleShare(product)}>
                         <Icon 

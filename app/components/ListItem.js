@@ -12,7 +12,11 @@ const ListItem = ({IconComponent, title, subtitle, onPress, Chevron, style}) => 
         <View style={[styles.listWrapper, {backgroundColor: theme?.light,}]}>
             {IconComponent}
             <View style={styles.container}>
-                <AppText style={{color: theme?.amberGlow, fontWeight: "bold"}} numberOfLines={1}>{title}</AppText>
+                <AppText 
+                    style={{fontWeight: "bold"}} 
+                    numberOfLines={1}
+                    color={theme?.amberGlow}
+                >{title}</AppText>
                 <Text style={[{color: theme?.misty, fontWeight: "bold"}, style]}>{subtitle}</Text>
             </View>
             {Chevron && <Icon name="chevron-right" size={35} color={theme?.amberGlowLight} />}

@@ -10,7 +10,7 @@ const ErrorMessage = ({error, visible}) => {
     const {theme} = useTheme()
   return (
     <View style={[styles.errorBox, {backgroundColor: theme?.amberGlow,}]}>
-      <AppText style={[styles.error, {color: theme?.punch}]}>{error}</AppText>
+      <AppText style={styles.error} color={theme?.punch}>{error}</AppText>
     </View>
   )
 }

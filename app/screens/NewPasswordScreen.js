@@ -3,7 +3,6 @@ import { View, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-nati
 import * as Yup from 'yup';
 
 import Screen from '../components/Screen';
-import colors from '../config/colors';
 import { AppForm, AppFormField, SubmitButton, ErrorMessage } from '../components/forms';
 import passwordReset from '../api/passwordReset';
 import { useTheme } from '../utils/ThemeContext';

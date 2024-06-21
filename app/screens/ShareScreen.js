@@ -113,14 +113,14 @@ const ShareScreen = ({navigation, route}) => {
             <View>
               {createdGroups && createdGroups?.length > 0 && (
                 <View>
-                  <AppText style={{ color: theme?.white, marginVertical: 10 }}>Created Groups</AppText>
+                  <AppText style={{ marginVertical: 10 }} color={theme?.white}>Created Groups</AppText>
                   {createdGroups?.map((group) => (
                     <TouchableOpacity 
                       key={group?._id} 
                       style={[styles.item, {backgroundColor: theme?.amberGlow,}]} 
                       onPress={() => handleSendProductToGroup(group?._id)}
                     >
-                      <AppText style={{ color: theme?.white, fontWeight: "bold" }}>{group?.groupName}</AppText>
+                      <AppText style={{ fontWeight: "bold" }} color={theme?.white}>{group?.groupName}</AppText>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -133,20 +133,20 @@ const ShareScreen = ({navigation, route}) => {
                     justifyContent: "center",
                     alignItems: "center",
                   }}>
-                    <AppText style={{ color: theme?.white }}>You have not created or joined any group yet. Please create a group in <AppText style={{color: theme?.amberGlow}}>crit</AppText> and add a member/members before you can share.</AppText>
+                    <AppText color={theme?.white}>You have not created or joined any group yet. Please create a group in <AppText color={theme?.amberGlow}>crit</AppText> and add a member/members before you can share.</AppText>
                   </View>
                 )
               }
               {joinedGroups && joinedGroups?.length > 0 && (
                 <View>
-                  <AppText style={{ color: theme?.white, marginVertical: 10 }}>Joined Groups</AppText>
+                  <AppText style={{ marginVertical: 10 }} color={theme?.white}>Joined Groups</AppText>
                   {joinedGroups?.map((group) => (
                     <TouchableOpacity 
                       key={group?._id} 
                       style={styles?.item}
                       onPress={() => handleSendProductToGroup(group?._id)}
                     >
-                      <AppText style={{ color: theme?.white, fontWeight: "bold" }}>{group?.groupName}</AppText>
+                      <AppText style={{ fontWeight: "bold" }} color={theme?.white}>{group?.groupName}</AppText>
                     </TouchableOpacity>
                   ))}
                 </View>

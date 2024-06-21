@@ -14,6 +14,8 @@ import storage from '../auth/storage';
 import routes from '../navigation/routes';
 import MsgLongPressOptions from '../components/MsgLongPressOptions';
 import { useTheme } from '../utils/ThemeContext';
+import reportMsg from '../api/reportMsg';
+import deleteMsgs from '../api/deleteMsgs';
 
 const receive_sound = '../assets/sounds/receive_sound.wav';
 const send_sound = '../assets/sounds/send_sound.mp3';
@@ -37,7 +39,7 @@ function ChatroomScreen({route, navigation}) {
   
   const scrollViewRef = useRef(null)
   const { user } = useAuth();
-  const socket = io('http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com', {
+  const socket = io('https://ishopwit.com', {
     transports: ['websocket'],
     reconnection: true,
     reconnectionAttempts: Infinity,
@@ -109,11 +111,29 @@ function ChatroomScreen({route, navigation}) {
     };
   }, []);
 
+    // custom functions
     const formatTime = (time) => {
       const date = new Date(time);
       return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
     };
+    const getLastItemOfArray = (arr) => arr[arr.length - 1];
+    const resetSelectedMessages = () => setSelectedMessages([]);
+
+    // toasts
+    const showReportToast = () => {
+      ToastAndroid.show('Messages reported.', ToastAndroid.SHORT);
+    }
+    const showReportFailToast = () => {
+      ToastAndroid.show('Failed to report messages.', ToastAndroid.SHORT);
+    }
+    const showDeleteMsgToast = () => {
+      ToastAndroid.show('Messages deleted.', ToastAndroid.SHORT);
+    }
+    const showDeleteMsgFailToast = () => {
+      ToastAndroid.show('Failed to delete messages.', ToastAndroid.SHORT);
+    }
   
+    // network functions 
     const handleMorePress = (event) => {
       setMenuPosition({ x: event.nativeEvent.pageX, y: event.nativeEvent.pageY });
       setMenuVisible(!menuVisible);
@@ -121,7 +141,7 @@ function ChatroomScreen({route, navigation}) {
 
     const addMemberToGroup = async (memberId) => {
       try {
-        const response = await axios.post(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/groups/add-member`, 
+        const response = await axios.post(`https://ishopwit.com/api/groups/add-member`, 
         { groupId: groupId, userId: memberId });
 
         if (response.data) {
@@ -152,7 +172,7 @@ function ChatroomScreen({route, navigation}) {
     const handleRemoveMember = async (Id) => {
       const token = await storage.getToken();
       try {
-        const response = await axios.post(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/groups/remove-member`, 
+        const response = await axios.post(`https://ishopwit.com/api/groups/remove-member`, 
         { groupId: groupId, memberId: Id }, { headers: { 'x-token': token } });
 
         if (response.data) {
@@ -178,9 +198,8 @@ function ChatroomScreen({route, navigation}) {
     };
 
     const exitGroup = async () => {
-      const token = await storage.getToken();
       try {
-        const response = await axios.post(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/groups/exit-member`, 
+        const response = await axios.post(`https://ishopwit.com/api/groups/exit-member`, 
         { groupId: groupId, memberId: user?._id});
 
         console.log('exit group response:', response?.data);
@@ -229,7 +248,7 @@ function ChatroomScreen({route, navigation}) {
 
     const deleteGroup = async () => {
       try {
-        const response = await axios.post(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/delete-group`, { groupId: groupId })
+        const response = await axios.post(`https://ishopwit.com/api/delete-group`, { groupId: groupId }) 
 
         if (response.data) {
            // Remove the deleted group from the state
@@ -294,30 +313,67 @@ function ChatroomScreen({route, navigation}) {
         }
       }
     }
-    const resetSelectedMessages = () => setSelectedMessages([]);
 
-    const handleDeleteMessage = (msgArr) => {
+    const handleDeleteMessage = async (msgArr) => {
       const selectedMessageIds = msgArr.map(msg => msg?._id)
-      setMessages(prevMessages => prevMessages.filter(msg => !selectedMessageIds.includes(msg._id)));
+      setMessages(prevMessages => prevMessages.filter(msg => !selectedMessageIds.includes(msg._id))); 
+
+      try {
+        const result = await deleteMsgs.deleteMsgs(selectedMessageIds);
+
+        if (result?.ok) {
+          console.log('Deleted messages:', result.data);
+          showDeleteMsgToast();
+        } else {
+          showDeleteMsgFailToast();
+          console.error('Failed to delete messages:', result.data);
+        }
+      } catch (error) {
+        console.error('Error deleting messages:', error);
+        showDeleteMsgFailToast();
+        if(error.response) {
+          console.error('Response data:', error.response.data);
+        } else if (error.request) {
+          console.error('No response received:', error.request);
+        } else {
+          console.error('Request setup error:', error.message);
+        }
+      }
 
       resetSelectedMessages();
     }
 
-    const showReportToast = () => {
-      ToastAndroid.show('Messages reported.', ToastAndroid.SHORT);
-    }
+    const handleReportMessages = async (msgArr) => {
+      const selectedMessages = msgArr.map(msg => msg)
+      const lastSelectedMessage = getLastItemOfArray(selectedMessages);
+      
+      try {
+        const result = await reportMsg.reportMsg(user?.username.trim(), user?.email, lastSelectedMessage?.sender?.username, lastSelectedMessage?.content)
 
-    const handleReportMessages = (msgArr) => {
-      const selectedMessages = msgArr.map(msg => msg?.content)
-      console.log('selected messages to report:', selectedMessages);
+        if (result.ok) {
+          console.log('Reported message:', result.data);
+          showReportToast();
+        } else {
+          showReportFailToast();
+        }
+      } catch (error) {
+        console.error('Error reporting message:', error);
+        showReportFailToast();
+        if(error.response) {
+          console.error('Response data:', error.response.data);
+        } else if (error.request) {
+          console.error('No response received:', error.request);
+        } else {
+          console.error('Request setup error:', error.message);
+        }
+      }
       resetSelectedMessages();
       setReportMsgModalVisible(false);
-      showReportToast();
     }
 
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/group/messages/?groupId=${groupId}`)
+        const response = await axios.get(`https://ishopwit.com/api/group/messages/?groupId=${groupId}`)
         if (response.data) {
           setMessages(response.data);
           // await storeMessagesToStorage(response?.data);
@@ -342,6 +398,31 @@ function ChatroomScreen({route, navigation}) {
           setSelectedMessages(selectedMessages.filter(message => message !== msg));
         }
         if(selectedMessages.length === 0) setLongPressMsgState(false);
+      }
+    }
+
+    // fetch group members
+    const fetchGroupMembers = async () => {
+      try {
+        const response = await axios.get(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/group/members/?groupId=${groupId}`);
+
+        if (response.data) {
+          const updatedMembers = response.data.map(member => {
+            return {...member, id: member._id}
+          });
+          const members = response.data.map(member => member._id);
+
+          if (isCreatedGroup) {
+            setGroupMembers([{...user, id: user._id, username: user.username}, ...updatedMembers]);
+            setAddedMembers(members);
+          } else {
+            setGroupMembers(updatedMembers);
+            setAddedMembers(members);
+          }
+        }
+
+      } catch (error) {
+        console.error('Error fetching group members:', error);
       }
     }
     
@@ -374,30 +455,6 @@ function ChatroomScreen({route, navigation}) {
       fetchAppUsers();
     }, [searchQuery]);
 
-    // fetch group members
-    const fetchGroupMembers = async () => {
-      try {
-        const response = await axios.get(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/group/members/?groupId=${groupId}`);
-
-        if (response.data) {
-          const updatedMembers = response.data.map(member => {
-            return {...member, id: member._id}
-          });
-          const members = response.data.map(member => member._id);
-
-          if (isCreatedGroup) {
-            setGroupMembers([{...user, id: user._id, username: user.username}, ...updatedMembers]);
-            setAddedMembers(members);
-          } else {
-            setGroupMembers(updatedMembers);
-            setAddedMembers(members);
-          }
-        }
-
-      } catch (error) {
-        console.error('Error fetching group members:', error);
-      }
-    }
     useEffect(() => {
       if(viewMembersModalVisible) fetchGroupMembers();
     }, [viewMembersModalVisible]);
@@ -492,14 +549,14 @@ function ChatroomScreen({route, navigation}) {
                   onPress={handleViewMembers}
                   underlayColor="rgba(0, 0, 0, 0.1)"
                 >
-                  <AppText style={[styles.menuItemText, {color: theme?.amberGlow,}]}>View Members</AppText>
+                  <AppText style={styles.menuItemText} color={theme?.amberGlow}>View Members</AppText>
                 </TouchableHighlight>
                 {!isCreatedGroup && <TouchableHighlight 
                   style={styles.menuItem} 
                   onPress={handleExitGroup}
                   underlayColor="rgba(0, 0, 0, 0.1)"
                 >
-                  <AppText style={[styles.menuItemText, {color: theme?.amberGlow,}]}>Exit Group</AppText>
+                  <AppText style={styles.menuItemText} color={theme?.amberGlow}>Exit Group</AppText>
                 </TouchableHighlight>}
 
                 {isCreatedGroup &&  <TouchableHighlight 
@@ -507,7 +564,7 @@ function ChatroomScreen({route, navigation}) {
                   onPress={handleDeleteGroup}
                   underlayColor="rgba(0, 0, 0, 0.1)"
                 >
-                  <AppText style={[styles.menuItemText, {color: theme?.amberGlow,}]}>Delete Group</AppText>
+                  <AppText style={styles.menuItemText} color={theme?.amberGlow}>Delete Group</AppText>
                 </TouchableHighlight>}
                 {/* Add more menu items as needed */}
               </View>
@@ -607,17 +664,14 @@ function ChatroomScreen({route, navigation}) {
                               alignItems: 'center',
                             }}>
                               <AppText 
-                                style={{
-                                  color: theme?.white, fontSize: 8, fontWeight: 'bold'
-                                }}
-                                >{isCurrentUser ? "You" : msg?.sender?.username}</AppText>
+                                style={{fontSize: 8, fontWeight: 'bold'}} color={theme?.white}>{isCurrentUser ? "You" : msg?.sender?.username}</AppText>
                               <AppText
                                 style={{
-                                  color: isCurrentUser ? theme?.horizon : theme?.misty,
                                   fontSize: 8,
                                   fontWeight: 'bold',
                                   marginHorizontal: 5,
                                 }}
+                                color={isCurrentUser ? theme?.horizon : theme?.misty}
                               >
                                 {formatTime(msg?.createdAt)}
                               </AppText>
@@ -664,11 +718,12 @@ function ChatroomScreen({route, navigation}) {
                             onPress={()=> handleSelectMessage(msg)}
                           >
                             <AppText style={{
-                              color: isCurrentUser ? theme?.midnight : theme?.white, 
-                              fontSize: 16, 
-                              fontWeight: 'bold',
-                              paddingBottom: 6,
-                            }}>{msg?.content}</AppText>
+                                fontSize: 16, 
+                                fontWeight: 'bold',
+                                paddingBottom: 6,
+                              }}
+                              color={isCurrentUser ? theme?.midnight : theme?.white}
+                            >{msg?.content}</AppText>
                             {/* time and name */}
                             <View style={{
                               flexDirection: 'row',
@@ -676,17 +731,14 @@ function ChatroomScreen({route, navigation}) {
                               alignItems: 'center',
                             }}>
                               <AppText 
-                                style={{
-                                  color: theme?.white, fontSize: 8, fontWeight: 'bold'
-                                }}
-                                >{isCurrentUser ? "You" : msg?.sender?.username}</AppText>
+                                style={{fontSize: 8, fontWeight: 'bold'}} color={theme?.white}>{isCurrentUser ? "You" : msg?.sender?.username}</AppText>
                               <AppText
                                 style={{
-                                  color: isCurrentUser ? theme?.horizon : theme?.misty,
                                   fontSize: 8,
                                   fontWeight: 'bold',
                                   marginHorizontal: 5,
                                 }}
+                                color={isCurrentUser ? theme?.horizon : theme?.misty}
                               >
                                 {formatTime(msg?.createdAt)}
                               </AppText>
@@ -735,17 +787,17 @@ function ChatroomScreen({route, navigation}) {
           onRequestClose={() => setViewMembersModalVisible(false)}
         >
           <View style={[styles.memberBox, {backgroundColor: theme?.midnight,}]}>
-            <AppText style={{fontSize: 20, fontWeight: 'bold', color: theme?.amberGlow, marginBottom: 10}}>Members in {groupName}</AppText>
+            <AppText style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10}} color={theme?.amberGlow}>Members in {groupName}</AppText>
             {!isCreatedGroup && <AppText style={{fontSize: 15, textAlign: "center", marginBottom: 10}}>Group creator is hidden</AppText>}
               <FlatList
                 data={groupMembers}
                 keyExtractor={member => member?.id?.toString()}
                 renderItem={({ item }) => (
                   <View style={[styles.memberList, {backgroundColor: theme?.horizon,}]}>
-                    <AppText style={{color: theme?.white, fontSize: 16}}>{item.username}</AppText>
+                    <AppText style={{fontSize: 16}} color={theme?.white}>{item.username}</AppText>
                     {item.id === user._id && <View>
                       <MaterialCommunityIcons name="account" size={24} color={theme?.amberGlow} />
-                      <AppText style={{color: theme?.white, fontSize: 12}}>You</AppText>
+                      <AppText style={{fontSize: 12}} color={theme?.white}>You</AppText>
                     </View>}
                     {isCreatedGroup && item.id !== user._id && <TouchableHighlight
                       style={{
@@ -787,7 +839,7 @@ function ChatroomScreen({route, navigation}) {
           onRequestClose={() => setAddMembersVisible(false)}
         >
           <View style={[styles.memberBox, {backgroundColor: theme?.midnight,}]}>
-            <AppText style={{fontSize: 18, fontWeight: 'bold', color: theme?.white, marginBottom: 10, textAlign: "center"}}>Add members to {groupName}</AppText>
+            <AppText style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10, textAlign: "center"}} color={theme?.white}>Add members to {groupName}</AppText>
             <View style={{
               marginVertical: 10,
             }}>
@@ -816,11 +868,12 @@ function ChatroomScreen({route, navigation}) {
                   }}
                 >
                   <AppText 
-                    style={{
-                      color: theme?.white, 
+                    style={{ 
                       fontSize: 16, 
                       fontWeight: "bold"
-                    }}>{item?.username}</AppText>
+                    }}
+                    color={theme?.white}
+                  >{item?.username}</AppText>
                 </TouchableOpacity>
               )}
             />
@@ -837,9 +890,9 @@ function ChatroomScreen({route, navigation}) {
             <View style={{
               backgroundColor: theme?.horizon,
             }}>
-              <AppText style={{fontSize: 18, fontWeight: 'bold', color: theme?.white, marginBottom: 10, textAlign: "center"}}>Report Message</AppText>
-              <AppText style={{fontSize: 16, color: theme?.white, marginBottom: 10, textAlign: "center"}}>Are you sure you want to report {`${selectedMessages.length > 1 ? "these messages": "This message"}`}?</AppText>
-              <AppText style={{fontSize: 16, color: theme?.white, marginBottom: 10, textAlign: "center"}}>Allow up to 24 hours for us to review and get back to you.</AppText>
+              <AppText style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10, textAlign: "center"}} color={theme?.white}>Report Message</AppText>
+              <AppText style={{fontSize: 16, marginBottom: 10, textAlign: "center"}} color={theme?.white}>Are you sure you want to report {`${selectedMessages.length > 1 ? "these messages": "This message"}`}?</AppText>
+              <AppText style={{fontSize: 16, marginBottom: 10, textAlign: "center"}} color={theme?.white}>Allow up to 24 hours for us to review and get back to you.</AppText>
             </View>
             <View style={{
               flexDirection: 'row',
@@ -858,17 +911,17 @@ function ChatroomScreen({route, navigation}) {
                   setSelectedMessages([]);
                 }}
               >
-                <AppText style={{color: theme?.amberGlow, fontSize: 16}}>Cancel</AppText>
+                <AppText style={{fontSize: 16}} color={theme?.amberGlow}>Cancel</AppText>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={{
-                  backgroundColor: theme?.amberGlow,
                   padding: 10,
                   borderRadius: 5,
+                  backgroundColor: theme?.amberGlow,
                 }}
                 onPress={() => handleReportMessages(selectedMessages)}
               >
-                <AppText style={{color: theme?.midnight, fontSize: 16}}>Report</AppText>
+                <AppText style={{ fontSize: 16}} color={theme?.midnight}>Report</AppText>
               </TouchableOpacity>
             </View>
           </View>

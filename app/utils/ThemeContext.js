@@ -77,7 +77,7 @@ const themes = {
         horizon: '#119186', // bg color
         misty: '#27c29b', // bg color
         mistyLight: 'rgba(54, 238, 224,.6)', // bg color
-        amberGlow: '#3fce97', //border color
+        amberGlow: '#2bcc8e', //border color
         amberGlowLight: 'rgba(63, 206, 151,.8)', //border color
         punch: '#F652A0', // accent color
         text: '#2c2a2a',

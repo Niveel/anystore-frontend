@@ -72,7 +72,7 @@ function PasswordResetVerifyScreen({navigation, route}) {
         <View>
           <ErrorMessage error={error} visible={hasError} />
           <View style={{height: "100%"}}>
-            <AppText style={{color: theme?.amberGlow, marginVertical: 20, textAlign: "center"}}>Enter the 4-digit code sent to your email</AppText>
+            <AppText style={{marginVertical: 20, textAlign: "center"}} color={theme?.amberGlow}>Enter the 4-digit code sent to your email</AppText>
             <View style={styles.codeContainer}>
               {codes.map((code, index) => (
                 <TextInput

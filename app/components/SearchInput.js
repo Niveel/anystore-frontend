@@ -16,7 +16,7 @@ const SearchInput = ({iconColor, searchPress, onChangeText, value,inputStyle, ..
         onChangeText={onChangeText}
         selectionColor={theme?.text}
       />
-      {searchPress &&<TouchableHighlight onPress={searchPress}>
+      {searchPress &&<TouchableHighlight onPress={searchPress} underlayColor={theme?.lighter}>
         <MaterialCommunityIcons name='store-search' size={30} color={iconColor} />
       </TouchableHighlight> }
        {/* {searchPress && <TouchableHighlight onPress={searchPress} style={styles.mic}>

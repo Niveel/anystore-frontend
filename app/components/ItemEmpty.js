@@ -12,8 +12,8 @@ function ItemEmpty({icon,subText,text}) {
     <TouchableWithoutFeedback>
         <View style={[StyleSheet.absoluteFillObject,styles.container]}>
             <MaterialCommunityIcons name={icon} size={180} color={theme?.amberGlow} />
-            <AppText style={[styles.text, {color: theme?.misty,}]}>{text}</AppText>
-            <AppText style={[styles.subText, {color: theme?.misty,}]}>{subText}</AppText>
+            <AppText style={styles.text} color={theme?.misty}>{text}</AppText>
+            <AppText style={styles.subText} color={theme?.misty}>{subText}</AppText>
         </View>
     </TouchableWithoutFeedback>
   );
@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-
   },
     subText: {
         fontSize: 16,

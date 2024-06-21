@@ -17,7 +17,6 @@ const FavoriteStoreScreen = () => {
 }
 
 const styles = StyleSheet.create({
-    
     screen: {
         paddingTop: 10,
     }

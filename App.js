@@ -31,9 +31,9 @@ export default function App() {
       <AuthContext.Provider value={{ user, setUser }}>
         <BarcodePolicyProvider>
           <OfflineNotice />
-          <NavigationContainer>
-            {user ? <AppNavigator /> : <AuthNavigation />}
-          </NavigationContainer>
+            <NavigationContainer>
+              {user ? <AppNavigator /> : <AuthNavigation />}
+            </NavigationContainer>
         </BarcodePolicyProvider>
       </AuthContext.Provider>
     </ThemeProvider>
