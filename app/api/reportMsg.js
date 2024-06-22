@@ -2,11 +2,11 @@ import client from "./client";
 
 const endpoint = "/report";
 
-const reportMsg = (reporterName, reporterEmail, reporteeName, targetMessage) => client.post(endpoint, { 
-                                                                                                    reporterName, 
-                                                                                                    reporterEmail, 
-                                                                                                    reporteeName, 
-                                                                                                    targetMessage 
-                                                                                                });
+const reportMsg = (reporterEmail, reporterName, reporteeName, targetMessage) => client.post(endpoint, { 
+    reporterEmail, 
+    reporterName, 
+    reporteeName, 
+    targetMessage 
+});
 
 export default {reportMsg};

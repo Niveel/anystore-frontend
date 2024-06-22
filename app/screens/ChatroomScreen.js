@@ -348,12 +348,13 @@ function ChatroomScreen({route, navigation}) {
       const lastSelectedMessage = getLastItemOfArray(selectedMessages);
       
       try {
-        const result = await reportMsg.reportMsg(user?.username.trim(), user?.email, lastSelectedMessage?.sender?.username, lastSelectedMessage?.content)
+        const result = await reportMsg.reportMsg(user?.email, user?.username.trim(), lastSelectedMessage?.sender?.username, lastSelectedMessage?.content)
 
         if (result.ok) {
           console.log('Reported message:', result.data);
           showReportToast();
         } else {
+          console.log('Could not report message:', result);
           showReportFailToast();
         }
       } catch (error) {
