@@ -27,8 +27,6 @@ function FriendlyScreen({navigation}) {
   const userId = user?._id;
   const { theme } = useTheme();
 
-  console.log('barcodeCameraAllow:', barcodeCameraAllow)
-
   // sound
   const PlayOpenSound = async () => {
     const { sound } = await Audio.Sound.createAsync(

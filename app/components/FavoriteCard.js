@@ -23,7 +23,7 @@ const ProductCard = ({shopName, onPress, removeFavorite}) => {
 
   return (
         <View style={styles.storeContainer}>
-            <TouchableHighlight style={[styles.card, {backgroundColor: theme?.white,}]} onPress={onPress} underlayColor="rgba(0,0,0,.3)">
+            <TouchableHighlight style={[styles.card, {backgroundColor: theme?.blackLight,}]} onPress={onPress} underlayColor="rgba(0,0,0,.3)">
                 <View style={styles.cardInner}>
                     <View style={[styles.image, {backgroundColor: theme?.amberGlowLight,}]}>
                         <MaterialCommunityIcons name="store" size={80} color={theme?.midnight} />

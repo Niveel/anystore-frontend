@@ -7,7 +7,7 @@ const themes = {
         light: 'rgba(255,255,255,0.2)',
         lighter: 'rgba(255,255,255,0.1)',
         black: '#000',
-        blackLight: 'rgba(0,0,0,.05)',  
+        blackLight: 'rgba(0,0,0,.2)',  
         midnight: '#1a2f56', // background color
         midnightLight: 'rgba(106, 147, 186,.3)', // text color
         horizon: '#425d85', // bg color

@@ -31,9 +31,9 @@ const ProductsScreen = () => {
         setProducts([])
         setLoading(true)
         setProductLoaded(true)
-        Keyboard.dismiss()
+        Keyboard.dismiss() 
 
-        axios.get(`http://shopwit.eba-g43qxnjk.us-west-2.elasticbeanstalk.com/api/search/products/?query=${searchText}`, {
+        axios.get(`https://ishopwit.com/api/search/products/?query=${searchText}`, {
             timeout: 10000
         })
             .then(res => {
@@ -162,7 +162,6 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 15,
-        paddingVertical: 15,
         paddingBottom: 85,
     },
     navbar: {

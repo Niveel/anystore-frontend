@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Text } from 'react-native'
+import { View, StyleSheet, Image, Text, Keyboard } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import React, { useState, } from 'react'
 import * as Yup from 'yup'
@@ -11,6 +11,7 @@ import { AppForm, AppFormField, SubmitButton, ErrorMessage } from '../components
 import authApi from '../api/auth'
 import useAuth from '../auth/useAuth'
 import { useTheme } from '../utils/ThemeContext'
+import colors from '../config/colors'
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().required().email().label("Email"),
@@ -27,8 +28,9 @@ const LoginScreen = () => {
     const { theme } = useTheme()
 
     const handleSubmit = async ({ email, password }) => {
+        Keyboard.dismiss()
         setLoading(true)
-        const result = await authApi.login(email, password)
+        const result = await authApi.login(email?.trim(), password)
         setLoading(false)
 
         if (!result.ok) return setLoginFailed(true)
@@ -81,7 +83,7 @@ const LoginScreen = () => {
                         <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Don't have an account?
                         </Text>
                         <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)} style={[styles.signup, {backgroundColor: theme?.midnight,}]}>
-                            <Text style={styles.text}> Sign up</Text>
+                            <Text style={[styles.text, {color: theme?.text}]}> Sign up</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={{ alignItems: "center", gap: 5 }}>
