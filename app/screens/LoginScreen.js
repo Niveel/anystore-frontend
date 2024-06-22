@@ -59,11 +59,13 @@ const LoginScreen = () => {
                         keyboardType="email-address" textContentType="emailAddress"
                         icon="email"
                         placeholder="Email"
+                        placeholderTextColor={theme?.amberGlow}
                         label="email"
                     />
                     <AppFormField
                         name="password"
                         placeholder="Password"
+                        placeholderTextColor={theme?.amberGlow}
                         icon={isSecure ? "eye" : "eye-off"}
                         label="password"
                         autoCapitalize="none"
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     subHeading: {
-        fontSize: 16,
+        fontSize: 14,
         marginTop: 10,
         textAlign: "center",
     },

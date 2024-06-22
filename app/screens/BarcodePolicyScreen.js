@@ -38,6 +38,7 @@ function BarcodePolicyScreen({navigation}) {
               alignSelf: 'center',
               padding: 5,
               borderRadius: 5,
+              textDecorationLine: 'underline',
             }}
           >
             <AppText style={{color: theme?.amberGlow}}>Privacy Policy</AppText>
