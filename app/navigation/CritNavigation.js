@@ -12,7 +12,7 @@ const CritNavigation = () => {
     return (
         <Stack.Navigator
             screenOptions={{
-                presentation: "modal",
+                presentation: "modal", 
                 headerStyle: {
                     backgroundColor: theme?.horizon,
                     height: 80,   

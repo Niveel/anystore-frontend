@@ -6,7 +6,7 @@ import { Audio } from 'expo-av';
 import Screen from '../components/Screen';
 import AppButton from '../components/AppButton';
 import SearchInput from '../components/SearchInput';
-import AppText from '../components/AppText';
+import AppText from '../components/AppText'; 
 import CustomModal from '../components/CustomModal';
 import chatGroupApi from '../api/chatGroup';
 import useAuth from '../auth/useAuth';
@@ -45,9 +45,15 @@ function FriendlyScreen({navigation}) {
         : undefined;
     }, [sound]);
 
+  // Fetch groups 
   useEffect(() => {
     fetchGroups();
   }, []);
+
+  // permission modal
+  useEffect(() => {
+    openModal();
+  }, [barcodeCameraAllow]);
 
 
   const fetchGroups = async () => {
@@ -79,9 +85,7 @@ function FriendlyScreen({navigation}) {
     if(!barcodeCameraAllow){
       setModalVisible(false);
       navigation.navigate('BarcodePolicyScreen');
-    } else {
-      setModalVisible(true);
-    }
+    } 
   }
 
   const handleCreateGroup = () => {
@@ -124,7 +128,11 @@ function FriendlyScreen({navigation}) {
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
       <View style={[styles.heading, {backgroundColor: theme?.horizon,}]}>
         <Text style={[styles.headingText, {color: theme?.amberGlow,}]}>GROUPS</Text>
-        <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={openModal}>
+        <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={() => {
+          openModal()
+          setModalVisible(true);
+          PlayOpenSound();
+          }}>
           <AppText style={styles.buttonText} color={theme?.midnight}>Create group</AppText>
         </TouchableOpacity>
       </View>

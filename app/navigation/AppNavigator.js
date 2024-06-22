@@ -11,12 +11,12 @@ import { useTheme } from '../utils/ThemeContext'
 const Tab = createBottomTabNavigator()
 
 const AppNavigator = () => {
-  const {theme} = useTheme()
+  const {theme} = useTheme() 
 
   return (
    <Tab.Navigator
         tabBarOptions={{
-            activeTintColor: theme?.amberGlowLight,
+            activeTintColor: theme?.amberGlow,
             activeBackgroundColor: theme?.midnight,
             inactiveBackgroundColor: theme?.horizon,  
             inactiveTintColor: theme?.misty,
