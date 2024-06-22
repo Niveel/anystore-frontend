@@ -38,10 +38,9 @@ function BarcodePolicyScreen({navigation}) {
               alignSelf: 'center',
               padding: 5,
               borderRadius: 5,
-              textDecorationLine: 'underline',
             }}
           >
-            <AppText style={{color: theme?.amberGlow}}>Privacy Policy</AppText>
+            <AppText style={{color: theme?.amberGlow, textDecorationLine: 'underline',}}>Privacy Policy</AppText>
           </TouchableHighlight>
         <View style={styles.wrapper}>
           <TouchableHighlight 
