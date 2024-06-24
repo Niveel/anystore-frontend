@@ -8,7 +8,7 @@ import { useTheme } from '../utils/ThemeContext';
 
 const copy_sound = '../assets/sounds/copy_sound.mp3';
 
-function MsgLongPressOptions({style, deleteMsg, reportMsg, messages, deselectMsgs}) {
+function MsgLongPressOptions({style, deleteMsg, reportMsg, messages, deselectMsgs, flagMsg, unFlagMsg, isFlagged=false}) {
     const [sound, setSound] = useState();
     const {theme} = useTheme();
 
@@ -40,6 +40,17 @@ function MsgLongPressOptions({style, deleteMsg, reportMsg, messages, deselectMsg
         }
     }
 
+    const handleFlagToggle = () => {
+        if(isFlagged){
+            unFlagMsg()
+            PlayCopySound();
+        } else {
+            flagMsg()
+            PlayCopySound();
+        }
+        deselectMsgs()
+    }
+
     // Unload sound when component unmounts
     useEffect(() => {
         return sound
@@ -66,6 +77,9 @@ function MsgLongPressOptions({style, deleteMsg, reportMsg, messages, deselectMsg
             <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={reportMsg}>
                 <AppText style={styles.buttonText} color={theme?.midnight}>Report</AppText>
             </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={handleFlagToggle}>
+                <AppText style={styles.buttonText} color={theme?.midnight}>{isFlagged? "Unflag" : "flag"}</AppText>
+            </TouchableOpacity>
         </View>
     </View>
   );
@@ -81,12 +95,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
 button: {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
     borderRadius: 5,
     },
     buttonText: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: 'bold',
     },
 });

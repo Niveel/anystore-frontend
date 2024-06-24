@@ -36,6 +36,7 @@ function ChatroomScreen({route, navigation}) {
   const [longPressMsgState, setLongPressMsgState] = useState(false);
   const [receiveSound, setReceiveSound] = useState();
   const [sendSound, setSendSound] = useState();
+  const [flaggedMessages, setFlaggedMessages] = useState([]);
   
   const scrollViewRef = useRef(null)
   const { user } = useAuth();
@@ -98,8 +99,9 @@ function ChatroomScreen({route, navigation}) {
       console.log('Attempting to reconnect...');
       socket.connect();
     }
-  });
+  }); 
 
+  // new message received
   useEffect(() => {
     socket.on("message", (newMessage) => {
       console.log('new message sent:', newMessage); 
@@ -131,6 +133,12 @@ function ChatroomScreen({route, navigation}) {
     }
     const showDeleteMsgFailToast = () => {
       ToastAndroid.show('Failed to delete messages.', ToastAndroid.SHORT);
+    }
+    const showMsgFlaggedToast = () => {
+      ToastAndroid.show('Message flagged.', ToastAndroid.SHORT);
+    }
+    const showMsgUnFlaggedToast = () => {
+      ToastAndroid.show('Message flag removed.', ToastAndroid.SHORT);
     }
   
     // network functions 
@@ -202,8 +210,6 @@ function ChatroomScreen({route, navigation}) {
         const response = await axios.post(`https://ishopwit.com/api/groups/exit-member`, 
         { groupId: groupId, memberId: user?._id});
 
-        console.log('exit group response:', response?.data);
-
         if (response?.data) {
           // Remove the group from the state
           setGroups(prevGroups => ({
@@ -231,8 +237,8 @@ function ChatroomScreen({route, navigation}) {
       setMenuVisible(false);
       
       Alert.alert(
-        'Exit Group',
-        'Are you sure you want to exit this group?',
+        'Leaving Group',
+        'Are you sure you want to exit this group? You will not be able to rejoin unless invited back.',
         [
           {
             text: 'No',
@@ -372,6 +378,29 @@ function ChatroomScreen({route, navigation}) {
       setReportMsgModalVisible(false);
     }
 
+    const handleFlagMsg = (msgArr) => {
+      // Extract the IDs of the messages to be flagged/unflagged
+      const msgIdsToFlag = msgArr.map(msg => msg._id);
+      const newFlaggedMessages = flaggedMessages.filter(id => !msgIdsToFlag.includes(id));
+      const updatedFlaggedMessages = [
+        ...newFlaggedMessages,
+        ...msgIdsToFlag.filter(id => !flaggedMessages.includes(id))
+      ];
+    
+      setFlaggedMessages(updatedFlaggedMessages);
+
+      showMsgFlaggedToast();
+    }
+
+    const handleUnFlagMsg = (msgArr) => {
+      const msgIdsToUnFlag = msgArr.map(msg => msg._id);
+      const updatedFlaggedMessages = flaggedMessages.filter(id => !msgIdsToUnFlag.includes(id));
+
+      setFlaggedMessages(updatedFlaggedMessages);
+
+      showMsgUnFlaggedToast();
+    }
+
     const fetchMessages = async () => {
       try {
         const response = await axios.get(`https://ishopwit.com/api/group/messages/?groupId=${groupId}`)
@@ -426,6 +455,7 @@ function ChatroomScreen({route, navigation}) {
         console.error('Error fetching group members:', error);
       }
     }
+
     
     // fetch messages
     useEffect(() => { 
@@ -539,6 +569,9 @@ function ChatroomScreen({route, navigation}) {
             deleteMsg={() => handleDeleteMessage(selectedMessages)}
             reportMsg={() => setReportMsgModalVisible(true)}
             deselectMsgs={() => setSelectedMessages([])}
+            flagMsg={() => handleFlagMsg(selectedMessages)}
+            unFlagMsg={() => handleUnFlagMsg(selectedMessages)}
+            isFlagged={selectedMessages.every(msg => flaggedMessages.includes(msg?._id))}
           />}
           {/* end of longPressing messages options */}
         </View>
@@ -548,14 +581,14 @@ function ChatroomScreen({route, navigation}) {
                 <TouchableHighlight 
                   style={styles.menuItem} 
                   onPress={handleViewMembers}
-                  underlayColor="rgba(0, 0, 0, 0.1)"
+                  underlayColor={theme?.blackLight}
                 >
                   <AppText style={styles.menuItemText} color={theme?.amberGlow}>View Members</AppText>
                 </TouchableHighlight>
                 {!isCreatedGroup && <TouchableHighlight 
                   style={styles.menuItem} 
                   onPress={handleExitGroup}
-                  underlayColor="rgba(0, 0, 0, 0.1)"
+                  underlayColor={theme?.blackLight}
                 >
                   <AppText style={styles.menuItemText} color={theme?.amberGlow}>Exit Group</AppText>
                 </TouchableHighlight>}
@@ -563,11 +596,18 @@ function ChatroomScreen({route, navigation}) {
                 {isCreatedGroup &&  <TouchableHighlight 
                   style={styles.menuItem} 
                   onPress={handleDeleteGroup}
-                  underlayColor="rgba(0, 0, 0, 0.1)"
+                  underlayColor={theme?.blackLight}
                 >
                   <AppText style={styles.menuItemText} color={theme?.amberGlow}>Delete Group</AppText>
                 </TouchableHighlight>}
-                {/* Add more menu items as needed */}
+                
+                {!isCreatedGroup && <TouchableHighlight 
+                  style={styles.menuItem} 
+                  onPress={handleExitGroup}
+                  underlayColor={theme?.blackLight}
+                >
+                  <AppText style={styles.menuItemText} color={theme?.amberGlow}>Block user</AppText>
+                </TouchableHighlight>}
               </View>
             )}
 
@@ -592,6 +632,7 @@ function ChatroomScreen({route, navigation}) {
                     const isCurrentUser = msg?.sender?._id === user?._id || msg?.sender === user?._id;
                     const justifyContent = isCurrentUser ? 'flex-end' : 'flex-start';
                     const selectedMessageIds = selectedMessages.map(msg => msg._id)
+                    const msgIsInFlaggedMessages = flaggedMessages.includes(msg?._id);
                   
                     // if the message is a shared product it is treated as a product card
                     if (msg?.isShared) {
@@ -618,7 +659,9 @@ function ChatroomScreen({route, navigation}) {
                           <TouchableOpacity
                             style={[
                               {
-                                backgroundColor: isCurrentUser ? theme?.amberGlowLight : theme?.horizon,
+                                backgroundColor: msgIsInFlaggedMessages 
+                                  ? theme?.punch 
+                                  : (isCurrentUser ? theme?.amberGlow : theme?.horizon),
                                 padding: 10,
                                 borderRadius: 5,
                                 maxWidth: '80%',
@@ -706,7 +749,9 @@ function ChatroomScreen({route, navigation}) {
                           <TouchableOpacity 
                             style={[
                               {
-                                backgroundColor: isCurrentUser ? theme?.amberGlow : theme?.horizon, 
+                                backgroundColor: msgIsInFlaggedMessages 
+                                  ? theme?.punch 
+                                  : (isCurrentUser ? theme?.amberGlow : theme?.horizon),
                                 padding: 10, 
                                 paddingBottom: 5,
                                 borderRadius: 5, 
