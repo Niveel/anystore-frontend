@@ -78,7 +78,7 @@ function MsgLongPressOptions({style, deleteMsg, reportMsg, messages, deselectMsg
                 <AppText style={styles.buttonText} color={theme?.midnight}>Report</AppText>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={handleFlagToggle}>
-                <AppText style={styles.buttonText} color={theme?.midnight}>{isFlagged? "Unflag" : "flag"}</AppText>
+                <AppText style={styles.buttonText} color={theme?.midnight}>{isFlagged? "Unflag" : "Flag"}</AppText>
             </TouchableOpacity>
         </View>
     </View>
