@@ -233,6 +233,25 @@ function ChatroomScreen({route, navigation}) {
       }
     }
 
+    const handleBlockUser = () => {
+      setMenuVisible(false);
+      
+      Alert.alert(
+        'Block User',
+        'Are you sure you want to block user?',
+        [
+          {
+            text: 'No',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel'
+          },
+          { text: 'YES', onPress: () => exitGroup() }
+        ],
+        { cancelable: true }
+      );
+
+    }
+
     const handleExitGroup = () => {
       setMenuVisible(false);
       
@@ -431,7 +450,6 @@ function ChatroomScreen({route, navigation}) {
       }
     }
 
-    // fetch group members
     const fetchGroupMembers = async () => {
       try {
         const response = await axios.get(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/group/members/?groupId=${groupId}`);
@@ -456,7 +474,6 @@ function ChatroomScreen({route, navigation}) {
       }
     }
 
-    
     // fetch messages
     useEffect(() => { 
       // getAllMessagesFromStorage()
@@ -603,10 +620,10 @@ function ChatroomScreen({route, navigation}) {
                 
                 {!isCreatedGroup && <TouchableHighlight 
                   style={styles.menuItem} 
-                  onPress={handleExitGroup}
+                  onPress={handleBlockUser}
                   underlayColor={theme?.blackLight}
                 >
-                  <AppText style={styles.menuItemText} color={theme?.amberGlow}>Block user</AppText>
+                  <AppText style={styles.menuItemText} color={theme?.amberGlow}>Block User</AppText>
                 </TouchableHighlight>}
               </View>
             )}
@@ -616,8 +633,6 @@ function ChatroomScreen({route, navigation}) {
             Keyboard.dismiss()
             }}>
             <KeyboardAvoidingView 
-              // behavior='padding' 
-              // keyboardVerticalOffset={-200} 
               style={{ backgroundColor: theme?.midnight, padding: 10, paddingRight: 5, height: "90%", paddingBottom: 70}}
             >
             <ScrollView 
