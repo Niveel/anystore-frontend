@@ -17,9 +17,9 @@ function OfflineNotice(props) {
             <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
                 <View style={[styles.container, {backgroundColor: theme?.punch,}]}>
                     <Icon name='wifi-off' backgroundColor={theme?.punch} color={theme?.amberGlow} size={45} />
-                    <AppText style={[styles.text, {color: theme?.white,}]}>No Internet Connection</AppText>
+                    <AppText style={[styles.text, {color: theme?.white,}]}>No internet connection</AppText>
                     <AppText style={[styles.text, {color: theme?.white,}]}>Please check your connection</AppText>
-                    <AppText style={[styles.infoText, {color: theme?.white,}]}>you need an Internet connection to use Anystore.</AppText>
+                    <AppText style={[styles.infoText, {color: theme?.white,}]}>you need an Internet connection to use Shopwit.</AppText>
                 </View>
             </Screen>
         );
