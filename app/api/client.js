@@ -1,8 +1,8 @@
-import {create} from 'apisauce';
+import { create } from 'apisauce';
 import authStorage from "../auth/storage";
 
 const apiClient = create({
-    baseURL: "https://ishopwit.com/api",
+    baseURL: "https://www.ishopwit.com/api",
     headers: {
         "Content-Type": "application/json",
     },
@@ -10,7 +10,7 @@ const apiClient = create({
 
 apiClient.addAsyncRequestTransform(async (request) => {
     const authToken = await authStorage.getToken();
-    if(!authToken) return;
+    if (!authToken) return;
     request.headers["x-token"] = authToken;
 }
 );

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Shopwit",
     "slug": "Shopwit",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./app/assets/a_icon.jpg",
     "userInterfaceStyle": "light",
@@ -20,7 +20,7 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "com.niveel.shopwit",
-      "buildNumber": "8"
+      "buildNumber": "9"
     },
     "android": {
       "versionCode": 3,
