@@ -25,7 +25,7 @@ const ShareScreen = ({navigation, route}) => {
   const fetchGroups = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`https://ishopwit.com/api/user/groups/?userId=${userId}`)
+      const response = await axios.get(`https://www.ishopwit.com/api/user/groups/?userId=${userId}`)
   
       if(response.data) {
         setGroups(response.data);
@@ -38,7 +38,7 @@ const ShareScreen = ({navigation, route}) => {
   }
 
   const handleSendProductToGroup = (groupId) => {
-    axios.post(`https://ishopwit.com/api/share-to-group`, {
+    axios.post(`https://www.ishopwit.com/api/share-to-group`, {
       groupId: groupId,
       content: JSON.stringify(product),
       senderId: userId,
@@ -143,7 +143,7 @@ const ShareScreen = ({navigation, route}) => {
                   {joinedGroups?.map((group) => (
                     <TouchableOpacity 
                       key={group?._id} 
-                      style={styles?.item}
+                      style={[styles.item, {backgroundColor: theme?.amberGlow,}]} 
                       onPress={() => handleSendProductToGroup(group?._id)}
                     >
                       <AppText style={{ fontWeight: "bold" }} color={theme?.white}>{group?.groupName}</AppText>

@@ -62,7 +62,7 @@ function FriendlyScreen({navigation}) {
 
   const fetchGroups = async () => {
     try {
-      const response = await axios.get(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/user/groups/?userId=${userId}`)
+      const response = await axios.get(`https://www.ishopwit.com/api/user/groups/?userId=${userId}`)
   
       if(response.data) {
         setGroups(response.data);

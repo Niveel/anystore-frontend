@@ -12,6 +12,7 @@ import routes from '../navigation/routes'
 import CardProducts from '../components/CardProducts'
 import ListItem from '../components/ListItem'
 import { useTheme } from '../utils/ThemeContext'
+import searchApi from '../api/search'
 
 const ProductsScreen = () => {
     const [searchText, setSearchText] = useState("")
@@ -33,7 +34,7 @@ const ProductsScreen = () => {
         setProductLoaded(true)
         Keyboard.dismiss() 
 
-        axios.get(`https://ishopwit.com/api/search/products/?query=${searchText}`, {
+        axios.get(`https://www.ishopwit.com/api/search/products/?query=${searchText}`, {
             timeout: 10000
         })
             .then(res => {

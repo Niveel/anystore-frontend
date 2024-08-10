@@ -127,10 +127,10 @@ const styles = StyleSheet.create({
   },
   colorWrapper: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 5,
     marginTop: 10,
     flexWrap: "wrap",
-    padding: 10,
+    padding: 5,
     marginTop: 30,
     backgroundColor: "#f4f1e4",
     borderRadius: 10,

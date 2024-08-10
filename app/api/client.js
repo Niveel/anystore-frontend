@@ -2,7 +2,7 @@ import {create} from 'apisauce';
 import authStorage from "../auth/storage";
 
 const apiClient = create({
-    baseURL: "https://ishopwit.com/api",
+    baseURL: "https://www.ishopwit.com/api",
     headers: {
         "Content-Type": "application/json",
     },

@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import { View, StyleSheet, TouchableOpacity, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, TouchableHighlight, FlatList, Alert, TextInput, Keyboard, Image, BackHandler, ToastAndroid } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, TouchableHighlight, FlatList, Alert, TextInput, Keyboard, Image, BackHandler, ToastAndroid, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import {io} from 'socket.io-client';
@@ -16,6 +16,8 @@ import MsgLongPressOptions from '../components/MsgLongPressOptions';
 import { useTheme } from '../utils/ThemeContext';
 import reportMsg from '../api/reportMsg';
 import deleteMsgs from '../api/deleteMsgs';
+import flagMessage from '../api/flagMessage'
+import DoubleTapTouchableOpacity from '../components/DoubleTapTouchableOpacity';
 
 const receive_sound = '../assets/sounds/receive_sound.wav';
 const send_sound = '../assets/sounds/send_sound.mp3';
@@ -37,10 +39,12 @@ function ChatroomScreen({route, navigation}) {
   const [receiveSound, setReceiveSound] = useState();
   const [sendSound, setSendSound] = useState();
   const [flaggedMessages, setFlaggedMessages] = useState([]);
+  const [toneFlaggedReason, setToneFlaggedReason] = useState('');
+  const [showToneFlaggedReasonModal, setShowToneFlaggedReasonModal] = useState(false);
   
   const scrollViewRef = useRef(null)
   const { user } = useAuth();
-  const socket = io('https://ishopwit.com', {
+  const socket = io('https://www.ishopwit.com', {
     transports: ['websocket'],
     reconnection: true,
     reconnectionAttempts: Infinity,
@@ -149,7 +153,7 @@ function ChatroomScreen({route, navigation}) {
 
     const addMemberToGroup = async (memberId) => {
       try {
-        const response = await axios.post(`https://ishopwit.com/api/groups/add-member`, 
+        const response = await axios.post(`https://www.ishopwit.com/api/groups/add-member`, 
         { groupId: groupId, userId: memberId });
 
         if (response.data) {
@@ -180,7 +184,7 @@ function ChatroomScreen({route, navigation}) {
     const handleRemoveMember = async (Id) => {
       const token = await storage.getToken();
       try {
-        const response = await axios.post(`https://ishopwit.com/api/groups/remove-member`, 
+        const response = await axios.post(`https://www.ishopwit.com/api/groups/remove-member`, 
         { groupId: groupId, memberId: Id }, { headers: { 'x-token': token } });
 
         if (response.data) {
@@ -207,7 +211,7 @@ function ChatroomScreen({route, navigation}) {
 
     const exitGroup = async () => {
       try {
-        const response = await axios.post(`https://ishopwit.com/api/groups/exit-member`, 
+        const response = await axios.post(`https://www.ishopwit.com/api/groups/exit-member`, 
         { groupId: groupId, memberId: user?._id});
 
         if (response?.data) {
@@ -273,7 +277,7 @@ function ChatroomScreen({route, navigation}) {
 
     const deleteGroup = async () => {
       try {
-        const response = await axios.post(`https://ishopwit.com/api/delete-group`, { groupId: groupId }) 
+        const response = await axios.post(`https://www.ishopwit.com/api/delete-group`, { groupId: groupId }) 
 
         if (response.data) {
            // Remove the deleted group from the state
@@ -312,11 +316,17 @@ function ChatroomScreen({route, navigation}) {
 
     }
 
-    const handleSendMsg = (roomId, message, senderId) => {
+    const handleSendMsg = async (roomId, message, senderId) => {
       try {
         if (message.trim().length === 0) return;
         console.log('message:', message, 'senderId:', senderId, 'roomId:', roomId)
-        socket.emit('sendMessage', { roomId, message, senderId });
+        const flaggedResult = await flagMessage.flagMessage(message);
+        socket.emit('sendMessage', { 
+                                    roomId, 
+                                    message, 
+                                    senderId,
+                                    sentiment: flaggedResult?.data?.message
+                                  });
         setMessage('');
         Keyboard.dismiss();
         PlaySendSound();
@@ -327,17 +337,22 @@ function ChatroomScreen({route, navigation}) {
         // }, 200);
 
       } catch (error) {
-        console.error('Error sending message:', error);
+        console.log('Error sending message:', error);
 
         if (error.response) {
-          console.error('Response data:', error.response.data);
+          console.log('Response data:', error.response.data);
         } else if (error.request) {
-          console.error('No response received:', error.request);
+          console.log('No response received:', error.request);
         } else {
-          console.error('Request setup error:', error.message);
+          console.log('Request setup error:', error.message);
         }
       }
     }
+
+    const handleDoubleTapMessage = (msg) => {
+      setShowToneFlaggedReasonModal(true)
+      setToneFlaggedReason(msg)
+    };
 
     const handleDeleteMessage = async (msgArr) => {
       const selectedMessageIds = msgArr.map(msg => msg?._id)
@@ -422,7 +437,7 @@ function ChatroomScreen({route, navigation}) {
 
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`https://ishopwit.com/api/group/messages/?groupId=${groupId}`)
+        const response = await axios.get(`https://www.ishopwit.com/api/group/messages/?groupId=${groupId}`)
         if (response.data) {
           setMessages(response.data);
           // await storeMessagesToStorage(response?.data);
@@ -452,7 +467,7 @@ function ChatroomScreen({route, navigation}) {
 
     const fetchGroupMembers = async () => {
       try {
-        const response = await axios.get(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/group/members/?groupId=${groupId}`);
+        const response = await axios.get(`https://www.ishopwit.com/api/group/members/?groupId=${groupId}`);
 
         if (response.data) {
           const updatedMembers = response.data.map(member => {
@@ -491,7 +506,7 @@ function ChatroomScreen({route, navigation}) {
     useEffect(() => {
       const fetchAppUsers = async () => {
         try {
-          const response = await axios.get(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/search/?query=${searchQuery}`);
+          const response = await axios.get(`https://www.ishopwit.com/api/search/?query=${searchQuery}`);
           // filter out the current user from the search results
           const filteredResults = response.data.filter((result) => result.username.trim() !== user.username.trim());
           setSearchResults(filteredResults);
@@ -529,7 +544,7 @@ function ChatroomScreen({route, navigation}) {
       }
     }, [longPressMsgState]); 
 
-    // console.log("messages are:", messages)
+    console.log("messages are:", messages)
     // console.log("selected messages are:", selectedMessages)
   return (
     <Screen style={{backgroundColor: theme?.midnight,}}>
@@ -761,7 +776,7 @@ function ChatroomScreen({route, navigation}) {
                             },
                            msg?._id && selectedMessageIds.includes(msg?._id) && {backgroundColor: theme?.mistyLight, borderWidth: 1, borderColor: theme?.amberGlow, borderRadius: 5, padding: 2}
                           ]}>
-                          <TouchableOpacity 
+                          <DoubleTapTouchableOpacity 
                             style={[
                               {
                                 backgroundColor: msgIsInFlaggedMessages 
@@ -777,7 +792,9 @@ function ChatroomScreen({route, navigation}) {
                             ]}
                             onLongPress={() => handleSelectMessageLongPress(msg)}
                             onPress={()=> handleSelectMessage(msg)}
+                            onDoublePress={() => handleDoubleTapMessage(msg)}
                           >
+                            <View style={[styles.flagIndicator, {backgroundColor: msg?.sentiment === "negative" ? "red" : "green", borderRadius: 15, borderWidth: 1, borderBlockColor: theme?.black}]}/>
                             <AppText style={{
                                 fontSize: 16, 
                                 fontWeight: 'bold',
@@ -805,7 +822,7 @@ function ChatroomScreen({route, navigation}) {
                               </AppText>
                             </View>
                             {/* end of time and name */}
-                          </TouchableOpacity>
+                          </DoubleTapTouchableOpacity>
                           
                         </TouchableHighlight>
                       )
@@ -988,6 +1005,26 @@ function ChatroomScreen({route, navigation}) {
           </View>
         </CustomModal>
               {/* end of report message modal */}
+              {/* tone flag reason */}
+        <CustomModal
+          visible={showToneFlaggedReasonModal}
+          onPress={() => setShowToneFlaggedReasonModal(false)}
+          onRequestClose={() => setShowToneFlaggedReasonModal(false)}
+        >
+         <View style={[styles.memberBox, {backgroundColor: theme?.horizon,}]}>
+            <View style={{
+              backgroundColor: theme?.midnight,
+              borderRadius: 10,
+              padding: 10,
+            }}>
+              <AppText style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10, textAlign: "center"}} color={theme?.white}>Flagged message</AppText>
+              <AppText style={{fontSize: 16, marginBottom: 10, textAlign: "center"}} color={theme?.white}>{toneFlaggedReason?.content}</AppText>
+              <AppText style={{fontSize: 16, marginBottom: 10, textAlign: "center"}} color={theme?.white}>This message has a <Text style={{color: toneFlaggedReason?.sentiment === "negative" ? theme?.punch : theme?.amberGlow}}>{toneFlaggedReason?.sentiment || "neutral"}</Text> tone.</AppText>
+              <AppText style={{fontSize: 14, marginBottom: 10, textAlign: "center"}} color={theme?.white}>Messages with abusive/offensive language are not allowed.</AppText>
+            </View>
+          </View>
+        </CustomModal>
+              {/* end of flag reason modal */}
 
         {/* end of modals */}
     </Screen>
@@ -1014,6 +1051,13 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
+  },
+  flagIndicator: {
+    position: 'absolute',
+    width: 10,
+    height: 10,
+    top: 5,
+    right: 5,
   },
   header: {
     padding: 5,

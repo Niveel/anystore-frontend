@@ -7,6 +7,7 @@ import BarcodeScreen from '../screens/BarcodeScreen'
 import BarcodePolicyScreen from '../screens/BarcodePolicyScreen'
 import ShareTitleScreen from '../screens/ShareTitleScreen'
 import ProductInfoScreen from '../screens/ProductInfoScreen'
+import CafaAiScreen from '../screens/CafaAiScreen'
 import { useTheme } from '../utils/ThemeContext'
 
 const Stack = createStackNavigator()
@@ -69,6 +70,13 @@ const ProductNavigator = () => {
             component={ProductInfoScreen}
             options={{
                 headerTitle: "Product Information",
+            }}
+        />
+        <Stack.Screen 
+            name='CafaAiScreen' 
+            component={CafaAiScreen}
+            options={{
+                headerTitle: "Cafa AI",
             }}
         />
     </Stack.Navigator>

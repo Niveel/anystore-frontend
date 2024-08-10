@@ -156,7 +156,7 @@ function ProductDetails({route, navigation}) {
                     style={{width: "100%", height: "100%", resizeMode: "contain"}}
                 />
             </View>
-            <View style={styles.detailsContainer}>
+            <View style={styles.detailsContainer}>  
                 <View style={styles.details}>
                     <AppText style={{
                         textTransform: "capitalize",
@@ -165,12 +165,12 @@ function ProductDetails({route, navigation}) {
                 </View>
                 {product?.websiteName && 
                     <View style={styles.storeWrapper}>
-                        <AppText style={styles.store} color={theme?.misty}>{websiteNameRegex(product?.websiteName)}</AppText>
+                        <AppText style={styles.store} color={theme?.misty}>{websiteNameRegex(product?.                 websiteName)}</AppText>
                         <TouchableOpacity 
                             style={{flexDirection: "row", alignItems: "center"}} 
                             onPress={()=> handleAddToFavStores(websiteNameRegex(product?.websiteName))}
                         >
-                            <AppText style={styles.heart}>Add to Favorite Stores</AppText>
+                            <AppText style={styles.heart} color={theme?.white}>Add to Favorite Stores</AppText>
                             <Icon
                                 name="heart"
                                 size={25}
@@ -202,7 +202,7 @@ function ProductDetails({route, navigation}) {
                         <Icon
                             name="cart"
                             size={25}
-                            color={theme?.amberGlow}
+                            color={theme?.midnight}
                         />
                     </TouchableOpacity>
                     <AppButton 
@@ -229,7 +229,16 @@ function ProductDetails({route, navigation}) {
                         <AppText style={styles.shareText}>SHARE</AppText>
                     </TouchableOpacity>
                 </View>
-                
+                <AppButton
+                    title="Ask Cafa"
+                    color={theme?.amberGlowLight}
+                    style={styles.longBtn}
+                    textStyle={{
+                        fontSize: 14,
+                        fontWeight: "normal",
+                    }}
+                    onPress={()=> navigation.navigate(routes.CAFA, {product})}
+                />
             </View>
         </View>
     </Screen>
@@ -280,13 +289,20 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         width: "100%",
-        gap: 10,
+        gap: 5,
     },
     detailsContainer: {
-        padding: 20,
+        padding: 10,
         width: '100%',
         height: "65%",
 
+    },
+    longBtn: {
+        borderRadius: 5,
+        width: 'max-content',
+        paddingHorizontal: 10,
+        height: 40,
+        alignSelf: 'center'
     },
     heart: {
         fontSize: 14,

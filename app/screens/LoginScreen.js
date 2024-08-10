@@ -11,7 +11,6 @@ import { AppForm, AppFormField, SubmitButton, ErrorMessage } from '../components
 import authApi from '../api/auth'
 import useAuth from '../auth/useAuth'
 import { useTheme } from '../utils/ThemeContext'
-import colors from '../config/colors'
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().required().email().label("Email"),
@@ -30,13 +29,18 @@ const LoginScreen = () => {
     const handleSubmit = async ({ email, password }) => {
         Keyboard.dismiss()
         setLoading(true)
-        const result = await authApi.login(email?.trim(), password)
-        setLoading(false)
-
-        if (!result.ok) return setLoginFailed(true)
-        setLoginFailed(false)
-        const token = result.data.token
-        logIn(token)
+        try {
+            const result = await authApi.login(email?.trim(), password)
+            setLoading(false)
+    
+            if (!result.ok) return setLoginFailed(true)
+            setLoginFailed(false)
+            const token = result.data.token
+            logIn(token)
+        } catch (error) {
+            setLoading(false)
+            console.log("error logging in: ", error)
+        }
     }
 
     return (
@@ -76,7 +80,11 @@ const LoginScreen = () => {
                         textContentType="password"
                         onPress={() => setIsSecure(!isSecure)}
                     />
-                    <SubmitButton title="Login" width="90%" />
+                    <SubmitButton 
+                        title="Login" 
+                        width="90%" 
+                        disabled={loading}
+                    />
                 </AppForm>
                 <View style={styles.actionWrapper}>
                     <View style={{ alignItems: "center", gap: 5 }}>

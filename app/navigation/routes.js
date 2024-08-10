@@ -14,4 +14,5 @@ export default Object.freeze({
     RADAR_PRICE_CHECK: 'RadarPriceCheck',
     PRODUCT_INFO: 'ProductInfoScreen', 
     OTHER_SETTINGS: 'OtherSettingsScreen',
+    CAFA: 'CafaAiScreen',
 })

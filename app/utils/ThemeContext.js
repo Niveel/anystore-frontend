@@ -72,7 +72,7 @@ const themes = {
         lighter: 'rgba(255,255,255,0.1)',
         black: '#000',
         blackLight: 'rgba(0,0,0,.1)',
-        midnight: '#4C5270', // background color
+        midnight: '#4b4f68', // background color
         midnightLight: 'rgba(31, 79, 92, .4)', // text color
         horizon: '#119186', // bg color
         misty: '#27c29b', // bg color

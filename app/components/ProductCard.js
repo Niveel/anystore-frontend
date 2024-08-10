@@ -12,7 +12,7 @@ const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, 
     <TouchableHighlight style={[styles.card, {backgroundColor: theme?.horizon, borderColor: theme?.amberGlow,}]} onPress={onPress} underlayColor="rgba(0,0,0,.3)">
         <View style={styles.cardInner}>
           {addToCart &&
-          <TouchableOpacity style={[styles.addToCartButton, {backgroundColor: theme?.horizon,}]} onPress={addToCartOnPress}>
+          <TouchableOpacity style={[styles.addToCartButton, {backgroundColor: theme?.midnight,}]} onPress={addToCartOnPress}>
              <MaterialCommunityIcons 
                           name="cart-plus" 
                           color={theme?.amberGlow} 
