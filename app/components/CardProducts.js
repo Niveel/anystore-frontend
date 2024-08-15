@@ -1,4 +1,4 @@
-import { FlatList } from 'react-native'
+import { FlatList, ActivityIndicator } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
@@ -7,7 +7,7 @@ import ProductCard from './ProductCard'
 import routes from '../navigation/routes'
 import {addToCart} from '../hooks/utils'
 
-const CardProducts = ({productData}) => {
+const CardProducts = ({productData, onEndReached, hasMore}) => {
   const navigation = useNavigation()
   const [cartItemAdded, setCartItemAdded] = useState([]);
 
@@ -18,7 +18,7 @@ const CardProducts = ({productData}) => {
   const handleProductPress = (item) => {
     navigation.navigate(routes.PRODUCT_DETAILS, item);
     navigation.setOptions({
-      headerTitle: item?.websiteName,
+      headerTitle: item?.shop_name,
     });
   };
 
@@ -29,6 +29,13 @@ const CardProducts = ({productData}) => {
         setCartItemAdded(parsedExistingCartItems);
     } catch (error) {
         console.error('Error fetching cart items:', error);
+        if(error.response) {
+            console.log("error response", error.response.data)
+        } else if(error.request) { 
+          console.log("error request", error.request)
+        } else {
+          console.log("error message", error.message)
+        }
     }
   };
 
@@ -36,10 +43,10 @@ const CardProducts = ({productData}) => {
     addToCart(product);
   };
 
-  // regex to remove 'www.' and '.com' from websiteName
-  const websiteNameRegex = (name) => {
-    return name.replace(/www.|.com/g, '');
-  };
+  // regex to remove $ from price string and return a number
+  const priceRegex = (price) => {
+    return price.replace(/\$/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
 
   return (
         <FlatList 
@@ -48,16 +55,19 @@ const CardProducts = ({productData}) => {
             renderItem={({item}) => (
                <ProductCard 
                     name={item?.title}
-                    price={item?.price}
-                    image={item?.imageUrl || "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"}
-                    desc={item?.websiteDescription}
-                    companyName={websiteNameRegex(item?.websiteName)}
+                    price={priceRegex(item?.price)}
+                    image={item?.images || ["https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"]}
+                    desc={item?.description}
+                    companyName={item?.shop_name}
                     addToCart
                     addToCartOnPress={() => handleAddToCart(item)}
                     onPress={() => handleProductPress(item)}
                     buyPress={() => console.log("Buy Now pressed")}
                 />
             )} 
+            onEndReached={onEndReached}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={hasMore ? <ActivityIndicator size="large" color="orange" /> : null}
         />
   )
 }

@@ -1018,7 +1018,7 @@ function ChatroomScreen({route, navigation}) {
               padding: 10,
             }}>
               <AppText style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10, textAlign: "center"}} color={theme?.white}>Flagged message</AppText>
-              <AppText style={{fontSize: 16, marginBottom: 10, textAlign: "center"}} color={theme?.white}>{toneFlaggedReason?.content}</AppText>
+              <AppText style={{fontSize: 16, marginBottom: 10, textAlign: "center"}} color={theme?.white} numberOfLines={3}>{toneFlaggedReason?.content}</AppText> 
               <AppText style={{fontSize: 16, marginBottom: 10, textAlign: "center"}} color={theme?.white}>This message has a <Text style={{color: toneFlaggedReason?.sentiment === "negative" ? theme?.punch : theme?.amberGlow}}>{toneFlaggedReason?.sentiment || "neutral"}</Text> tone.</AppText>
               <AppText style={{fontSize: 14, marginBottom: 10, textAlign: "center"}} color={theme?.white}>Messages with abusive/offensive language are not allowed.</AppText>
             </View>

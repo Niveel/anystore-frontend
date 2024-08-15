@@ -23,14 +23,14 @@ const ProductCard = ({shopName, onPress, removeFavorite}) => {
 
   return (
         <View style={styles.storeContainer}>
-            <TouchableHighlight style={[styles.card, {backgroundColor: theme?.blackLight,}]} onPress={onPress} underlayColor="rgba(0,0,0,.3)">
-                <View style={styles.cardInner}>
-                    <View style={[styles.image, {backgroundColor: theme?.amberGlowLight,}]}>
-                        <MaterialCommunityIcons name="store" size={80} color={theme?.midnight} />
+            <TouchableHighlight style={[styles.card, {backgroundColor: theme?.midnightLight,}]} onPress={onPress} underlayColor="rgba(0,0,0,.3)">
+                <View style={[styles.cardInner]}>
+                    <View style={[styles.image, {backgroundColor: theme?.midnight, borderWidth: 2,}]}>
+                        <MaterialCommunityIcons name="store" size={80} color={theme?.amberGlow} />
                     </View>
                     <View style={styles.details}>
                         <AppText style={styles.name} color={theme?.amberGlow} numberOfLines={1}>{shopName}</AppText>
-                        <AppButton title="Remove" onPress={removeAlert} color={theme?.black} />
+                        <AppButton title="Remove" onPress={removeAlert} color={theme?.amberGlowLight} />
                     </View>
                 </View>
             </TouchableHighlight>
@@ -49,6 +49,8 @@ const styles = StyleSheet.create({
        overflow: "hidden",
        paddingVertical: 15,
        paddingHorizontal: 10,
+       borderWidth: 2,
+        borderColor: "rgba(100,100,100,.6)",
        width: "100%",
        height: "100%",
        backgroundColor: "rgba(10,10,10,.4)",
@@ -56,6 +58,7 @@ const styles = StyleSheet.create({
     cardInner: {
         height: "100%",
         width: "100%",
+       
     },
     favWrapper: {
         height: 260,

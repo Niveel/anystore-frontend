@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 
@@ -11,26 +11,72 @@ function RadarPriceCheckScreen({route, navigation}) {
   const {price} = route.params;
   const {theme} = useTheme()
 
-  const [thePrice, setThePrice] = useState(parseFloat(price))
+  const priceToNumber = (str) => {
+    const cleanedString = str.replace(/\$/g, '').replace(/,/g, '');
+    return parseFloat(cleanedString);
+  };
+
+  const newPrice = priceToNumber(price);
+
+  const [thePrice, setThePrice] = useState(newPrice)
+
+   // Refs to store intervals for both increment and decrement
+  const decIntervalRef = useRef(null);
+  const incIntervalRef = useRef(null);
 
   const handleIncPrice = () => {
-    if(thePrice < price) {
-      setThePrice(thePrice + 1)
+    // Increment price if it's less than the maximum price
+    if(thePrice < newPrice) {
+      setThePrice(prevPrice => prevPrice + 1);
     }
   }
 
   const handleDecPrice = () => {
+    console.log("price", price, "thePrice", thePrice)
     if(thePrice > 1) {
-      setThePrice(thePrice - 1)
+      setThePrice(prevPrice => prevPrice - 1);
     }
   }
+
+  // Start continuous decrement when holding down the minus button
+  const startContinuousDecrement = () => {
+    clearInterval(decIntervalRef.current);
+    decIntervalRef.current = setInterval(() => {
+      setThePrice((prevPrice) => (prevPrice > 1 ? prevPrice - 1 : prevPrice));
+    }, 100);
+  };
+
+  // Start continuous increment when holding down the plus button
+  const startContinuousIncrement = () => {
+    clearInterval(incIntervalRef.current);
+    incIntervalRef.current = setInterval(() => {
+      setThePrice((prevPrice) => {
+        if (prevPrice < newPrice) {
+          return prevPrice + 1;
+        } else {
+          clearInterval(incIntervalRef.current);
+          return prevPrice; // Stop incrementing once price is reached
+        }
+      });
+    }, 100);
+  };
+
+  // Stop continuous decrement
+  const stopContinuousDecrement = () => {
+    clearInterval(decIntervalRef.current);
+  };
+
+  // Stop continuous increment
+  const stopContinuousIncrement = () => {
+    clearInterval(incIntervalRef.current);
+  };
 
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
       <View style={styles.container}>
         <AppText style={{fontSize: 20}}>Current Price</AppText>
         <View style={[styles.currentPrice, {backgroundColor: theme?.light,}]}>
-          <AppText style={{fontSize: 25}}>${price}</AppText>
+          <AppText style={{fontSize: 25}}>{price}</AppText>
         </View>
       </View>
       <View style={[styles.setPriceContainer, {backgroundColor: theme?.light,}]}>
@@ -40,15 +86,19 @@ function RadarPriceCheckScreen({route, navigation}) {
             <TouchableOpacity
               style={[styles.controlBtn, {backgroundColor: theme?.amberGlow,}]}
               onPress={handleDecPrice}
+              onLongPress={startContinuousDecrement}
+              onPressOut={stopContinuousDecrement}
             >
               <MaterialCommunityIcons name="minus" size={30} color={theme?.text} />
             </TouchableOpacity>
             <View style={styles.currentPrice}>
-              <AppText style={{fontSize: 25}}>${thePrice.toFixed(0)}</AppText>
+              <AppText style={{fontSize: 25}}>${thePrice.toFixed(2)}</AppText>
             </View>
             <TouchableOpacity
               style={[styles.controlBtn, {backgroundColor: theme?.amberGlow,}]}
               onPress={handleIncPrice}
+              onLongPress={startContinuousIncrement}
+              onPressOut={stopContinuousIncrement}
             >
               <MaterialCommunityIcons name="plus" size={30} color={theme?.text} />
             </TouchableOpacity>

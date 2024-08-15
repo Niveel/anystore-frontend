@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, FlatList, Keyboard } from 'react-native';
+import { View, StyleSheet, FlatList, Keyboard, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -8,7 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductCard from '../components/ProductCard';
 import SearchInput from './SearchInput';
 import { addToCart } from '../hooks/utils';
-import ActivityIndicator from './ActivityIndicator';
 import ListItem from './ListItem';
 import { useTheme } from '../utils/ThemeContext';
 
@@ -70,7 +69,7 @@ function StoreList() {
         setProductLoaded(true)
         Keyboard.dismiss()
 
-        axios.get(`https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/search/shop/?shopName=${storeName}&&query=${searchText}`, {
+        axios.get(`https://imprezbookkeeping.pythonanywhere.com/search-shop/?query=${searchText}&&shop=${storeName}`, {
             timeout: 10000
         })
         .then(res => {
@@ -106,18 +105,18 @@ function StoreList() {
                 onChangeText={text => setSearchText(text)}
             />
         </View>
-        <ActivityIndicator visible={loading} />
+        <ActivityIndicator animating={loading} size="large" color={theme?.punch} />
          <FlatList 
           style={{ flex: 1}}
           data={storeProducts}
           keyExtractor={(storeProduct) => storeProduct?.id?.toString() || generateRandomId().toString()}
           renderItem={({item}) => (
               <ProductCard 
-                  desc={item?.websiteDescription}
+                  desc={item?.description}
                   name={item?.title}
                   price={item?.price}
-                  image={item?.imageUrl || "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"}
-                  companyName={websiteNameRegex(item?.websiteName)}
+                  image={item?.images || ["https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"]}
+                  companyName={item?.shop_name}
                   addToCart 
                   addToCartOnPress={() => handleAddToCart(item)}
                   onPress={() => handleProductPress(item)}

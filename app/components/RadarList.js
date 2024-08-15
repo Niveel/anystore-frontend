@@ -120,9 +120,9 @@ function RadarList(props) {
           data={radarData}
           keyExtractor={(item, index) => item.id ? item.id.toString() : generateRandomId().toString()}  
           renderItem={({item})=> <CartItem 
-                                      companyName={websiteNameRegex(item?.websiteName)}
-                                      desc={item?.websiteDescription}
-                                      image={item?.imageUrl || "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"}
+                                      companyName={item?.shop_name}
+                                      desc={item?.description}
+                                      image={item?.images || ["https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"]}
                                       name={item?.title}
                                       onPress={()=> handleRadarItemPress(item)}
                                       price={item?.price}

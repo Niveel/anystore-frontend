@@ -22,7 +22,7 @@ const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, 
           }
             <View style={[styles.image, {backgroundColor: theme?.misty,}]}>
               <Image 
-                source={{uri: image}} 
+                source={{uri: image[0]}} 
                 style={{
                   width: "100%", 
                   height: "100%",

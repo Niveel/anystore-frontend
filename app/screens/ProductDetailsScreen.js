@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Alert, Linking } from 'react-native';
+import { View, StyleSheet, Image, FlatList, TouchableOpacity, Alert, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 import AppText from '../components/AppText';
@@ -14,6 +14,7 @@ function ProductDetails({route, navigation}) {
     const [favStoreAdded, setFavStoreAdded] = useState([]);
     const [radarItemAdded, setRadarItemAdded] = useState([]);
     const product = route.params;
+
     const { theme } = useTheme();
     
     useEffect(() => {
@@ -140,35 +141,44 @@ function ProductDetails({route, navigation}) {
     const handleShare = product => {
         navigation.navigate(routes.SHARE_SCREEN, product) 
     }
-    // regex to remove 'www.' and '.com' from websiteName
-  const websiteNameRegex = (name) => {
-    // if no name
-    if (!name) return;
-    return name.replace(/www.|.com/g, '');
-  };
 
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
         <View style={styles.container}>
             <View style={[styles.image, {backgroundColor: theme?.horizon,}]}>
-                <Image 
-                    source={{uri: product?.imageUrl || "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"}} 
-                    style={{width: "100%", height: "100%", resizeMode: "contain"}}
+                {/* flatList to display array of images */}
+                <FlatList
+                    data={product?.images}
+                    keyExtractor={(item, index) => index.toString()}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    style={{width: "100%", height: "100%"}}
+                    renderItem={({item}) => (
+                        <View style={{ width: 365, height: 240, justifyContent: "center", alignItems: "center" }}>
+                            <Image
+                                source={{ uri: item }}
+                                style={{ width: "100%", height: "100%", resizeMode: "contain" }}
+                                defaultSource={{ uri: "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg" }}
+                            />
+                        </View>
+                    )}
                 />
             </View>
             <View style={styles.detailsContainer}>  
                 <View style={styles.details}>
                     <AppText style={{
                         textTransform: "capitalize",
-                    }} numberOfLines={1}>{websiteNameRegex(product?.title)}</AppText>
-                    <AppText style={styles.price} color={theme?.amberGlow}>${product?.price || "N/A"}</AppText>
+                        fontSize: 16,
+                    }}>{product?.title}</AppText>
+                    <AppText style={styles.price} color={theme?.amberGlow}>{product?.price || "$N/A"}</AppText>
                 </View>
-                {product?.websiteName && 
+                {product?.shop_name && 
                     <View style={styles.storeWrapper}>
-                        <AppText style={styles.store} color={theme?.misty}>{websiteNameRegex(product?.                 websiteName)}</AppText>
+                        <AppText style={styles.store} color={theme?.misty}>{product?.shop_name}</AppText>
                         <TouchableOpacity 
                             style={{flexDirection: "row", alignItems: "center"}} 
-                            onPress={()=> handleAddToFavStores(websiteNameRegex(product?.websiteName))}
+                            onPress={()=> handleAddToFavStores(product?.shop_name)}
                         >
                             <AppText style={styles.heart} color={theme?.white}>Add to Favorite Stores</AppText>
                             <Icon
@@ -194,7 +204,7 @@ function ProductDetails({route, navigation}) {
                         fontSize: 14,
                         fontWeight: "normal",
                     }}
-                    onPress={()=> navigation.navigate(routes.PRODUCT_INFO, {productDetails: product?.websiteDescription})}
+                    onPress={()=> navigation.navigate(routes.PRODUCT_INFO, {productDetails: product?.description})}
                 />
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity style={[styles.addToCartButton, {backgroundColor: theme?.misty,}]} onPress={()=> handleAddToCart(product?.id)}>
@@ -217,7 +227,7 @@ function ProductDetails({route, navigation}) {
                     
                 </View>
                 <View style={styles.radarShareWrapper}>
-                    <TouchableOpacity style={[styles.button, {backgroundColor: theme?.horizon,}]} onPress={()=> openBuyNowLink(product?.originalUrl)}>
+                    <TouchableOpacity style={[styles.button, {backgroundColor: theme?.horizon,}]} onPress={()=> openBuyNowLink(product?.link)}>
                         <AppText style={styles.buttonText} color={theme?.amberGlow}>Buy Now</AppText>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.share, {backgroundColor: theme?.horizon,}]} onPress={()=> handleShare(product)}>
@@ -290,6 +300,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
         gap: 5,
+        flexWrap: "wrap",
     },
     detailsContainer: {
         padding: 10,
