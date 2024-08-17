@@ -12,7 +12,6 @@
     import CardProducts from '../components/CardProducts'
     import ListItem from '../components/ListItem'
     import { useTheme } from '../utils/ThemeContext'
-    import searchApi from '../api/search'
 
     const ProductsScreen = () => {
         const [searchText, setSearchText] = useState("")
@@ -46,6 +45,7 @@
                 console.log("error getting products", err);
                 setLoading(false);
                 setHasMore(false);
+                setProductLoaded(false);
             }
         };
 

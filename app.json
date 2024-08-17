@@ -4,7 +4,7 @@
     "slug": "Shopwit",
     "version": "1.0.7",
     "orientation": "portrait",
-    "icon": "./app/assets/a_icon.jpg",
+    "icon": "./app/assets/a_icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./app/assets/custom_splash.png",
@@ -25,13 +25,13 @@
     "android": {
       "versionCode": 3,
       "adaptiveIcon": {
-        "foregroundImage": "./app/assets/a_icon.jpg",
+        "foregroundImage": "./app/assets/a_icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.niveel.shopwit"
     },
     "web": {
-      "favicon": "./app/assets/a_icon.jpg"
+      "favicon": "./app/assets/a_icon.png"
     },
     "extra": {
       "eas": {

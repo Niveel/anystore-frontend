@@ -544,7 +544,7 @@ function ChatroomScreen({route, navigation}) {
       }
     }, [longPressMsgState]); 
 
-    console.log("messages are:", messages)
+    // console.log("messages are:", messages)
     // console.log("selected messages are:", selectedMessages)
   return (
     <Screen style={{backgroundColor: theme?.midnight,}}>
@@ -647,7 +647,7 @@ function ChatroomScreen({route, navigation}) {
             setMenuVisible(false)
             Keyboard.dismiss()
             }}>
-            <KeyboardAvoidingView 
+            <KeyboardAvoidingView
               style={{ backgroundColor: theme?.midnight, padding: 10, paddingRight: 5, height: "90%", paddingBottom: 70}}
             >
             <ScrollView 

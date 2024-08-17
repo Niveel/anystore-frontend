@@ -18,7 +18,6 @@ const CardList = () => {
   const navigation = useNavigation();
   const {theme} = useTheme();
 
-  console.log(cartData)
   useEffect(() => {
     fetchCartItems();
   }, []); 
