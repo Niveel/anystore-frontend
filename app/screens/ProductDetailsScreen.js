@@ -82,6 +82,11 @@ function ProductDetails({route, navigation}) {
     };
 
     const openBuyNowLink = link => {
+        if (!link) {
+            console.log('Link not available');
+            Alert.alert("Link not available")
+            return;
+        }
         Linking.openURL(link);
     }
 
@@ -204,7 +209,7 @@ function ProductDetails({route, navigation}) {
                         fontSize: 14,
                         fontWeight: "normal",
                     }}
-                    onPress={()=> navigation.navigate(routes.PRODUCT_INFO, {productDetails: product?.description})}
+                    onPress={()=> navigation.navigate(routes.PRODUCT_INFO, {productDetails: product?.title})}
                 />
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity style={[styles.addToCartButton, {backgroundColor: theme?.misty,}]} onPress={()=> handleAddToCart(product?.id)}>
