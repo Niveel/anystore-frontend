@@ -37,7 +37,7 @@ const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, 
                     <AppText style={[styles.price, styles.cardButton, {
                       backgroundColor: theme?.misty,
                       color: theme?.white,
-                    }]}>${price || "N/A"}</AppText>
+                    }]}>{price || "$N/A"}</AppText>
                     {companyName && <AppText style={[styles.companyName, styles.cardButton, {
                       backgroundColor: theme?.amberGlow,  
                     }]} numberOfLines={1} color={theme?.midnight}>{companyName}</AppText>}
