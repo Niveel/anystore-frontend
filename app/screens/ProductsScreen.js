@@ -20,7 +20,7 @@
         const [loading, setLoading] = useState(false)
         const [productLoaded, setProductLoaded] = useState(true)
         const [page, setPage] = useState(1)
-        const [hasMore, setHasMore] = useState(true)
+        const [hasMore, setHasMore] = useState(false)
         const navigation = useNavigation()
         const { theme } = useTheme();
 
@@ -30,6 +30,7 @@
         }
 
         const fetchProducts = async (pageNum) => {
+            if (searchText.trim() === "") return;
             setLoading(true);
             setProductLoaded(true);
             Keyboard.dismiss();
@@ -37,7 +38,6 @@
                 const response = await axios.get(`https://imprezbookkeeping.pythonanywhere.com/general-search/?query=${searchText}&page=${pageNum}`, {
                     timeout: 10000,
                 });
-                console.log("response.data is", response.data)
                 const result = response?.data.map(product => ({ ...product, id: generateRandomId() }));
                 setProducts(prevProducts => [...prevProducts, ...result]);
                 setHasMore(result.length > 0);
@@ -53,6 +53,7 @@
         };
 
         const handleSearch = () => {
+            if (searchText.trim() === "") return;
             setProducts([]);
             setPage(1);
             setHasMore(true);

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
 import axios from 'axios';
 import { Audio } from 'expo-av';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Screen from '../components/Screen';
 import AppButton from '../components/AppButton';
@@ -10,7 +11,6 @@ import AppText from '../components/AppText';
 import CustomModal from '../components/CustomModal';
 import chatGroupApi from '../api/chatGroup';
 import useAuth from '../auth/useAuth';
-import { useBarcodePolicy } from '../config/BarcodeContext';
 import { useTheme } from '../utils/ThemeContext';
 
 const open_sound = '../assets/sounds/open_sound.mp3';
@@ -23,7 +23,6 @@ function FriendlyScreen({navigation}) {
   const [sound, setSound] = useState();
 
   const { user } = useAuth();
-  const { barcodeCameraAllow } = useBarcodePolicy();
   const userId = user?._id;
   const { theme } = useTheme();
 
@@ -69,13 +68,13 @@ function FriendlyScreen({navigation}) {
       }
 
     } catch (error) {
-      console.error('Error fetching groups:', error);
+      console.log('Error fetching groups:', error);
       if (error.response) {
-        console.error('Error response:', error.response.data);
+        console.log('Error response:', error.response.data);
       } else if (error.request) {
-        console.error('Error request:', error.request);
+        console.log('Error request:', error.request);
       } else {
-        console.error('Error message:', error.message);
+        console.log('Error message:', error.message);
       }
     }
   }
@@ -85,12 +84,18 @@ function FriendlyScreen({navigation}) {
     return new Date(date).toLocaleDateString(undefined, options);
   }
 
-  const openModal = () => {
-    if(!barcodeCameraAllow){
-      setModalVisible(false);
-      navigation.navigate('BarcodePolicyScreen');
-    } 
-  }
+  const openModal = async () => {
+    try {
+      const barcodePolicyAccepted = await AsyncStorage.getItem('policyAccepted');
+      if (barcodePolicyAccepted !== 'true') {
+        setModalVisible(false);
+        navigation.navigate('BarcodePolicyScreen');
+      }
+    } catch (error) {
+      console.error('Error reading policyAccepted from AsyncStorage:', error);
+    }
+  };
+  
 
   const handleCreateGroup = () => {
     setModalVisible(false);
@@ -126,7 +131,6 @@ function FriendlyScreen({navigation}) {
 
   const sortedGroupsCreated = groups?.createdGroups?.sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt));
   const sortedGroupsJoined = groups?.joinedGroups?.sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt));
-
 
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>

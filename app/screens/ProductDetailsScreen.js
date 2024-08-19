@@ -209,7 +209,7 @@ function ProductDetails({route, navigation}) {
                         fontSize: 14,
                         fontWeight: "normal",
                     }}
-                    onPress={()=> navigation.navigate(routes.PRODUCT_INFO, {productDetails: product?.title})}
+                    onPress={()=> navigation.navigate(routes.PRODUCT_INFO, {productDetails: product?.description})}
                 />
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity style={[styles.addToCartButton, {backgroundColor: theme?.misty,}]} onPress={()=> handleAddToCart(product?.id)}>
