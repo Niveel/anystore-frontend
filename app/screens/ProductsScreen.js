@@ -31,14 +31,15 @@
 
         const fetchProducts = async (pageNum) => {
             setLoading(true);
+            setProductLoaded(true);
             Keyboard.dismiss();
             try {
                 const response = await axios.get(`https://imprezbookkeeping.pythonanywhere.com/general-search/?query=${searchText}&page=${pageNum}`, {
                     timeout: 10000,
                 });
+                console.log("response.data is", response.data)
                 const result = response?.data.map(product => ({ ...product, id: generateRandomId() }));
                 setProducts(prevProducts => [...prevProducts, ...result]);
-                setLoading(false);
                 setHasMore(result.length > 0);
                 if (result.length === 0 && pageNum === 1) setResultNotFound(true);
             } catch (err) {
@@ -46,6 +47,8 @@
                 setLoading(false);
                 setHasMore(false);
                 setProductLoaded(false);
+            } finally {
+                setLoading(false);
             }
         };
 
