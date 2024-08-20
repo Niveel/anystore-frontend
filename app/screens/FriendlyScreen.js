@@ -58,6 +58,7 @@ function FriendlyScreen({navigation}) {
     }
   }, []);
 
+  console.log(userId)
 
   const fetchGroups = async () => {
     try {

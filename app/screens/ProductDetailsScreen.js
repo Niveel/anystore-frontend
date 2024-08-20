@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { View, StyleSheet, Image, FlatList, TouchableOpacity, Alert, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import axios from 'axios';
 
 import AppText from '../components/AppText';
 import AppButton from '../components/AppButton'; 
@@ -13,6 +14,7 @@ function ProductDetails({route, navigation}) {
     const [cartItemAdded, setCartItemAdded] = useState([]);
     const [favStoreAdded, setFavStoreAdded] = useState([]);
     const [radarItemAdded, setRadarItemAdded] = useState([]);
+    const [productData, setProductData] = useState([]);
     const product = route.params;
 
     const { theme } = useTheme();
@@ -21,6 +23,18 @@ function ProductDetails({route, navigation}) {
         fetchFavStores()
         fetchCartItems();
         fetchRadarItems();
+    }, []);
+
+    useEffect(() => {
+        try {
+            const fetchProductDetails = async () => {
+                const response = await axios.get(`https://imprezbookkeeping.pythonanywhere.com/scrape/?url=${product?.link}`);
+                setProductData(response.data);
+            }
+            fetchProductDetails();
+        } catch (error) {
+            console.error('Error fetching product details:', error)
+        }
     }, []);
 
     const fetchRadarItems = async () => {
@@ -153,7 +167,7 @@ function ProductDetails({route, navigation}) {
             <View style={[styles.image, {backgroundColor: theme?.horizon,}]}>
                 {/* flatList to display array of images */}
                 <FlatList
-                    data={product?.images}
+                    data={productData?.images}
                     keyExtractor={(item, index) => index.toString()}
                     horizontal
                     pagingEnabled
@@ -209,7 +223,7 @@ function ProductDetails({route, navigation}) {
                         fontSize: 14,
                         fontWeight: "normal",
                     }}
-                    onPress={()=> navigation.navigate(routes.PRODUCT_INFO, {productDetails: product?.description})}
+                    onPress={()=> navigation.navigate(routes.PRODUCT_INFO, {productDetails: productData?.description})}
                 />
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity style={[styles.addToCartButton, {backgroundColor: theme?.misty,}]} onPress={()=> handleAddToCart(product?.id)}>
@@ -232,7 +246,7 @@ function ProductDetails({route, navigation}) {
                     
                 </View>
                 <View style={styles.radarShareWrapper}>
-                    <TouchableOpacity style={[styles.button, {backgroundColor: theme?.horizon,}]} onPress={()=> openBuyNowLink(product?.link)}>
+                    <TouchableOpacity style={[styles.button, {backgroundColor: theme?.horizon,}]} onPress={()=> openBuyNowLink(productData?.link)}>
                         <AppText style={styles.buttonText} color={theme?.amberGlow}>Buy Now</AppText>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.share, {backgroundColor: theme?.horizon,}]} onPress={()=> handleShare(product)}>
