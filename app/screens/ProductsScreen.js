@@ -12,6 +12,7 @@
     import CardProducts from '../components/CardProducts'
     import ListItem from '../components/ListItem'
     import { useTheme } from '../utils/ThemeContext'
+    import SortingBar from '../components/SortingBar'
 
     const ProductsScreen = () => {
         const [searchText, setSearchText] = useState("")
@@ -76,6 +77,24 @@
             navigation.navigate(routes.CART)
         }
 
+        const priceRegex = (price) => {
+            return parseFloat(price.replace(/[^0-9.-]+/g, ""));
+        }
+
+        const handleSortItem = (option) => {
+            if (option === "highest") {
+                setProducts(prevProducts => [...prevProducts].sort((a, b) => priceRegex(b.price) - priceRegex(a.price)));
+              } else if (option === "lowest") {
+                setProducts(prevProducts => [...prevProducts].sort((a, b) => priceRegex(a.price) - priceRegex(b.price)));
+              } else if (option === "highest_rating") {
+                // setProducts(prevProducts => [...prevProducts].sort((a, b) => b.rating - a.rating));
+                console.log("highest rating selected");
+              } else if (option === "lowest_rating") {
+                // setProducts(prevProducts => [...prevProducts].sort((a, b) => a.rating - b.rating));
+                console.log("lowest rating selected");
+              }
+        }
+
         return (
             <Screen style={{ backgroundColor: theme?.midnight }}>
                 {/* top bar */}
@@ -112,6 +131,9 @@
                 {/* end of top bar */}
                 {/* main body */}
                 <View style={[styles.mainBody, {backgroundColor: theme?.horizon,}]}>
+                    {/* sorting bar */}
+                    {products?.length > 0 && <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />}
+                    {/* end of sorting bar */}
                     <CardProducts
                         productData={products}
                         onEndReached={handleLoadMore}

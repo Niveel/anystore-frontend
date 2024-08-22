@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, Image, FlatList, TouchableOpacity, Alert, Linking } from 'react-native';
+import { View, StyleSheet, Image, ToastAndroid, TouchableOpacity, Alert, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import axios from 'axios';
 
@@ -36,6 +36,16 @@ function ProductDetails({route, navigation}) {
             console.error('Error fetching product details:', error)
         }
     }, []);
+
+    useEffect(() => {
+        navigation.setOptions({
+            headerTitle: product?.title || "Product Details",
+        });
+    }, []);
+
+    const imagesReadyToast = () => {
+        ToastAndroid.show("Images are not ready yet!", ToastAndroid.SHORT);  
+    }
 
     const fetchRadarItems = async () => {
         try {
@@ -97,7 +107,6 @@ function ProductDetails({route, navigation}) {
 
     const openBuyNowLink = link => {
         if (!link) {
-            console.log('Link not available');
             Alert.alert("Link not available")
             return;
         }
@@ -161,27 +170,23 @@ function ProductDetails({route, navigation}) {
         navigation.navigate(routes.SHARE_SCREEN, product) 
     }
 
+    const handleViewImages = () => {
+        if(productData?.images?.length > 0) {
+            navigation.navigate(routes.PRODUCT_IMAGES, productData?.images)
+        } else {
+            imagesReadyToast();
+        }
+    }
+
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
         <View style={styles.container}>
             <View style={[styles.image, {backgroundColor: theme?.horizon,}]}>
-                {/* flatList to display array of images */}
-                <FlatList
-                    data={productData?.images}
-                    keyExtractor={(item, index) => index.toString()}
-                    horizontal
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    style={{width: "100%", height: "100%"}}
-                    renderItem={({item}) => (
-                        <View style={{ width: 365, height: 240, justifyContent: "center", alignItems: "center" }}>
-                            <Image
-                                source={{ uri: item }}
-                                style={{ width: "100%", height: "100%", resizeMode: "contain" }}
-                                defaultSource={{ uri: "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg" }}
-                            />
-                        </View>
-                    )}
+                <AppButton
+                    title="View Images"
+                    color={theme?.amberGlowLight}
+                    onPress={handleViewImages}
+                    width='90%'
                 />
             </View>
             <View style={styles.detailsContainer}>  
@@ -339,9 +344,11 @@ const styles = StyleSheet.create({
     },
     image: {
         width: '100%',
-        height: "35%",
+        height: "15%",
         borderRadius: 5,
         overflow: "hidden",
+        justifyContent: "center",
+        alignItems: "center",
     },
     name: {
         fontSize: 20,

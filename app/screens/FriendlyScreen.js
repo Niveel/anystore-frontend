@@ -58,8 +58,6 @@ function FriendlyScreen({navigation}) {
     }
   }, []);
 
-  console.log(userId)
-
   const fetchGroups = async () => {
     try {
       const response = await axios.get(`https://www.ishopwit.com/api/user/groups/?userId=${userId}`)

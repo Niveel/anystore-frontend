@@ -8,6 +8,10 @@ import { useTheme } from '../utils/ThemeContext'
 const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, addToCartOnPress, ...otherPops}) => {
   const {theme} = useTheme()
 
+  const priceRegex = (price) => {
+    return price.replace(/\$/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
   return (
     <TouchableHighlight style={[styles.card, {backgroundColor: theme?.horizon, borderColor: theme?.amberGlow,}]} onPress={onPress} underlayColor="rgba(0,0,0,.3)">
         <View style={styles.cardInner}>
@@ -37,7 +41,7 @@ const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, 
                     <AppText style={[styles.price, styles.cardButton, {
                       backgroundColor: theme?.misty,
                       color: theme?.white,
-                    }]}>${price || "$N/A"}</AppText>
+                    }]}>${priceRegex(price) || "$N/A"}</AppText>
                     {companyName && <AppText style={[styles.companyName, styles.cardButton, {
                       backgroundColor: theme?.amberGlow,  
                     }]} numberOfLines={1} color={theme?.midnight}>{companyName}</AppText>}

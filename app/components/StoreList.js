@@ -10,6 +10,7 @@ import SearchInput from './SearchInput';
 import { addToCart } from '../hooks/utils';
 import ListItem from './ListItem';
 import { useTheme } from '../utils/ThemeContext';
+import SortingBar from './SortingBar';
 
 function StoreList() {
     const [storeProducts, setStoreProducts] = useState([])
@@ -59,9 +60,6 @@ function StoreList() {
 
     const handleProductPress = item => {
         navigation.navigate("ProductDetails", item);
-        navigation.setOptions({
-            headerTitle: item.name,
-        });
     };
 
     const handleSearch = () => {
@@ -93,33 +91,52 @@ function StoreList() {
 
     }
 
+    const priceRegex = (price) => {
+      return parseFloat(price.replace(/[^0-9.-]+/g, ""));
+  }
+
+  const handleSortItem = (option) => {
+      if (option === "highest") {
+          setStoreProducts(prevProducts => [...prevProducts].sort((a, b) => priceRegex(b.price) - priceRegex(a.price)));
+        } else if (option === "lowest") {
+          setStoreProducts(prevProducts => [...prevProducts].sort((a, b) => priceRegex(a.price) - priceRegex(b.price)));
+        } else if (option === "highest_rating") {
+          // setStoreProducts(prevProducts => [...prevProducts].sort((a, b) => b.rating - a.rating));
+          console.log("highest rating selected");
+        } else if (option === "lowest_rating") {
+          // setStoreProducts(prevProducts => [...prevProducts].sort((a, b) => a.rating - b.rating));
+          console.log("lowest rating selected");
+        }
+  }
+
   return (
     <View style={styles.container}>
         <View style={styles.header}>
             <SearchInput 
-                placeholder="Search within this Store"  
-                placeholderTextColor={theme?.misty}
-                searchPress={handleSearch}
-                autoCapitalize="none"
-                autoCorrect={false}
-                onChangeText={text => setSearchText(text)}
+              placeholder="Search within this Store"  
+              placeholderTextColor={theme?.misty}
+              searchPress={handleSearch}
+              autoCapitalize="none"
+              autoCorrect={false}
+              onChangeText={text => setSearchText(text)}
             />
         </View>
         <ActivityIndicator animating={loading} size="large" color={theme?.punch} />
+        {storeProducts?.length > 0 && <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />}
          <FlatList 
           style={{ flex: 1}}
           data={storeProducts}
           keyExtractor={(storeProduct) => storeProduct?.id?.toString() || generateRandomId().toString()}
           renderItem={({item}) => (
               <ProductCard 
-                  desc={item?.description}
-                  name={item?.title}
-                  price={item?.price}
-                  image={item?.images || ["https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"]}
-                  companyName={item?.shop_name}
-                  addToCart 
-                  addToCartOnPress={() => handleAddToCart(item)}
-                  onPress={() => handleProductPress(item)}
+                desc={item?.description}
+                name={item?.title}
+                price={item?.price}
+                image={item?.images || ["https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"]}
+                companyName={item?.shop_name}
+                addToCart 
+                addToCartOnPress={() => handleAddToCart(item)}
+                onPress={() => handleProductPress(item)}
               />
           )}
         />
@@ -130,27 +147,27 @@ function StoreList() {
                     justifyContent: 'center',
                 }}>
                     <ListItem
-                        title="No result found"
-                        subtitle="Try searching with another keyword"
-                        style={{color: theme?.midnight, fontSize: 18, fontWeight: "bold"}}
-                        IconComponent={
-                            <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
-                        }
+                      title="No result found"
+                      subtitle="Try searching with another keyword"
+                      style={{color: theme?.midnight, fontSize: 18, fontWeight: "bold"}}
+                      IconComponent={
+                          <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
+                      }
                     />
                 </View>}
                 {productLoaded === false && 
                 <View style={{
-                    width: '100%',
-                    height: "100%",
-                    justifyContent: 'center',
+                  width: '100%',
+                  height: "100%",
+                  justifyContent: 'center',
                 }}>
                     <ListItem
-                        title="No product loaded"
-                        subtitle="There was an error loading products, please try again later."
-                        style={{color: theme?.midnight, fontSize: 18, fontWeight: "bold"}}
-                        IconComponent={
-                            <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
-                        }
+                      title="No product loaded"
+                      subtitle="There was an error loading products, please try again later."
+                      style={{color: theme?.midnight, fontSize: 18, fontWeight: "bold"}}
+                      IconComponent={
+                          <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
+                      }
                     />
                 </View>}
     </View>

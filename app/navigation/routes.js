@@ -15,4 +15,5 @@ export default Object.freeze({
     PRODUCT_INFO: 'ProductInfoScreen', 
     OTHER_SETTINGS: 'OtherSettingsScreen',
     CAFA: 'CafaAiScreen',
+    PRODUCT_IMAGES: 'ImagesScreen',
 })

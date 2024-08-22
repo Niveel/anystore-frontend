@@ -52,6 +52,11 @@ const CardProducts = ({productData, onEndReached, hasMore}) => {
         <FlatList 
             data={productData}
             keyExtractor={(product) => product?.id?.toString()}
+            windowSize={10}
+            initialNumToRender={15}
+            maxToRenderPerBatch={10}
+            updateCellsBatchingPeriod={100}
+            removeClippedSubviews={true}
             renderItem={({item}) => (
                <ProductCard 
                     name={item?.title}
