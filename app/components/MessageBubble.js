@@ -1,46 +1,94 @@
-import React from 'react';
-import { View, StyleSheet, TouchableHighlight } from 'react-native';
+import React, {useRef, useEffect} from 'react';
+import { View, StyleSheet, TouchableHighlight, Animated, TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 import { useTheme } from '../utils/ThemeContext';
 import DoubleTapTouchableOpacity from './DoubleTapTouchableOpacity';
 import AppText from './AppText';
 
-const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageIds, msgContent, isCurrentUser, msgSenderUsername, msgTime, selectedMessages, msgIsInFlaggedMessages, messageLongPress, selectMessage, doubleTapMessage, msgSentiment,flagMessage, ...otherProps}) => {
+const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageIds, msgContent, isCurrentUser, msgSenderUsername, msgTime, selectedMessages, msgIsInFlaggedMessages, messageLongPress, selectMessage, doubleTapMessage, msgSentiment, setReplyOnSwipeOpen, updateBubbleRef, message, onReplyPress, ...otherProps}) => {
 
     const {theme} = useTheme();
+    const isMyNextMessage = true
+
+    const bubbleRef = useRef(null);
+
+    // console.log("the tree message is", message)
+
+    useEffect(() => {
+    if (bubbleRef.current) {
+        updateBubbleRef(bubbleRef.current, msgId);
+    }
+    }, [msgId, updateBubbleRef]);
 
     const formatTime = (time) => {
         const date = new Date(time);
         return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
     };
 
-    const replyToMessage = () => {
-        console.log("Replying to message");
+    const renderLeftAction = (animatedProgress) => {
+        const size = animatedProgress.interpolate({
+            inputRange: [0, 1, 100],
+            outputRange: [0, 1, 1],
+        });
+
+        const translate = animatedProgress.interpolate({
+            inputRange: [0, 1, 2],
+            outputRange: [0, -12, -20],
+        });
+
+        const rotate = animatedProgress.interpolate({
+            inputRange: [0, 1, 150],
+            outputRange: ["0deg", "180deg", "0deg"],
+        });
+        const opacity = animatedProgress.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 1],
+        });
+
+        return (
+            <Animated.View
+                style={[
+                    {
+                        width: 40,
+                        opacity,
+                    },
+                    {
+                        transform: [{ scale: size }, { translateX: translate }, { rotateY: rotate }],
+                    },
+                    isMyNextMessage ? {
+                        marginBottom: 2,
+                        marginLeft: 15
+                    } : {
+                        marginBottom: 10
+                    }
+                ]}
+            >
+                <View style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
+                    <MaterialCommunityIcons name='arrow-right-top-bold' size={30} color={theme?.text} />
+                </View>
+            </Animated.View>
+        )
+    }
+
+    const onSwipeableOpenAction = () => {
+        setReplyOnSwipeOpen()
     }
 
   return (
     <GestureHandlerRootView>
         <Swipeable
-            renderLeftActions={() => (
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10}}>
-                    <TouchableHighlight
-                        onPress={replyToMessage}
-                        underlayColor="rgba(0, 0, 0, 0.05)"
-                        style={{padding: 5, borderRadius: 5}}
-                    >
-                        <AppText style={{fontSize: 16, fontWeight: 'bold'}} color={theme?.amberGlow}>Reply</AppText>
-                    </TouchableHighlight>
-                    <TouchableHighlight
-                        onPress={flagMessage}
-                        underlayColor="rgba(0, 0, 0, 0.05)"
-                        style={{padding: 5, borderRadius: 5}}
-                    >
-                        <AppText style={{fontSize: 16, fontWeight: 'bold'}} color={theme?.punch}>Flag</AppText>
-                    </TouchableHighlight>
-                </View>
-            )} 
+            ref={bubbleRef}
+            friction={3}
+            leftThreshold={40}
+            renderLeftActions={renderLeftAction} 
+            onSwipeableOpen={onSwipeableOpenAction}
         >
             <TouchableHighlight 
                 key={msgId || index} 
@@ -78,6 +126,17 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                     onPress={selectMessage}
                     onDoublePress={doubleTapMessage}
                     >
+                        {/* reply preview */}
+                        {message?.replyMessageContent && (
+                            <TouchableOpacity 
+                                style={styles.replyPreview}
+                                onPress={() => onReplyPress(message?.replyTo)}
+                            >
+                                <MaterialCommunityIcons name='reply' size={15} color={theme?.text} />
+                                <AppText numberOfLines={3} style={{fontSize: 12, color: theme?.text}}>{message.replyMessageContent}</AppText>
+                            </TouchableOpacity>
+                        )}
+                        {/* end of reply preview */}
                     <View 
                         style={[styles.flagIndicator, {backgroundColor: msgSentiment === "negative" ? "red" : "green", borderRadius: 15, borderWidth: 1, borderBlockColor: theme?.black}]}
                         accessible={true}
@@ -125,6 +184,12 @@ const styles = StyleSheet.create({
         height: 10,
         top: 5,
         right: 5,
+    },
+    replyPreview: {
+        borderLeftWidth: 2,
+        borderLeftColor: 'gray',
+        paddingLeft: 8,
+        marginBottom: 5,
     },
 });
 

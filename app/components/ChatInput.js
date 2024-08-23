@@ -3,30 +3,48 @@ import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { useTheme } from '../utils/ThemeContext';
+import ReplyMessage from './ReplyMessage';
+import useAuth from '../auth/useAuth';
 
-const ChatInput = ({message, setMessage, sendMessage}) => {
+const ChatInput = ({message, setMessage, sendMessage, reply, clearReply, onScroll}) => {
 
     const {theme} = useTheme();
+    const {user} = useAuth();
+
+    const isCurrentUser = reply?.sender?._id === user?._id || reply?.sender === user?.id;
+
+    const onPressScroll = () => {
+        if(onScroll) {
+            onScroll();
+        }
+    }
 
   return (
-    <View style={[styles.chatInputContainer, { backgroundColor: theme?.horizon,}]}>
-        <TextInput
-        placeholder='Type your message here...'
-        placeholderTextColor={theme?.white}
-        style={[styles.chatInput, {backgroundColor: theme?.midnight, color: theme?.white,}]}
-        multiline
-        autoCapitalize='none'
-        value={message}
-        onChangeText={text => setMessage(text)}
-        />
-        <TouchableOpacity 
-            style={[styles.sendBtn, {backgroundColor: theme?.midnight,}]} 
-            onPress={sendMessage}
-            accessible={true}
-            accessibilityLabel="Send message"
-        >
-        <MaterialCommunityIcons name='send' size={35} color={theme?.amberGlow} />
-        </TouchableOpacity>
+    <View>
+        <ReplyMessage clearReply={clearReply} message={reply?.content} username={isCurrentUser ? 'You' : reply?.sender?.username || "You"} />
+        <View style={[styles.chatInputContainer, { backgroundColor: theme?.horizon,}]}>
+            <TextInput
+                placeholder='Type your message here...'
+                placeholderTextColor={theme?.white}
+                style={[styles.chatInput, {backgroundColor: theme?.midnight, color: theme?.white,}]}
+                multiline
+                autoCapitalize='none'
+                value={message}
+                onChangeText={text => setMessage(text)}
+                onFocus={()=> onPressScroll()}
+                onBlur={()=> onPressScroll()}
+                accessible={true}
+                accessibilityLabel="Type your message here"
+            />
+            <TouchableOpacity 
+                style={[styles.sendBtn, {backgroundColor: theme?.midnight,}]} 
+                onPress={sendMessage}
+                accessible={true}
+                accessibilityLabel="Send message"
+            >
+            <MaterialCommunityIcons name='send' size={35} color={theme?.amberGlow} />
+            </TouchableOpacity>
+        </View>
     </View>
   );
 }

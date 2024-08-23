@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import { View, StyleSheet, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, Alert, Keyboard, BackHandler, ToastAndroid } from 'react-native';
 import axios from 'axios';
 import {io} from 'socket.io-client';
@@ -46,9 +46,12 @@ function ChatroomScreen({route, navigation}) {
   const [toneFlaggedReason, setToneFlaggedReason] = useState('');
   const [showToneFlaggedReasonModal, setShowToneFlaggedReasonModal] = useState(false);
   const [numOfUsersOnline, setNumOfUsersOnline] = useState(0);
+  const [replyMessage, setReplyMessage] = useState(null);
   
   const scrollViewRef = useRef(null)
   const socketRef = useRef(null);
+  const swipeBubbleRef = useRef(null)
+  const messageRefs = useRef({})
   const { user } = useAuth();
 
   // socket connections
@@ -350,8 +353,11 @@ function ChatroomScreen({route, navigation}) {
                                     roomId, 
                                     message, 
                                     senderId,
-                                    sentiment: flaggedResult?.data?.message
+                                    sentiment: flaggedResult?.data?.message,
+                                    replyToId: replyMessage ? replyMessage._id : null,
+                                    repliedMessage: replyMessage ? replyMessage.content : null, 
                                   });
+        clearReply()
         setMessage('');
         Keyboard.dismiss();
         PlaySendSound();
@@ -514,16 +520,52 @@ function ChatroomScreen({route, navigation}) {
       }
     }
 
+    // reply functionality
+    const clearReply = () => {
+      setReplyMessage(null);
+    };
+
+    const scrollToMessage = (messageId) => {
+      if (messageRefs.current[messageId]) {
+          scrollViewRef.current.scrollTo({
+              y: messageRefs.current[messageId].offsetTop,
+              animated: true,
+          });
+      } else {
+          console.log(`Message ID ${messageId} not found in refs`);
+      }
+  };
+
+    const updateBubbleRef = useCallback((ref, msgId) => {
+      if (ref && replyMessage && msgId === replyMessage._id) {
+        swipeBubbleRef.current = ref;
+      }
+    }, [replyMessage]);
+
+    useEffect(() => {
+      if (replyMessage && swipeBubbleRef.current) {
+        scrollToEnd()
+        swipeBubbleRef.current.close();
+        swipeBubbleRef.current = null;
+      }
+    }, [replyMessage, swipeBubbleRef]);
+
+    // end of reply
+
     // fetch messages
     useEffect(() => { 
       fetchMessages();
     }, []);
 
      // Scroll to the bottom when messages change
-     useEffect(() => {
+     const scrollToEnd = () => {
       if (scrollViewRef.current) {
-          scrollViewRef.current.scrollToEnd({ animated: true });
+        scrollViewRef.current.scrollToEnd({ animated: true });
       }
+    }
+
+     useEffect(() => {
+      scrollToEnd()
     }, [messages]);
 
     // fetch app users
@@ -663,6 +705,12 @@ function ChatroomScreen({route, navigation}) {
                       return (
                         <MessageBubble
                           key={msg?._id || index}
+                          onLayout={(event) => {
+                            const { layout } = event.nativeEvent;
+                            messageRefs.current[msg?._id] = {
+                                offsetTop: layout.y,
+                            };
+                          }}
                           msgPress={() => {
                             setSelectedMessages([])
                             setMenuVisible(false);
@@ -681,7 +729,10 @@ function ChatroomScreen({route, navigation}) {
                           selectMessage={() => handleSelectMessage(msg)}
                           doubleTapMessage={() => handleDoubleTapMessage(msg)}
                           msgSentiment={msg?.sentiment}
-                          flagMessage={() => handleFlagMsg([msg])}
+                          setReplyOnSwipeOpen={() => setReplyMessage(msg)}
+                          updateBubbleRef={updateBubbleRef}
+                          message={msg}
+                          onReplyPress={scrollToMessage}
                         />
                       )
                     }
@@ -696,6 +747,8 @@ function ChatroomScreen({route, navigation}) {
               message={message} 
               setMessage={setMessage}
               sendMessage={() => handleSendMsg(groupId, message, user?._id)}
+              reply={replyMessage}
+              clearReply={clearReply}
             />
             {/* End of chat input */}
         </KeyboardAvoidingView>
