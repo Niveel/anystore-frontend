@@ -47,21 +47,71 @@ function ChatroomScreen({route, navigation}) {
   const [showToneFlaggedReasonModal, setShowToneFlaggedReasonModal] = useState(false);
   
   const scrollViewRef = useRef(null)
+  const socketRef = useRef(null);
   const { user } = useAuth();
-  const socket = io('https://www.ishopwit.com', {
-    transports: ['websocket'],
-    reconnection: true,
-    reconnectionAttempts: Infinity,
-    reconnectionDelay: 1000, // Start with 1 second delay
-    reconnectionDelayMax: 5000, // Maximum 5 seconds delay
-    timeout: 20000, // 20 seconds connection timeout
-    autoConnect: true,
-    pingInterval: 25000, // 25 seconds ping interval
-    pingTimeout: 60000 // 60 seconds ping timeout
-  });
+
+  // socket connections
+  useEffect(() => {
+    socketRef.current = io('https://www.ishopwit.com', {
+      transports: ['websocket'],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000, // Start with 1 second delay
+      reconnectionDelayMax: 5000, // Maximum 5 seconds delay
+      timeout: 20000, // 20 seconds connection timeout
+      autoConnect: true,
+      pingInterval: 25000, // 25 seconds ping interval
+      pingTimeout: 60000 // 60 seconds ping timeout
+    });
+
+    const socket = socketRef.current;
+
+    // new message received
+    socket.on("message", (newMessage) => {
+      console.log('new message sent:', newMessage); 
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      PlayReceiveSound();
+    });
+
+    // on connection
+    socket.on("connect", () => {
+      // console.log("Connected to the Socket.IO server");
+      socket.emit('joinRoom', groupId);
+    });
+    
+    // on connection error
+    socket.on('connect_error', (err) => {
+      console.log('Connection Error:', err.message);
+      socket.connect()
+    });
+    
+    // on disconnect
+    socket.on('disconnect', (reason) => {
+      console.log('Disconnected:', reason);
+      socket.emit('leaveRoom', groupId);
+      if (reason) {
+        console.log('Attempting to reconnect...');
+        socket.connect();
+      }
+    }); 
+
+    // online users
+    socket.on('onlineUsers', (users) => {
+      console.log('Online users:', users);
+    })
+
+    return () => {
+      socket.disconnect();
+      socket.off('onlineUsers');
+      socket.off('message');
+      socket.off('connect');
+      socket.off('connect_error');
+    }
+
+  }, []);
 
   const { groupName, groupId, setGroups, isCreatedGroup } = route.params;
-  
+
   const { theme } = useTheme();
 
   // sounds
@@ -90,41 +140,6 @@ function ChatroomScreen({route, navigation}) {
         }
       : undefined;
   }, [receiveSound, sendSound]);
-
-  // socket message
-  socket.on("connect", () => {
-    // console.log("Connected to the Socket.IO server");
-    socket.emit('joinRoom', groupId);
-  });
-  
-  socket.on('connect_error', (err) => {
-    console.log('Connection Error:', err.message);
-    socket.connect()
-  });
-  
-  socket.on('disconnect', (reason) => {
-    console.log('Disconnected:', reason);
-    if (reason) {
-      console.log('Attempting to reconnect...');
-      socket.connect();
-    }
-  }); 
-
-  socket.on('onlineUsers', (onlineUsers) => {
-    console.log('Online users:', onlineUsers);
-  })
-
-  // new message received
-  useEffect(() => {
-    socket.on("message", (newMessage) => {
-      console.log('new message sent:', newMessage); 
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-      PlayReceiveSound();
-    });
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
 
     // custom functions
     const getLastItemOfArray = (arr) => arr[arr.length - 1];
@@ -326,6 +341,9 @@ function ChatroomScreen({route, navigation}) {
         if (message.trim().length === 0) return;
         console.log('message:', message, 'senderId:', senderId, 'roomId:', roomId)
         const flaggedResult = await flagMessage.flagMessage(message);
+
+        const socket = socketRef.current;
+
         socket.emit('sendMessage', { 
                                     roomId, 
                                     message, 
@@ -608,6 +626,7 @@ function ChatroomScreen({route, navigation}) {
 
                       return (
                         <MessageProductBubble
+                          key={msg?._id || index}
                           msgPress={() => {
                             setSelectedMessages([])
                             setMenuVisible(false);
@@ -641,6 +660,7 @@ function ChatroomScreen({route, navigation}) {
                     } else {
                       return (
                         <MessageBubble
+                          key={msg?._id || index}
                           msgPress={() => {
                             setSelectedMessages([])
                             setMenuVisible(false);
