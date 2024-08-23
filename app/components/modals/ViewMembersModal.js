@@ -6,15 +6,16 @@ import CustomModal from '../CustomModal';
 import AppText from '../AppText';
 import { useTheme } from '../../utils/ThemeContext';
 
-const ViewMembersModal = ({visible, groupName, isCreatedGroup, groupMembers, userId, removeMember, ...otherProps}) => {
+const ViewMembersModal = ({visible, groupName, isCreatedGroup, groupMembers, userId, removeMember, numOfUsersOnline, ...otherProps}) => {
 
     const {theme} = useTheme();
 
   return (
     <CustomModal visible={visible} {...otherProps} >
           <View style={[styles.memberBox, {backgroundColor: theme?.midnight,}]}>
-            <AppText style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10}} color={theme?.amberGlow}>Members in {groupName}</AppText>
+            <AppText style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10, textAlign: "center"}} color={theme?.amberGlow}>Members in {groupName}</AppText>
             {!isCreatedGroup && <AppText style={{fontSize: 15, textAlign: "center", marginBottom: 10}}>Group creator is hidden</AppText>}
+            <AppText style={{fontSize: 12, textAlign: "right", marginBottom: 10}} color={theme?.text}>{numOfUsersOnline} {numOfUsersOnline == 1 ? "User" : "Users"} online</AppText>
               <FlatList
                 data={groupMembers}
                 keyExtractor={member => member?.id?.toString()}

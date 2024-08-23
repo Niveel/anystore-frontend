@@ -155,7 +155,7 @@ function FriendlyScreen({navigation}) {
               accessible={true}
               accessibilityLabel="Groups created tab"
             >
-              <AppText color={tabOption === "Created" ? theme?.midnight : theme?.amberGlowLight}>Groups Created</AppText>
+              <AppText color={tabOption === "Created" ? theme?.midnight : theme?.text}>Groups Created</AppText>
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={()=>setTabOption("Joined")}

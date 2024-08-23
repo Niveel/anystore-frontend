@@ -45,6 +45,7 @@ function ChatroomScreen({route, navigation}) {
   const [flaggedMessages, setFlaggedMessages] = useState([]);
   const [toneFlaggedReason, setToneFlaggedReason] = useState('');
   const [showToneFlaggedReasonModal, setShowToneFlaggedReasonModal] = useState(false);
+  const [numOfUsersOnline, setNumOfUsersOnline] = useState(0);
   
   const scrollViewRef = useRef(null)
   const socketRef = useRef(null);
@@ -98,6 +99,7 @@ function ChatroomScreen({route, navigation}) {
     // online users
     socket.on('onlineUsers', (users) => {
       console.log('Online users:', users);
+      setNumOfUsersOnline(Number(users));
     })
 
     return () => {
@@ -679,6 +681,7 @@ function ChatroomScreen({route, navigation}) {
                           selectMessage={() => handleSelectMessage(msg)}
                           doubleTapMessage={() => handleDoubleTapMessage(msg)}
                           msgSentiment={msg?.sentiment}
+                          flagMessage={() => handleFlagMsg([msg])}
                         />
                       )
                     }
@@ -709,6 +712,7 @@ function ChatroomScreen({route, navigation}) {
           groupMembers={groupMembers}
           userId={user?._id}
           removeMember={handleRemoveMember}
+          numOfUsersOnline={numOfUsersOnline}
         />
                 {/* end of view members modal */}
                 {/* add members modal */}
