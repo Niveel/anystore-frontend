@@ -23,7 +23,13 @@ const ProductCard = ({shopName, onPress, removeFavorite}) => {
 
   return (
         <View style={styles.storeContainer}>
-            <TouchableHighlight style={[styles.card, {backgroundColor: theme?.midnightLight,}]} onPress={onPress} underlayColor="rgba(0,0,0,.3)">
+            <TouchableHighlight 
+                style={[styles.card, {backgroundColor: theme?.midnightLight,}]} 
+                onPress={onPress} 
+                underlayColor="rgba(0,0,0,.3)"
+                accessible={true}
+                accessibilityLabel="Double tap to enter store."
+            >
                 <View style={[styles.cardInner]}>
                     <View style={[styles.image, {backgroundColor: theme?.midnight, borderWidth: 2,}]}>
                         <MaterialCommunityIcons name="store" size={80} color={theme?.amberGlow} />

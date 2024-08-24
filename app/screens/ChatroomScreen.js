@@ -628,6 +628,7 @@ function ChatroomScreen({route, navigation}) {
         flagMsg={handleFlagMsg}
         unFlagMsg={handleUnFlagMsg}
         isFlagged={selectedMessages.every(msg => flaggedMessages.includes(msg?._id))}
+        numberOfUsersOnline={numOfUsersOnline}
       />
       {/* end of header */}
       {/* menu */}
@@ -644,166 +645,166 @@ function ChatroomScreen({route, navigation}) {
       )}
       {/* end of menu */}
 
-          <TouchableWithoutFeedback onPress={() => {
-            setMenuVisible(false)
-            Keyboard.dismiss()
-          }}>
-            <KeyboardAvoidingView
-              style={{ backgroundColor: theme?.midnight, padding: 10, paddingRight: 5, height: "90%", paddingBottom: 70}}
-            >
-            <ScrollView 
-              contentContainerStyle={styles.scrollViewContent}
-              ref={scrollViewRef}
-            >
-              <View style={styles.chatContainer}>
-                {/* messages */}
-                {
-                  messages?.map((msg, index) => {
-                    const isCurrentUser = msg?.sender?._id === user?._id || msg?.sender === user?._id;
-                    const justifyContent = isCurrentUser ? 'flex-end' : 'flex-start';
-                    const selectedMessageIds = selectedMessages.map(msg => msg._id)
-                    const msgIsInFlaggedMessages = flaggedMessages.includes(msg?._id);
-                  
-                    // if the message is a shared product it is treated as a product card
-                    if (msg?.isShared) {
-                      const product = JSON.parse(msg.content);
+      <TouchableWithoutFeedback onPress={() => {
+        setMenuVisible(false)
+        Keyboard.dismiss()
+      }}>
+        <KeyboardAvoidingView
+          style={{ backgroundColor: theme?.midnight, padding: 10, paddingRight: 5, height: "92%", paddingBottom: 45 }}
+        >
+        <ScrollView 
+          contentContainerStyle={styles.scrollViewContent}
+          ref={scrollViewRef}
+        >
+          <View style={styles.chatContainer}>
+            {/* messages */}
+            {
+              messages?.map((msg, index) => {
+                const isCurrentUser = msg?.sender?._id === user?._id || msg?.sender === user?._id;
+                const justifyContent = isCurrentUser ? 'flex-end' : 'flex-start';
+                const selectedMessageIds = selectedMessages.map(msg => msg._id)
+                const msgIsInFlaggedMessages = flaggedMessages.includes(msg?._id);
+              
+                // if the message is a shared product it is treated as a product card
+                if (msg?.isShared) {
+                  const product = JSON.parse(msg.content);
 
-                      return (
-                        <MessageProductBubble
-                          key={msg?._id || index}
-                          msgPress={() => {
-                            setSelectedMessages([])
-                            setMenuVisible(false);
-                          }} 
-                          justifyContent={justifyContent}
-                          index={index}
-                          msgId={msg?._id}
-                          selectedMessageIds={selectedMessageIds}
-                          isCurrentUser={isCurrentUser}
-                          msgSenderUsername={msg?.sender?.username}
-                          msgTime={msg?.createdAt}
-                          selectedMessages={selectedMessages}
-                          msgIsInFlaggedMessages={msgIsInFlaggedMessages}
-                          longPress={() => handleSelectMessageLongPress(msg)}
-                          productPress={() => {
-                            if(longPressMsgState) {
-                              setSelectedMessages([...selectedMessages, msg]);
-                              // if the message is already selected, deselect it
-                              if(selectedMessages.includes(msg)) {
-                                setSelectedMessages(selectedMessages.filter(message => message !== msg));
-                              }
-                              return;
-                            }
-                            navigation.navigate(routes.PRODUCT_DETAILS, product);
-                          }}
-                          productTitle={product?.title}
-                          productImageUrl={product?.imageUrl}
-                        />
-                      );
+                  return (
+                    <MessageProductBubble
+                      key={msg?._id || index}
+                      msgPress={() => {
+                        setSelectedMessages([])
+                        setMenuVisible(false);
+                      }} 
+                      justifyContent={justifyContent}
+                      index={index}
+                      msgId={msg?._id}
+                      selectedMessageIds={selectedMessageIds}
+                      isCurrentUser={isCurrentUser}
+                      msgSenderUsername={msg?.sender?.username}
+                      msgTime={msg?.createdAt}
+                      selectedMessages={selectedMessages}
+                      msgIsInFlaggedMessages={msgIsInFlaggedMessages}
+                      longPress={() => handleSelectMessageLongPress(msg)}
+                      productPress={() => {
+                        if(longPressMsgState) {
+                          setSelectedMessages([...selectedMessages, msg]);
+                          // if the message is already selected, deselect it
+                          if(selectedMessages.includes(msg)) {
+                            setSelectedMessages(selectedMessages.filter(message => message !== msg));
+                          }
+                          return;
+                        }
+                        navigation.navigate(routes.PRODUCT_DETAILS, product);
+                      }}
+                      productTitle={product?.title}
+                      productImageUrl={product?.images[0]}
+                    />
+                  );
 
-                    } else {
-                      return (
-                        <MessageBubble
-                          key={msg?._id || index}
-                          onLayout={(event) => {
-                            const { layout } = event.nativeEvent;
-                            messageRefs.current[msg?._id] = {
-                                offsetTop: layout.y,
-                            };
-                          }}
-                          msgPress={() => {
-                            setSelectedMessages([])
-                            setMenuVisible(false);
-                          }} 
-                          justifyContent={justifyContent}
-                          index={index}
-                          msgId={msg?._id}
-                          selectedMessageIds={selectedMessageIds}
-                          msgContent={msg?.content}
-                          isCurrentUser={isCurrentUser}
-                          msgSenderUsername={msg?.sender?.username}
-                          msgTime={msg?.createdAt}
-                          selectedMessages={selectedMessages}
-                          msgIsInFlaggedMessages={msgIsInFlaggedMessages}
-                          messageLongPress={() => handleSelectMessageLongPress(msg)}
-                          selectMessage={() => handleSelectMessage(msg)}
-                          doubleTapMessage={() => handleDoubleTapMessage(msg)}
-                          msgSentiment={msg?.sentiment}
-                          setReplyOnSwipeOpen={() => setReplyMessage(msg)}
-                          updateBubbleRef={updateBubbleRef}
-                          message={msg}
-                          onReplyPress={scrollToMessage}
-                        />
-                      )
-                    }
-                  
-                  })
+                } else {
+                  return (
+                    <MessageBubble
+                      key={msg?._id || index}
+                      onLayout={(event) => {
+                        const { layout } = event.nativeEvent;
+                        messageRefs.current[msg?._id] = {
+                            offsetTop: layout.y,
+                        };
+                      }}
+                      msgPress={() => {
+                        setSelectedMessages([])
+                        setMenuVisible(false);
+                      }} 
+                      justifyContent={justifyContent}
+                      index={index}
+                      msgId={msg?._id}
+                      selectedMessageIds={selectedMessageIds}
+                      msgContent={msg?.content}
+                      isCurrentUser={isCurrentUser}
+                      msgSenderUsername={msg?.sender?.username}
+                      msgTime={msg?.createdAt}
+                      selectedMessages={selectedMessages}
+                      msgIsInFlaggedMessages={msgIsInFlaggedMessages}
+                      messageLongPress={() => handleSelectMessageLongPress(msg)}
+                      selectMessage={() => handleSelectMessage(msg)}
+                      doubleTapMessage={() => handleDoubleTapMessage(msg)}
+                      msgSentiment={msg?.sentiment}
+                      setReplyOnSwipeOpen={() => setReplyMessage(msg)}
+                      updateBubbleRef={updateBubbleRef}
+                      message={msg}
+                      onReplyPress={scrollToMessage}
+                    />
+                  )
                 }
-                {/* end of messages */}
-              </View>
-            </ScrollView>
-            {/* Chat input */}
-            <ChatInput
-              message={message} 
-              setMessage={setMessage}
-              sendMessage={() => handleSendMsg(groupId, message, user?._id)}
-              reply={replyMessage}
-              clearReply={clearReply}
-            />
-            {/* End of chat input */}
-        </KeyboardAvoidingView>
-        </TouchableWithoutFeedback>
+              
+              })
+            }
+            {/* end of messages */}
+          </View>
+        </ScrollView>
+        {/* Chat input */}
+        <ChatInput
+          message={message} 
+          setMessage={setMessage}
+          sendMessage={() => handleSendMsg(groupId, message, user?._id)}
+          reply={replyMessage}
+          clearReply={clearReply}
+        />
+        {/* End of chat input */}
+    </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
         
         {/* modals */}
                 {/* view members modal */}
-        <ViewMembersModal 
-          visible={viewMembersModalVisible}
-          onPress={() => setViewMembersModalVisible(false)}
-          onRequestClose={() => setViewMembersModalVisible(false)}
-          groupName={groupName}
-          isCreatedGroup={isCreatedGroup}
-          groupMembers={groupMembers}
-          userId={user?._id}
-          removeMember={handleRemoveMember}
-          numOfUsersOnline={numOfUsersOnline}
-        />
+      <ViewMembersModal 
+        visible={viewMembersModalVisible}
+        onPress={() => setViewMembersModalVisible(false)}
+        onRequestClose={() => setViewMembersModalVisible(false)}
+        groupName={groupName}
+        isCreatedGroup={isCreatedGroup}
+        groupMembers={groupMembers}
+        userId={user?._id}
+        removeMember={handleRemoveMember}
+        numOfUsersOnline={numOfUsersOnline}
+      />
                 {/* end of view members modal */}
                 {/* add members modal */}
-        <AddMembersModal
-          visible={addMembersVisible}
-          onPress={() => setAddMembersVisible(false)}
-          onRequestClose={() => setAddMembersVisible(false)}
-          groupName={groupName}
-          searchQuery={searchQuery}
-          onChangeQueryText={(text) => setSearchQuery(text)}
-          searchResults={searchResults}
-          addedMembers={addedMembers}
-          disabled={addedMembers.includes(user?._id)}
-          addMemberToGroup={addMemberToGroup}
-        />
+      <AddMembersModal
+        visible={addMembersVisible}
+        onPress={() => setAddMembersVisible(false)}
+        onRequestClose={() => setAddMembersVisible(false)}
+        groupName={groupName}
+        searchQuery={searchQuery}
+        onChangeQueryText={(text) => setSearchQuery(text)}
+        searchResults={searchResults}
+        addedMembers={addedMembers}
+        disabled={addedMembers.includes(user?._id)}
+        addMemberToGroup={addMemberToGroup}
+      />
               {/* end of add members modal */}
               {/* report message modal */}
-        <ReportMsgModal
-          visible={reportMsgModalVisible}
-          onPress={() => setReportMsgModalVisible(false)}
-          onRequestClose={() => setReportMsgModalVisible(false)}
-          msgString={selectedMessages.length > 1 ? "these messages" : "this message"}
-          cancelPress={() => {
-            setReportMsgModalVisible(false);
-            setSelectedMessages([]);
-          }}
-          reportPress={() => handleReportMessages(selectedMessages)}
-        />
+      <ReportMsgModal
+        visible={reportMsgModalVisible}
+        onPress={() => setReportMsgModalVisible(false)}
+        onRequestClose={() => setReportMsgModalVisible(false)}
+        msgString={selectedMessages.length > 1 ? "these messages" : "this message"}
+        cancelPress={() => {
+          setReportMsgModalVisible(false);
+          setSelectedMessages([]);
+        }}
+        reportPress={() => handleReportMessages(selectedMessages)}
+      />
               {/* end of report message modal */}
               {/* tone flag reason */}
-        <ToneFlagModal 
-          visible={showToneFlaggedReasonModal}
-          onPress={() => setShowToneFlaggedReasonModal(false)}
-          onRequestClose={() => setShowToneFlaggedReasonModal(false)}
-          message={toneFlaggedReason?.content}
-          sentimentColor={toneFlaggedReason?.sentiment === "negative" ? theme?.punch : theme?.amberGlow}
-          flagReason={toneFlaggedReason?.sentiment}
-        />
+      <ToneFlagModal 
+        visible={showToneFlaggedReasonModal}
+        onPress={() => setShowToneFlaggedReasonModal(false)}
+        onRequestClose={() => setShowToneFlaggedReasonModal(false)}
+        message={toneFlaggedReason?.content}
+        sentimentColor={toneFlaggedReason?.sentiment === "negative" ? theme?.punch : theme?.amberGlow}
+        flagReason={toneFlaggedReason?.sentiment}
+      />
               {/* end of flag reason modal */}
 
         {/* end of modals */}
@@ -823,12 +824,13 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     minHeight: '100%',
+    paddingTop: 15
   },
   chatContainer: {
     // flexGrow: 1,
     width: '100%',
     height: '100%',
-    // paddingHorizontal: 10,
+    paddingRight: 5,
   },
 });
 

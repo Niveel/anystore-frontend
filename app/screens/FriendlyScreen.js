@@ -189,10 +189,16 @@ function FriendlyScreen({navigation}) {
             }
             {
               groups?.createdGroups?.map((group) => (
-                <TouchableOpacity key={group._id} style={[styles.groupCard, {backgroundColor: theme?.mistyLight,}]} onPress={()=>{
-                  openChat(group.groupName, group._id, true)
-                  PlayOpenSound();
-                }}>
+                <TouchableOpacity 
+                  key={group._id} 
+                  style={[styles.groupCard, {backgroundColor: theme?.mistyLight,}]} 
+                  onPress={()=>{
+                    openChat(group.groupName, group._id, true)
+                    PlayOpenSound();
+                  }}
+                  accessible={true}
+                  accessibilityLabel={`Open ${group.groupName} chatroom`}
+                >
                   <AppText style={styles.name} numberOfLines={1}>{group.groupName}</AppText>
                   <AppText style={[styles.date, {color: theme?.amberGlow,}]}>{formatDate(group.createdAt)}</AppText>
                 </TouchableOpacity>
@@ -217,10 +223,16 @@ function FriendlyScreen({navigation}) {
               }
               {
                 groups?.joinedGroups?.map((group) => (
-                  <TouchableOpacity key={group?._id} style={[styles.groupCard, {backgroundColor: theme?.mistyLight,}]} onPress={()=>{
-                    openChat(group?.groupName, group?._id, false)
-                    PlayOpenSound();
-                  }}>
+                  <TouchableOpacity 
+                    key={group?._id} 
+                    style={[styles.groupCard, {backgroundColor: theme?.mistyLight,}]} 
+                    onPress={()=>{
+                      openChat(group?.groupName, group?._id, false)
+                      PlayOpenSound();
+                    }}
+                    accessible={true}
+                    accessibilityLabel={`Open ${group?.groupName} chatroom`}
+                  >
                     <AppText style={styles.name} numberOfLines={1}>{group.groupName}</AppText>
                     <AppText style={[styles.date, {color: theme?.amberGlow,}]}>{formatDate(group.createdAt)}</AppText>
                   </TouchableOpacity>

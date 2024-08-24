@@ -100,8 +100,7 @@ function RadarList(props) {
     >
       <AppText style={[styles.text, {
         fontSize: radarData.length > 0 ? 12 : 20,
-        color: theme?.white,
-      }]}>Track your products to get notified of price changes.</AppText>
+        }]} color={theme?.white} >Track your products to get notified of price changes.</AppText>
       {radarData.length > 0 && <View style={[styles.headBox, {backgroundColor: theme?.light,}]}>
         <SearchInput 
           placeholder="Search Product" 

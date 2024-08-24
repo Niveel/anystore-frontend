@@ -63,7 +63,7 @@ const CafaAiScreen = ({ route }) => {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Screen style={[styles.container, { backgroundColor: theme?.midnight }]}>
-        <KeyboardAvoidingView style={{ backgroundColor: theme?.midnight, padding: 10, paddingBottom: 50, paddingRight: 5, height: "100%", paddingBottom: 70 }}>
+        <KeyboardAvoidingView style={{ backgroundColor: theme?.midnight, padding: 10, paddingRight: 5, height: "100%", paddingBottom: 20 }}>
           <FlatList
             data={messages}
             keyExtractor={(item) => item.id.toString()}

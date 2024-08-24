@@ -88,6 +88,8 @@ function RadarPriceCheckScreen({route, navigation}) {
               onPress={handleDecPrice}
               onLongPress={startContinuousDecrement}
               onPressOut={stopContinuousDecrement}
+              accessible={true}
+              accessibilityLabel="Decrement Price"
             >
               <MaterialCommunityIcons name="minus" size={30} color={theme?.text} />
             </TouchableOpacity>
@@ -99,6 +101,8 @@ function RadarPriceCheckScreen({route, navigation}) {
               onPress={handleIncPrice}
               onLongPress={startContinuousIncrement}
               onPressOut={stopContinuousIncrement}
+              accessible={true}
+              accessibilityLabel="Increment Price"
             >
               <MaterialCommunityIcons name="plus" size={30} color={theme?.text} />
             </TouchableOpacity>

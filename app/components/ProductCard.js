@@ -16,11 +16,17 @@ const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, 
     <TouchableHighlight style={[styles.card, {backgroundColor: theme?.horizon, borderColor: theme?.amberGlow,}]} onPress={onPress} underlayColor="rgba(0,0,0,.3)">
         <View style={styles.cardInner}>
           {addToCart &&
-          <TouchableOpacity style={[styles.addToCartButton, {backgroundColor: theme?.midnight,}]} onPress={addToCartOnPress}>
+          <TouchableOpacity 
+            style={[styles.addToCartButton, {backgroundColor: theme?.midnight,}]} 
+            onPress={addToCartOnPress}
+            accessible={true}
+            accessibilityLabel="Add to cart"
+            accessibilityHint={`Double tap to add ${name} to cart`}
+          >
              <MaterialCommunityIcons 
                           name="cart-plus" 
                           color={theme?.amberGlow} 
-                          size={30} 
+                          size={20} 
               /> 
           </TouchableOpacity>
           }
@@ -42,9 +48,15 @@ const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, 
                       backgroundColor: theme?.misty,
                       color: theme?.white,
                     }]}>${priceRegex(price) || "$N/A"}</AppText>
-                    {companyName && <AppText style={[styles.companyName, styles.cardButton, {
-                      backgroundColor: theme?.amberGlow,  
-                    }]} numberOfLines={1} color={theme?.midnight}>{companyName}</AppText>}
+                    {companyName && <AppText 
+                      style={[styles.companyName, styles.cardButton, {
+                        backgroundColor: theme?.amberGlow,  
+                      }]} 
+                      numberOfLines={1} 
+                      color={theme?.midnight}
+                      accessible={true}
+                      accessibilityLabel={`from ${companyName} store`}
+                    >{companyName}</AppText>}
                 </View>  
             </View>
         </View> 
@@ -55,10 +67,10 @@ const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, 
 const styles = StyleSheet.create({
     addToCartButton: {
       position: "absolute",
-      top: 5,
-      right: 5,
+      top: 27,
+      right: 2,
       zIndex: 1,
-      padding: 5,
+      padding: 4,
       borderRadius: 5,
     },
     card: {

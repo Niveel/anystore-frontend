@@ -24,6 +24,7 @@ const AppNavigator = () => {
                 fontSize: 14,
                 fontWeight: 'bold',
             },
+            keyboardHidesTabBar: true,
         }}
    >
         <Tab.Screen  

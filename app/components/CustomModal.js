@@ -21,6 +21,8 @@ function CustomModal({visible, onPress, children, ...otherProps}) {
                 <TouchableHighlight 
                     style={styles.closeBtn}
                     onPress={onPress}
+                    accessible={true}
+                    accessibilityLabel="Close Modal"
                 >
                     <MaterialCommunityIcons name="close" size={40} color={theme?.amberGlow} />
                 </TouchableHighlight>

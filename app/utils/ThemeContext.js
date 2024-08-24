@@ -45,9 +45,9 @@ const themes = {
         horizon: '#333333', // bg color
         misty: '#aaa8a8', // bg color
         mistyLight: 'rgba(89, 89, 89,.6)', // bg color
-        amberGlow: '#d8c185', //border color
-        amberGlowLight: 'rgba(128, 128, 128,.8)', //border color
-        punch: '#f6a488', // accent color
+        amberGlow: '#c7c110', //border color
+        amberGlowLight: 'rgba(199, 193, 16,.8)', //border color
+        punch: '#f53730', // accent color
         text: '#fff',
     },
     aquarium: {
@@ -63,7 +63,7 @@ const themes = {
         mistyLight: 'rgba(76, 141, 154, .6)', // bg color
         amberGlow: '#2adfd3', //border color
         amberGlowLight: 'rgba(144, 198, 194, .8)', //border color
-        punch: '#3fce97', // accent color
+        punch: '#e67a14', // accent color
         text: '#fff',
     },
     summer: {

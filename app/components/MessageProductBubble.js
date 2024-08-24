@@ -66,6 +66,7 @@ const MessageProductBubble = ({msgPress, justifyContent, index, msgId, selectedM
             textTransform: "capitalize" 
             }} 
             numberOfLines={1}
+            color={theme?.white}
         >{productTitle}</AppText>
         {/* time and name */}
         <View style={{

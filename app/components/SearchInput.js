@@ -16,7 +16,13 @@ const SearchInput = ({iconColor, searchPress, onChangeText, value,inputStyle, ..
         onChangeText={onChangeText}
         selectionColor={theme?.text}
       />
-      {searchPress &&<TouchableHighlight onPress={searchPress} underlayColor={theme?.lighter}>
+      {searchPress && <TouchableHighlight 
+        onPress={searchPress} 
+        underlayColor={theme?.lighter}
+        accessible={true}
+        accessibilityLabel="Search"
+        accessibilityHint='Double tap search for the product.'
+      >
         <MaterialCommunityIcons name='store-search' size={30} color={iconColor} />
       </TouchableHighlight> }
        {/* {searchPress && <TouchableHighlight onPress={searchPress} style={styles.mic}>

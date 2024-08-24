@@ -69,7 +69,11 @@ function BarcodeScreen({navigation}) {
             alignItems: 'center',
             flexDirection: 'row',
           }}>
-            <TouchableOpacity onPress={goHome}>
+            <TouchableOpacity 
+              onPress={goHome}
+              accessible={true}
+              accessibilityLabel="Go Back"
+            >
               <MaterialCommunityIcons name="arrow-left" size={30} color={theme?.amberGlow} />
             </TouchableOpacity>
             <View style={{

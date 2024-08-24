@@ -93,7 +93,7 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
             <TouchableHighlight 
                 key={msgId || index} 
                 accessible={true}
-                accessibilityLabel={`${msgContent}, Message from ${isCurrentUser ? "you" : msgSenderUsername || "a group member"} at ${formatTime(msgTime)}`}
+                accessibilityLabel={`${msgContent}, Message from ${isCurrentUser ? "you" : msgSenderUsername || "a group member"} at ${formatTime(msgTime)}. Swipe right to reply.`}
                 accessibilityHint={`${selectedMessages.includes(msgId) ? "Message selected" : "Message not selected"}`}
                 onPress={msgPress}
                 underlayColor="rgba(0, 0, 0, 0.05)"
@@ -102,7 +102,7 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                         flexDirection: 'row', 
                         justifyContent: justifyContent, 
                         marginBottom: 15,
-                        marginTop: index === 0 ? 10 : 0,
+                        marginTop: 0,
                     },
                     msgId && selectedMessageIds.includes(msgId) && {backgroundColor: theme?.mistyLight, borderWidth: 1, borderColor: theme?.amberGlow, borderRadius: 5, padding: 2}
                 ]}
@@ -111,14 +111,14 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                 <DoubleTapTouchableOpacity 
                     style={[
                         {
-                        backgroundColor: msgIsInFlaggedMessages 
-                            ? theme?.punch 
-                            : (isCurrentUser ? theme?.amberGlow : theme?.horizon),
-                        padding: 10, 
-                        paddingBottom: 5,
-                        borderRadius: 5, 
-                        maxWidth: '80%',
-                        minWidth: 80,
+                            backgroundColor: msgIsInFlaggedMessages 
+                                ? theme?.punch 
+                                : (isCurrentUser ? theme?.amberGlow : theme?.horizon),
+                            padding: 10, 
+                            paddingBottom: 5,
+                            borderRadius: 5, 
+                            maxWidth: '80%',
+                            minWidth: 80,
                         },
                         
                     ]}
@@ -126,11 +126,26 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                     onPress={selectMessage}
                     onDoublePress={doubleTapMessage}
                     >
+                        {/* bubble point */}
+                        <View
+                            style={{
+                                position: "absolute",
+                                top: -10,
+                                left: isCurrentUser ? -10 : "unset",
+                                right: isCurrentUser ? "unset" : -10,
+                                width: 20,
+                                height: 20,
+                                borderRadius: 10,
+                                backgroundColor: isCurrentUser ? theme?.amberGlow : theme?.horizon,
+                            }}
+                        />
+                        {/* end of bubble point */}
                         {/* reply preview */}
                         {message?.replyMessageContent && (
                             <TouchableOpacity 
                                 style={styles.replyPreview}
                                 onPress={() => onReplyPress(message?.replyTo)}
+                                accessible={true}
                             >
                                 <MaterialCommunityIcons name='reply' size={15} color={theme?.text} />
                                 <AppText numberOfLines={3} style={{fontSize: 12, color: theme?.text}}>{message.replyMessageContent}</AppText>
@@ -157,14 +172,14 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                         alignItems: 'center',
                     }}>
                         <AppText 
-                        style={{fontSize: 8, fontWeight: 'bold'}} color={theme?.white}>{isCurrentUser ? "You" : msgSenderUsername}</AppText>
+                        style={{fontSize: 8, fontWeight: 'bold'}} color={theme?.white} numberOfLines={1}>{isCurrentUser ? "You" : msgSenderUsername}</AppText>
                         <AppText
                         style={{
                             fontSize: 8,
                             fontWeight: 'bold',
                             marginHorizontal: 5,
                         }}
-                        color={isCurrentUser ? theme?.horizon : theme?.misty}
+                        color={isCurrentUser ? theme?.horizon : theme?.white}
                         >
                         {formatTime(msgTime)}
                         </AppText>

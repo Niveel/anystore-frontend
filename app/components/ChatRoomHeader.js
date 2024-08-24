@@ -6,7 +6,7 @@ import AppText from './AppText';
 import MsgLongPressOptions from './MsgLongPressOptions';
 import { useTheme } from '../utils/ThemeContext';
 
-const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, morePress, selectedMessages, deleteMsg, reportMsg, deselectMsgs, flagMsg, unFlagMsg, isFlagged }) => {
+const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, morePress, selectedMessages, deleteMsg, reportMsg, deselectMsgs, flagMsg, unFlagMsg, isFlagged, numberOfUsersOnline=0 }) => {
 
     const {theme} = useTheme();
 
@@ -23,7 +23,18 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
             </TouchableOpacity>
             <View style={styles.infoBox}>
                 <AppText style={styles.groupName} numberOfLines={1}>{groupName}</AppText>
-                <AppText>Chatroom</AppText>
+                <View style={{
+                    flexDirection: 'row',
+                    gap: 10,
+                    alignItems: 'baseline',
+                    justifyContent: 'flex-start',
+                    width: "55%",
+                }}>
+                    <AppText>Chatroom</AppText>
+                    <AppText style={{
+                        fontSize: 10,
+                    }} color={theme?.white}>{numberOfUsersOnline} {numberOfUsersOnline == 1 ? 'member' : 'members'} online</AppText>
+                </View>
             </View>
         </View>
         <View style={[styles.moreList, {

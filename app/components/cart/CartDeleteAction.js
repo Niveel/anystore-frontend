@@ -6,8 +6,12 @@ import { useTheme } from '../../utils/ThemeContext'
 const CartDeleteAction = ({onPress}) => {
   const {theme} = useTheme()
   return (
-    <TouchableWithoutFeedback onPress={onPress} >
-        <View style={[styles.container, {backgroundColor: theme?.amberGlowLight}]}>
+    <TouchableWithoutFeedback 
+      onPress={onPress} 
+      accessible={true}
+      accessibilityLabel="Delete item from cart"
+    >
+        <View style={[styles.container, {backgroundColor: theme?.amberGlow}]}>
             <MaterialCommunityIcons name='trash-can' size={50} color={theme?.punch}/>
         </View>
     </TouchableWithoutFeedback>

@@ -130,7 +130,11 @@
                 </View>
                 {/* end of top bar */}
                 {/* main body */}
-                <View style={[styles.mainBody, {backgroundColor: theme?.horizon,}]}>
+                <View 
+                    style={[styles.mainBody, {backgroundColor: theme?.horizon,}]}
+                    accessible={true}
+                    accessibilityLabel="Products Area."
+                >
                     {/* sorting bar */}
                     {products?.length > 0 && <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />}
                     {/* end of sorting bar */}
