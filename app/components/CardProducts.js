@@ -67,6 +67,7 @@ const CardProducts = ({ productData, onEndReached, hasMore }) => {
           image={item?.images || ["https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"]}
           desc={item?.description}
           companyName={item?.shop_name}
+          rating={item?.rating}
           addToCart
           addToCartOnPress={() => handleAddToCart(item)}
           onPress={() => handleProductPress(item)}

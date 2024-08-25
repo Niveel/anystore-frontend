@@ -87,11 +87,9 @@
               } else if (option === "lowest") {
                 setProducts(prevProducts => [...prevProducts].sort((a, b) => priceRegex(a.price) - priceRegex(b.price)));
               } else if (option === "highest_rating") {
-                // setProducts(prevProducts => [...prevProducts].sort((a, b) => b.rating - a.rating));
-                console.log("highest rating selected");
+                setProducts(prevProducts => [...prevProducts].sort((a, b) => b.rating - a.rating));
               } else if (option === "lowest_rating") {
-                // setProducts(prevProducts => [...prevProducts].sort((a, b) => a.rating - b.rating));
-                console.log("lowest rating selected");
+                setProducts(prevProducts => [...prevProducts].sort((a, b) => a.rating - b.rating));
               }
         }
 

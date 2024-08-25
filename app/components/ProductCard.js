@@ -5,7 +5,7 @@ import {MaterialCommunityIcons} from '@expo/vector-icons'
 import AppText from './AppText'
 import { useTheme } from '../utils/ThemeContext'
 
-const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, addToCartOnPress, ...otherPops}) => {
+const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, addToCartOnPress, rating, ...otherPops}) => {
   const {theme} = useTheme()
 
   const priceRegex = (price) => {
@@ -13,7 +13,12 @@ const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, 
   }
 
   return (
-    <TouchableHighlight style={[styles.card, {backgroundColor: theme?.horizon, borderColor: theme?.amberGlow,}]} onPress={onPress} underlayColor="rgba(0,0,0,.3)">
+    <TouchableHighlight 
+      style={[styles.card, {backgroundColor: theme?.horizon, borderColor: theme?.amberGlow,}]}  
+      onPress={onPress} 
+      underlayColor="rgba(0,0,0,.3)"
+      {...otherPops}
+    >
         <View style={styles.cardInner}>
           {addToCart &&
           <TouchableOpacity 
@@ -31,6 +36,17 @@ const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, 
           </TouchableOpacity>
           }
             <View style={[styles.image, {backgroundColor: theme?.misty,}]}>
+              {/* rating box */}
+              <View 
+                style={[styles.rating, {backgroundColor: theme?.amberGlow}]}>
+                <AppText 
+                  style={{fontWeight: "bold", fontSize: 12}}
+                  color={theme?.midnight}
+                  accessible={true}
+                  accessibilityLabel="Rating"
+                >{rating || "N/A"}</AppText>
+              </View>
+              {/* end of rating box */}
               <Image 
                 source={{uri: image[0]}} 
                 style={{
@@ -42,7 +58,7 @@ const ProductCard = ({name,image, desc, price, companyName, onPress, addToCart, 
             </View>
             <View style={styles.details}>
                 <Text style={[styles.name, {color: theme?.white,}]} numberOfLines={1}>{name}</Text>
-                <AppText numberOfLines={2} style={styles.desc}>{desc}</AppText>
+                <AppText numberOfLines={2} style={styles.desc}>{desc || "Description not available"}</AppText>
                 <View style={{flexDirection: "row", justifyContent: "space-between", gap: 5}}>
                     <AppText style={[styles.price, styles.cardButton, {
                       backgroundColor: theme?.misty,
@@ -126,6 +142,15 @@ const styles = StyleSheet.create({
       fontWeight: "900",
       fontSize: 12,
       flex: 1,
+    },
+    rating: {
+      position: "absolute",
+      bottom: 5,
+      left: 4,
+      padding: 4,
+      borderRadius: 5,
+      opacity: 0.9,
+      zIndex: 1,
     }
     
 })

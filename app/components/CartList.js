@@ -114,6 +114,7 @@ const CardList = () => {
             onPress={() => handleCartItemPress(item)}
             price={item?.price}
             delPress={() => handleDelete(item)}
+            rating={item?.rating}
           />
         )}
         refreshing={loading} 

@@ -101,11 +101,10 @@ function StoreList() {
         } else if (option === "lowest") {
           setStoreProducts(prevProducts => [...prevProducts].sort((a, b) => priceRegex(a.price) - priceRegex(b.price)));
         } else if (option === "highest_rating") {
-          // setStoreProducts(prevProducts => [...prevProducts].sort((a, b) => b.rating - a.rating));
+          setStoreProducts(prevProducts => [...prevProducts].sort((a, b) => b.rating - a.rating));
           console.log("highest rating selected");
         } else if (option === "lowest_rating") {
-          // setStoreProducts(prevProducts => [...prevProducts].sort((a, b) => a.rating - b.rating));
-          console.log("lowest rating selected");
+          setStoreProducts(prevProducts => [...prevProducts].sort((a, b) => a.rating - b.rating));
         }
   }
 
@@ -137,6 +136,7 @@ function StoreList() {
                 addToCart 
                 addToCartOnPress={() => handleAddToCart(item)}
                 onPress={() => handleProductPress(item)}
+                rating={item?.rating}
               />
           )}
         />

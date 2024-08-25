@@ -344,7 +344,7 @@ function ChatroomScreen({route, navigation}) {
     const handleSendMsg = async (roomId, message, senderId) => {
       try {
         if (message.trim().length === 0) return;
-        console.log('message:', message, 'senderId:', senderId, 'roomId:', roomId)
+        // console.log('message:', message, 'senderId:', senderId, 'roomId:', roomId)
         const flaggedResult = await flagMessage.flagMessage(message);
 
         const socket = socketRef.current;

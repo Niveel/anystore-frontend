@@ -64,15 +64,15 @@ const SortingBar = ({ onSortOptionSelected }) => {
         onRequestClose={() => setPriceModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
+          <View style={[styles.modalContainer, {backgroundColor: theme?.midnight}]}>
             <TouchableOpacity onPress={() => handlePriceSortSelect('highest')} style={styles.optionButton}>
-              <Text style={styles.optionText}>Highest Price First</Text>
+              <Text style={[styles.optionText, {color: theme?.text}]}>Highest Price First</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handlePriceSortSelect('lowest')} style={styles.optionButton}>
-              <Text style={styles.optionText}>Lowest Price First</Text>
+              <Text style={[styles.optionText, {color: theme?.text}]}>Lowest Price First</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setPriceModalVisible(false)} style={styles.cancelButton}>
-              <Text style={styles.cancelText}>Cancel</Text>
+              <Text style={[styles.cancelText, {color: theme?.punch}]}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -86,15 +86,15 @@ const SortingBar = ({ onSortOptionSelected }) => {
         onRequestClose={() => setRatingModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
+          <View style={[styles.modalContainer, {backgroundColor: theme?.midnight}]}>
             <TouchableOpacity onPress={() => handleRatingSortSelect('highest_rating')} style={styles.optionButton}>
-              <Text style={styles.optionText}>Highest Rating First</Text>
+              <Text style={[styles.optionText, {color: theme?.text}]}>Highest Rating First</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleRatingSortSelect('lowest_rating')} style={styles.optionButton}>
-              <Text style={styles.optionText}>Lowest Rating First</Text>
+              <Text style={[styles.optionText, {color: theme?.text}]}>Lowest Rating First</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setRatingModalVisible(false)} style={styles.cancelButton}>
-              <Text style={styles.cancelText}>Cancel</Text>
+              <Text style={[styles.cancelText, {color: theme?.punch}]}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: '80%',
-    backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
@@ -140,14 +139,12 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
-    color: '#007AFF',
   },
   cancelButton: {
     marginTop: 10,
   },
   cancelText: {
     fontSize: 16,
-    color: 'red',
   },
 });
 

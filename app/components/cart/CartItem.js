@@ -5,7 +5,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import ProductCard from '../ProductCard'
 import CartDeleteAction from './CartDeleteAction'
 
-const CartItem = ({image, name, desc, price, companyName, onPress, delPress}) => {
+const CartItem = ({image, name, desc, price, companyName, onPress, rating, delPress}) => {
   return (
     <GestureHandlerRootView>
       <Swipeable renderRightActions={()=> <CartDeleteAction onPress={delPress}/>}>
@@ -16,6 +16,7 @@ const CartItem = ({image, name, desc, price, companyName, onPress, delPress}) =>
           price={price}
           companyName={companyName}
           onPress={onPress}
+          rating={rating}
         />
       </Swipeable>
 

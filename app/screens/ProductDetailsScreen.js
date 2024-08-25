@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { View, StyleSheet, ToastAndroid, TouchableOpacity, Alert, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import axios from 'axios';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 import AppText from '../components/AppText';
 import AppButton from '../components/AppButton'; 
@@ -177,7 +178,24 @@ function ProductDetails({route, navigation}) {
             imagesReadyToast();
         }
     }
-
+    const renderStars = (rating) => {
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+        
+        return (
+            <View style={{ flexDirection: 'row' }}>
+            {[...Array(fullStars)].map((_, i) => (
+                <MaterialCommunityIcons key={`full-${i}`} name="star" color={theme?.amberGlow} size={24} />
+            ))}
+            {hasHalfStar && <MaterialCommunityIcons name="star-half" color={theme?.amberGlow} size={24} />}
+            {[...Array(emptyStars)].map((_, i) => (
+                <MaterialCommunityIcons key={`empty-${i}`} name="star-outline" color={theme?.amberGlow} size={24} />
+            ))}
+            </View>
+        );
+    };
+      
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
         <View style={styles.container}>
@@ -188,20 +206,37 @@ function ProductDetails({route, navigation}) {
                     onPress={handleViewImages}
                     width='90%'
                 />
+                <View 
+                    style={{
+                        width: "100%",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        paddingVertical: 10,
+                        backgroundColor: theme?.midnight,
+                        marginTop: 10,
+                    }}
+                    accessible={true}
+                    accessibilityLabel={`Product rating is ${product?.rating || 0} stars out of 5`}
+                >
+                    <AppText style={{fontSize: 14}}>Rating ({50} users)</AppText>
+                    {renderStars(product?.rating || 0)}
+                </View>
             </View>
             <View style={styles.detailsContainer}>  
                 <View style={styles.details}>
-                    <AppText style={{
-                        textTransform: "capitalize",
-                        fontSize: 16,
-                    }}>{product?.title}</AppText>
+                    <View style={{alignSelf: "flex-start"}}>
+                        <AppText style={{
+                            textTransform: "capitalize",
+                            fontSize: 16,
+                        }}>{product?.title}</AppText>
+                    </View>
                     <AppText style={styles.price} color={theme?.amberGlow}>{product?.price || "$N/A"}</AppText>
                 </View>
                 {product?.shop_name && 
                     <View style={styles.storeWrapper}>
                         <AppText style={styles.store} color={theme?.misty}>{product?.shop_name}</AppText>
                         <TouchableOpacity 
-                            style={{flexDirection: "row", alignItems: "center"}} 
+                            style={{flexDirection: "row", alignItems: "center", alignSelf: "flex-end"}} 
                             onPress={()=> handleAddToFavStores(product?.shop_name)}
                         >
                             <AppText style={styles.heart} color={theme?.white}>Add to Favorite Stores</AppText>
@@ -216,19 +251,16 @@ function ProductDetails({route, navigation}) {
                 <AppButton
                     title="Product Information"
                     color={theme?.amberGlowLight}
-                    style={{
-                        borderRadius: 5,
-                        marginVertical: 10,
-                        width: 'max-content',
-                        paddingHorizontal: 10,
-                        height: 40,
-                        alignSelf: 'center'
-                    }}
+                    style={styles.productInfo}
                     textStyle={{
                         fontSize: 14,
                         fontWeight: "normal",
                     }}
-                    onPress={()=> navigation.navigate(routes.PRODUCT_INFO, {productDetails: productData?.description})}
+                    onPress={()=> {
+                        if(productData?.description)
+                            navigation.navigate(routes.PRODUCT_INFO, {productData, rating: product?.rating})
+                        return
+                    }}
                 />
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity style={[styles.addToCartButton, {backgroundColor: theme?.misty,}]} onPress={()=> handleAddToCart(product?.id)}>
@@ -319,12 +351,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
     details: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
         width: "100%",
         gap: 5,
-        flexWrap: "wrap",
     },
     detailsContainer: {
         padding: 10,
@@ -344,11 +372,11 @@ const styles = StyleSheet.create({
     },
     image: {
         width: '100%',
-        height: "15%",
         borderRadius: 5,
         overflow: "hidden",
         justifyContent: "center",
         alignItems: "center",
+        paddingVertical: 10,
     },
     name: {
         fontSize: 20,
@@ -357,8 +385,17 @@ const styles = StyleSheet.create({
         maxWidth: "80%",
     },
     price: {
-        fontSize: 16,
+        fontSize: 28,
         fontWeight: "900",
+        alignSelf: "flex-end",
+    },
+    productInfo: {
+        borderRadius: 5,
+        marginVertical: 10,
+        width: 'max-content',
+        paddingHorizontal: 10,
+        height: 40,
+        alignSelf: 'center'
     },
     radar: {
         borderRadius: 5,
@@ -394,11 +431,8 @@ const styles = StyleSheet.create({
         textTransform: "capitalize",
     },
     storeWrapper: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
         width: "100%",
-        gap: 20,
+        gap: 10,
         marginVertical: 10,
     },
 });
