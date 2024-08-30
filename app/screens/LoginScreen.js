@@ -84,6 +84,7 @@ const LoginScreen = () => {
                         title="Login" 
                         width="90%" 
                         disabled={loading}
+                        color={theme?.amberGlow}
                     />
                 </AppForm>
                 <View style={styles.actionWrapper}>

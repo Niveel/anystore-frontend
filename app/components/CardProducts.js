@@ -65,7 +65,7 @@ const CardProducts = ({ productData, onEndReached, hasMore }) => {
           name={item?.title}
           price={priceRegex(item?.price)}
           image={item?.images || ["https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"]}
-          desc={item?.description}
+          desc={item?.description ? item?.description : item?.title}
           companyName={item?.shop_name}
           rating={item?.rating}
           addToCart

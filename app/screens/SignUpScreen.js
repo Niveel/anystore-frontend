@@ -25,8 +25,24 @@ const SignUpScreen = ({ navigation }) => {
     const { theme } = useTheme()
 
     const handleSubmit = (userInfo) => {
-        usersApi.register(userInfo)
-        navigation.navigate("SignupVerify", { userInfo })
+        usersApi.register(userInfo).then(response => {
+
+            if(response.status === 201){
+                console.log("User registered: ", response.data.message)
+                navigation.navigate("SignupVerify", { userInfo })
+            } else {
+                setError(response.data.message)
+                console.log("error registering user: ", response.data.message)
+            }
+
+        }).catch(error => {
+            setError(error.message)
+            console.log("error registering user: ", error.message)
+
+        }).finally(() => {
+            setLoading(false)
+        })
+
     }
 
     return (
@@ -39,7 +55,7 @@ const SignUpScreen = ({ navigation }) => {
             <View style={[styles.signUpContainer, {backgroundColor: theme?.horizon,}]}>
                 <KeyboardAvoidingView
                     behavior="position"
-                    keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
+                    keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 80}
                 >
                     <ActivityIndicator animating={loading} size="large" />
                     <AppForm
@@ -92,7 +108,7 @@ const SignUpScreen = ({ navigation }) => {
                             onPress={() => setIsConfirmSecure(!isConfirmSecure)}
                             textContentType="password"
                         />
-                        <SubmitButton title="Sign up" width="90%" />
+                        <SubmitButton color={theme?.amberGlow} title="Sign up" width="90%" />
                     </AppForm>
                 </KeyboardAvoidingView>
                 <View style={styles.loginBox}>
@@ -110,7 +126,7 @@ const SignUpScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     headerContainer: {
         width: '100%',
-        height: "25%",
+        height: "20%",
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -120,8 +136,8 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     image: {
-        height: 90,
-        width: 110,
+        height: 75,
+        width: 100,
         borderRadius: 10,
     },
     loginBox: {
@@ -137,14 +153,14 @@ const styles = StyleSheet.create({
     },
     signUpContainer: {
         width: '100%',
-        height: "75%",
+        height: "80%",
         borderTopRightRadius: 20,
         borderTopLeftRadius: 20,
         padding: 10,
     },
     subHeading: {
         fontSize: 16,
-        marginTop: 10,
+        marginTop: 5,
         textAlign: "center",
     },
     text: {

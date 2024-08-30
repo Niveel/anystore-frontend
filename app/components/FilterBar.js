@@ -13,8 +13,17 @@ const FilterBar = ({ onFilterApply }) => {
   const { theme } = useTheme();
 
   const handleFilterApply = () => {
-    onFilterApply({ minPrice, maxPrice });
-    setPriceModalVisible(false);
+    if(minPrice) {
+      onFilterApply({ minPrice, maxPrice });
+      setPriceModalVisible(false);
+    } else {
+      const errorMessage = 'Please enter a valid price range';
+      if (Platform.OS === 'android') {
+        ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+      } else {
+        Alert.alert('Error', errorMessage);
+      }
+    }
   };
 
   const formatPrice = (price) => {
@@ -36,19 +45,23 @@ const FilterBar = ({ onFilterApply }) => {
   };
 
   const handleMinPriceInputChange = (text) => {
+    if (text === '') {
+      setMinPrice(''); 
+      return;
+    }
+  
     const newMinPrice = parseFloat(text);
+  
     if (!isNaN(newMinPrice) && newMinPrice <= maxPrice) {
-        setMinPrice(newMinPrice);
-    } else if (text === '') { 
-        setMinPrice('');
+      setMinPrice(newMinPrice);
     } else {
-        const errorMessage = 'Min price must be less than max price';
-
-        if (Platform.OS === 'android') {
-            ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
-        } else {
-            Alert.alert('Error', errorMessage);
-        }
+      const errorMessage = 'Min price must be less than or equal to max price';
+  
+      if (Platform.OS === 'android') {
+        ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+      } else {
+        Alert.alert('Error', errorMessage);
+      }
     }
   };
 

@@ -1,9 +1,11 @@
 import 'react-native-get-random-values';
 import 'react-native-gesture-handler';
 import { StyleSheet, Platform } from 'react-native';
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 
 // custom imports
 import colors from './app/config/colors';
@@ -68,7 +70,36 @@ export default function App() {
         vibrationPattern: [0, 250, 250, 250],
         lightColor: '#FF231F7C',
       });
-      token = (await Notifications.getExpoPushTokenAsync()).data;
+
+      if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+          alert('Failed to get push token for push notification!');
+          return;
+        }
+        try {
+          const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+          if (!projectId) {
+            throw new Error('Project ID not found');
+          }
+          token = (
+            await Notifications.getExpoPushTokenAsync({
+              projectId,
+            })
+          ).data;
+        } catch (e) {
+          token = `${e}`;
+        }
+      } else {
+        alert('Must use physical device for Push Notifications');
+      }
+
+      // token = (await Notifications.getExpoPushTokenAsync()).data;
 
       return token;
   }
