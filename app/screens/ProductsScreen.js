@@ -1,22 +1,24 @@
-    import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
-    import { MaterialCommunityIcons } from '@expo/vector-icons'
-    import React, { useState, } from 'react'
-    import { TouchableOpacity, Keyboard } from 'react-native'
-    import { useNavigation } from '@react-navigation/native'
-    import axios from 'axios'
+import React, { useState, useEffect} from 'react'
+import { View, Text, StyleSheet, Platform } from 'react-native'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { TouchableOpacity, Keyboard, ToastAndroid } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import axios from 'axios'
 
-    import Screen from '../components/Screen'
-    import CodeSearch from '../components/CodeSearch'
-    import SearchInput from '../components/SearchInput'
-    import routes from '../navigation/routes'
-    import CardProducts from '../components/CardProducts'
-    import ListItem from '../components/ListItem'
-    import { useTheme } from '../utils/ThemeContext'
-    import SortingBar from '../components/SortingBar'
+import Screen from '../components/Screen'
+import CodeSearch from '../components/CodeSearch'
+import SearchInput from '../components/SearchInput'
+import routes from '../navigation/routes'
+import CardProducts from '../components/CardProducts'
+import ListItem from '../components/ListItem'
+import { useTheme } from '../utils/ThemeContext'
+import SortingBar from '../components/SortingBar'
+import FilterBar from '../components/FilterBar'
 
     const ProductsScreen = () => {
         const [searchText, setSearchText] = useState("")
         const [products, setProducts] = useState([])
+        const [filteredProducts, setFilteredProducts] = useState([]);
         const [resultNotFound, setResultNotFound] = useState(false)
         const [loading, setLoading] = useState(false)
         const [productLoaded, setProductLoaded] = useState(true)
@@ -56,6 +58,7 @@
         const handleSearch = () => {
             if (searchText.trim() === "") return;
             setProducts([]);
+            setFilteredProducts([]);
             setPage(1);
             setHasMore(true);
             fetchProducts(1);
@@ -66,6 +69,8 @@
                 const nextPage = page + 1;
                 setPage(nextPage);
                 fetchProducts(nextPage);
+            } else if(!hasMore){
+                setHasMore(false);
             }
         };
 
@@ -92,6 +97,25 @@
                 setProducts(prevProducts => [...prevProducts].sort((a, b) => a.rating - b.rating));
               }
         }
+
+        const handlePriceFilter = ({ minPrice, maxPrice }) => {
+            const min = Number(minPrice);
+            const max = Number(maxPrice);
+            
+            // filter products based on price range
+            const filtered = products.filter(product => {
+                const price = priceRegex(product.price);
+                return price >= min && price <= max;
+            });
+            
+            setFilteredProducts(filtered);
+            // toast when there is no product in the price range
+            if (filtered.length === 0) {
+                ToastAndroid.show("No product found in the price range", ToastAndroid.SHORT);
+            }
+        };
+
+        // console.log("products are", products)
 
         return (
             <Screen style={{ backgroundColor: theme?.midnight }}>
@@ -134,10 +158,24 @@
                     accessibilityLabel="Products Area."
                 >
                     {/* sorting bar */}
-                    {products?.length > 0 && <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />}
+                    {products?.length > 0 && (
+                        <View style={{
+                            width: '100%',
+                            height: 50,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            gap: 12,
+                            paddingHorizontal: 15,
+                            paddingVertical: 30,
+                        }}>
+                            <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
+                            <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
+                        </View>
+                    ) }
                     {/* end of sorting bar */}
                     <CardProducts
-                        productData={products}
+                        productData={filteredProducts.length > 0 ? filteredProducts : products}
                         onEndReached={handleLoadMore}
                         hasMore={hasMore}
                     />

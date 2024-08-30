@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { useTheme } from '../utils/ThemeContext';
+import AppText from './AppText';
 
 const SortingBar = ({ onSortOptionSelected }) => {
   const [priceModalVisible, setPriceModalVisible] = useState(false);
@@ -23,38 +24,44 @@ const SortingBar = ({ onSortOptionSelected }) => {
     <View style={styles.container}>
       {/* Main Sort button */}
       <TouchableOpacity onPress={() => setShowMenu(prev => !prev)} style={[styles.sortButton, { backgroundColor: theme?.misty }]}>
-        <Text style={styles.sortButtonText}>Sort By</Text>
+        <Text style={styles.sortButtonText}>Sort</Text>
       </TouchableOpacity>
 
-      {/* Dropdown menu for Price and Rating */}
-      {showMenu && (
-        <View style={{
-          position: "absolute", top: "105%", left: "60%", backgroundColor: theme?.misty, paddingVertical: 10, 
-          paddingHorizontal: 20, borderRadius: 5, gap: 10, zIndex: 99,
-        }}>
-          {/* Sort by Price */}
-          <TouchableOpacity
-            style={[styles.sortButton, { backgroundColor: theme?.midnightLight, borderWidth: 1 }]}
-            onPress={() => {
-              setPriceModalVisible(true);
-              setShowMenu(false);
-            }}
-          >
-            <Text style={styles.sortButtonText}>Price</Text>
-          </TouchableOpacity>
+      {/*  menu for Price and Rating */}
+      <Modal
+        transparent={true}
+        animationType="slide"
+        visible={showMenu}
+        onRequestClose={() => setShowMenu(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContainer, {backgroundColor: theme?.midnight}]}>
+            <TouchableOpacity
+              style={[styles.optionButton, {backgroundColor: theme?.horizon, marginBottom: 8}]}
+              onPress={() => {
+                setPriceModalVisible(true);
+                setShowMenu(false);
+              }}
+            >
+              <AppText style={styles.optionText}>Price</AppText>
+            </TouchableOpacity>
 
-          {/* Sort by Rating */}
-          <TouchableOpacity
-            style={[styles.sortButton, { backgroundColor: theme?.midnightLight, borderWidth: 1 }]}
-            onPress={() => {
-              setRatingModalVisible(true);
-              setShowMenu(false);
-            }}
-          >
-            <Text style={styles.sortButtonText}>Rating</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.optionButton, {backgroundColor: theme?.horizon}]}
+              onPress={() => {
+                setRatingModalVisible(true);
+                setShowMenu(false);
+              }}
+            >
+              <AppText style={styles.optionText}>Rating</AppText>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setShowMenu(false)} style={styles.cancelButton}>
+              <AppText style={styles.cancelText} color={theme?.punch}>Cancel</AppText>
+            </TouchableOpacity>
+          </View>
         </View>
-      )}
+      </Modal>
 
       {/* Modal for sorting by Price */}
       <Modal
@@ -105,20 +112,19 @@ const SortingBar = ({ onSortOptionSelected }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: 50,
-    marginBottom: 10,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },
   sortButton: {
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: 20,
     borderRadius: 5,
   },
   sortButtonText: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 14,
   },
   modalOverlay: {
     flex: 1,
@@ -136,15 +142,26 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '100%',
     alignItems: 'center',
+    borderRadius: 5,
   },
   optionText: {
     fontSize: 16,
+    textAlign: 'center',
   },
   cancelButton: {
-    marginTop: 10,
+    marginTop: 16,
+    width: '100%',
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   cancelText: {
     fontSize: 16,
+  },
+  priceRangeBox: {
+    width: '100%',
+    padding: 10,
+    borderRadius: 5,
   },
 });
 

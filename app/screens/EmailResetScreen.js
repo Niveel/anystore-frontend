@@ -30,20 +30,16 @@ function EmailResetScreen(props) {
                 console.error('Authentication token not found.');
                 return;
             }
-    
-            // Call the changeEmail function directly (no need for changeEmail.changeEmail)
+            
             const result = await changeEmail(authToken, email);
     
-            // Check if the request was successful
             if (!result || !result.ok) {
                 setError(result?.data?.message || 'An unexpected error occurred.');
                 return;
             }
     
-            // Assuming your user object is mutable, you can update the email directly
             user.email = email;
     
-            // Navigate to the account settings screen
             Alert.alert(
                 "Email Changed",
                 "Your email has been changed successfully.",

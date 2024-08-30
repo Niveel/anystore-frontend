@@ -172,8 +172,8 @@ function ProductDetails({route, navigation}) {
     }
 
     const handleViewImages = () => {
-        if(productData?.images?.length > 0) {
-            navigation.navigate(routes.PRODUCT_IMAGES, productData?.images)
+        if(productData?.images?.length > 0 || product?.images?.length > 0) {
+            navigation.navigate(routes.PRODUCT_IMAGES, {images: productData?.images, fallbackImage: product?.images})
         } else {
             imagesReadyToast();
         }
@@ -218,7 +218,7 @@ function ProductDetails({route, navigation}) {
                     accessible={true}
                     accessibilityLabel={`Product rating is ${product?.rating || 0} stars out of 5`}
                 >
-                    <AppText style={{fontSize: 14}}>Rating ({50} users)</AppText>
+                    <AppText style={{fontSize: 14}}>Rating ({50})</AppText>
                     {renderStars(product?.rating || 0)}
                 </View>
             </View>
@@ -283,7 +283,7 @@ function ProductDetails({route, navigation}) {
                     
                 </View>
                 <View style={styles.radarShareWrapper}>
-                    <TouchableOpacity style={[styles.button, {backgroundColor: theme?.horizon,}]} onPress={()=> openBuyNowLink(productData?.link)}>
+                    <TouchableOpacity style={[styles.button, {backgroundColor: theme?.horizon,}]} onPress={()=> openBuyNowLink(productData?.link || product?.link)}>
                         <AppText style={styles.buttonText} color={theme?.amberGlow}>Buy Now</AppText>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.share, {backgroundColor: theme?.horizon,}]} onPress={()=> handleShare(product)}>
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
         height: 36,
     },
     radarShareWrapper: {
-        marginBottom: 20,
+        marginBottom: 10,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",

@@ -72,7 +72,7 @@ function ChatroomScreen({route, navigation}) {
 
     // new message received
     socket.on("message", (newMessage) => {
-      console.log('new message sent:', newMessage); 
+      // console.log('new message sent:', newMessage); 
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       PlayReceiveSound();
     });
@@ -176,10 +176,10 @@ function ChatroomScreen({route, navigation}) {
       setMenuVisible(!menuVisible);
     };  
 
-    const addMemberToGroup = async (memberId) => {
+    const addMemberToGroup = async (memberId, memberName) => {
       try {
         const response = await axios.post(`https://www.ishopwit.com/api/groups/add-member`, 
-        { groupId: groupId, userId: memberId });
+        { groupId: groupId, userId: memberId, groupName: groupName, memberName: memberName });
 
         if (response.data) {
           setAddedMembers([...addedMembers, memberId]);
@@ -187,16 +187,16 @@ function ChatroomScreen({route, navigation}) {
         
       }
       catch (error) {
-        console.error('Error adding member:', error);
+        console.log('Error adding member:', error);
         if (error.response) {
           // The request was made and the server responded with a status code
-          console.error('Response data:', error.response.data);
+          console.log('Response error data:', error.response.data);
         } else if (error.request) {
           // The request was made but no response was received
-          console.error('No response received:', error.request);
+          console.log('No response received:', error.request);
         } else {
           // Something happened in setting up the request that triggered an error
-          console.error('Request setup error:', error.message);
+          console.log('Request setup error:', error.message);
         }
       }
     };
@@ -827,7 +827,6 @@ const styles = StyleSheet.create({
     paddingTop: 15
   },
   chatContainer: {
-    // flexGrow: 1,
     width: '100%',
     height: '100%',
     paddingRight: 5,

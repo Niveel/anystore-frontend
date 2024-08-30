@@ -18,12 +18,16 @@
       "infoPlist": {
         "NSCameraUsageDescription": "Camera access is required to scan Bar/QR Codes to perform searches. Results are for your viewing only and are not saved or shared by Shopwit."
       },
+      "entitlements": {
+        "aps-environment": "production"
+      },
       "supportsTablet": true,
       "bundleIdentifier": "com.niveel.shopwit",
       "buildNumber": "8"
     },
     "android": {
       "versionCode": 3,
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/a_icon.png",
         "backgroundColor": "#ffffff"
