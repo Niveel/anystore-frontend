@@ -4,6 +4,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { TouchableOpacity, Keyboard, ToastAndroid } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 
 import Screen from '../components/Screen'
 import CodeSearch from '../components/CodeSearch'
@@ -14,6 +17,18 @@ import ListItem from '../components/ListItem'
 import { useTheme } from '../utils/ThemeContext'
 import SortingBar from '../components/SortingBar'
 import FilterBar from '../components/FilterBar'
+import useAuth from '../auth/useAuth'
+import authStorage from '../auth/storage'
+import registerDeviceToken from '../api/registerDeviceToken'
+
+// notifications
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+});
 
     const ProductsScreen = () => {
         const [searchText, setSearchText] = useState("")
@@ -24,8 +39,10 @@ import FilterBar from '../components/FilterBar'
         const [productLoaded, setProductLoaded] = useState(true)
         const [page, setPage] = useState(1)
         const [hasMore, setHasMore] = useState(false)
+        const [authToken, setAuthToken] = useState()
         const navigation = useNavigation()
         const { theme } = useTheme();
+        const { user } = useAuth();
 
         // generate random id
         const generateRandomId = () => {
@@ -114,6 +131,73 @@ import FilterBar from '../components/FilterBar'
                 ToastAndroid.show("No product found in the price range", ToastAndroid.SHORT);
             }
         };
+
+        // notifications====================
+        // getting auth token
+        authStorage.getToken().then(token => {
+            setAuthToken(token);
+        }).catch(error => {
+            console.log("Error getting auth token", error);
+        });
+
+        useEffect(() => {
+            registerForPushNotificationsAsync().then(token => {
+              if(authToken && user) {
+                // console.log("Device Token: ", token, "authToken: ", authToken, "Username: ", user?.username);
+                registerDeviceToken(authToken, user?.username, token).then(response => {
+                  console.log(response.data.message);
+                }).catch(error => {
+                  console.log("Device Registration Error:",error);
+                });
+              }
+            });
+          }, [authToken]);
+
+          // register for push notifications
+        const registerForPushNotificationsAsync = async () => {
+            let token;
+
+            if (Platform.OS === 'android') {
+            await Notifications.setNotificationChannelAsync('default', {
+                name: 'default',
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: '#FF231F7C',
+            });
+
+            if (Device.isDevice) {
+                const { status: existingStatus } = await Notifications.getPermissionsAsync();
+                let finalStatus = existingStatus;
+                if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+                }
+                if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return;
+                }
+                try {
+                const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+                if (!projectId) {
+                    throw new Error('Project ID not found');
+                }
+                token = (
+                    await Notifications.getExpoPushTokenAsync({
+                    projectId,
+                    })
+                ).data;
+                } catch (e) {
+                token = `Error ${e}`;
+                }
+            } else {
+                alert('Must use physical device for Push Notifications');
+            }
+
+            // token = (await Notifications.getExpoPushTokenAsync()).data;
+
+            return token;
+        }
+        }
 
         // console.log("products are", products)
 

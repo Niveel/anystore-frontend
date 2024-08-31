@@ -82,7 +82,7 @@ function SignupVerifyScreen({ route }) {
         <>
           <ErrorMessage error={error} visible={hasError} />
           <View>
-            <AppText style={{marginVertical: 20}} color={theme?.amberGlow}>Enter the 4-digit code sent to your email {userInfo.email}</AppText>
+            <AppText style={{marginVertical: 20, fontSize: 15, textAlign: "center"}} color={theme?.amberGlow}>Enter the 4-digit code sent to your email {userInfo.email}</AppText>
             <View style={styles.codeContainer}>
               {codes.map((code, index) => (
                 <TextInput
