@@ -76,11 +76,10 @@ function ChatroomScreen({route, navigation}) {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       PlayReceiveSound();
     });
-
     // on connection
     socket.on("connect", () => {
       // console.log("Connected to the Socket.IO server");
-      socket.emit('joinRoom', groupId, user?._id);
+      socket.emit('joinRoom', { roomId: groupId, userId: user?._id });
     });
     
     // on connection error
@@ -471,8 +470,6 @@ function ChatroomScreen({route, navigation}) {
         const response = await axios.get(`https://www.ishopwit.com/api/group/messages/?groupId=${groupId}`)
         if (response.data) {
           setMessages(response.data);
-          // await storeMessagesToStorage(response?.data);
-          // await getAllMessagesFromStorage();
         }
 
       } catch (error) {
