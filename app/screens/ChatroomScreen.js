@@ -581,9 +581,11 @@ function ChatroomScreen({route, navigation}) {
       fetchAppUsers();
     }, [searchQuery]);
 
+
+// fetch group members
     useEffect(() => {
-      if(viewMembersModalVisible) fetchGroupMembers();
-    }, [viewMembersModalVisible]);
+      if(viewMembersModalVisible || addMembersVisible) fetchGroupMembers();
+    }, [viewMembersModalVisible, addMembersVisible]);
 
     // Effect to handle back button press
     useEffect(() => {

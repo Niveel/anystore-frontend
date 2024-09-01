@@ -46,12 +46,11 @@ const FilterBar = ({ onFilterApply }) => {
 
   const handleMinPriceInputChange = (text) => {
     if (text === '') {
-      setMinPrice(''); 
+      setMinPrice(0); 
       return;
     }
   
     const newMinPrice = parseFloat(text);
-  
     if (!isNaN(newMinPrice) && newMinPrice <= maxPrice) {
       setMinPrice(newMinPrice);
     } else {
