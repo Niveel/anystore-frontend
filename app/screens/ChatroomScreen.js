@@ -80,7 +80,7 @@ function ChatroomScreen({route, navigation}) {
     // on connection
     socket.on("connect", () => {
       // console.log("Connected to the Socket.IO server");
-      socket.emit('joinRoom', groupId);
+      socket.emit('joinRoom', groupId, user?._id);
     });
     
     // on connection error
