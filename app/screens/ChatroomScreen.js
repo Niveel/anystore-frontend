@@ -53,6 +53,8 @@ function ChatroomScreen({route, navigation}) {
   const swipeBubbleRef = useRef(null)
   const messageRefs = useRef({})
   const { user } = useAuth();
+  const { groupName, groupId, setGroups, isCreatedGroup } = route.params;
+  const { theme } = useTheme();
 
   // socket connections
   useEffect(() => {
@@ -112,11 +114,7 @@ function ChatroomScreen({route, navigation}) {
       socket.off('connect_error');
     }
 
-  }, []);
-
-  const { groupName, groupId, setGroups, isCreatedGroup } = route.params;
-
-  const { theme } = useTheme();
+  }, [numOfUsersOnline]);
 
   // sounds
   const PlayReceiveSound = async () => {

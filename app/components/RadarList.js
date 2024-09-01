@@ -112,7 +112,7 @@ function RadarList(props) {
       {radarData.length === 0 && <ItemEmpty 
           icon="eye-remove" 
           text="No items in your radar" 
-          subText="Add items to your radar to see them here" 
+          subText="Add items to your radar to see them here. If you added items and they are not showing, pull down to refresh." 
         />}
         
       {resultNotFound === true ? <SearchNotFound /> : <FlatList 

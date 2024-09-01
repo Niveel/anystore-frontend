@@ -40,7 +40,7 @@ const AddMembersModal = ({visible, groupName, searchQuery, onChangeQueryText, se
                   disabled={disabled}
                   onPress={() => {addMemberToGroup(item?.id, item?.username)}}
                   accessible={true}
-                  accessibilityLabel={`Add ${item?.username} to ${groupName}`}
+                  accessibilityLabel={addedMembers.includes(item.id) ? `${item?.username} already added to group` : `Add ${item?.username} to ${groupName}`}
                   accessibilityHint='Double tap to add this user to the group.'
                 >
                   <AppText 
