@@ -61,7 +61,6 @@ function RadarList(props) {
   }
 
   const websiteNameRegex = (name) => {
-    // if there is no name, return empty string
     if (!name) {
       return ""
     }

@@ -47,7 +47,7 @@ function FriendlyScreen({navigation}) {
   // Fetch groups 
   useEffect(() => {
     fetchGroups();
-  }, []);
+  }, [groups]);
 
   // permission modal
   useEffect(() => {

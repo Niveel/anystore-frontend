@@ -68,7 +68,7 @@ const ProductCard = ({
               { backgroundColor: "transparent" },
             ]}
           >
-            <Svg width={50} height={50} viewBox="0 0 24 24" fill="none">
+            <Svg width={30} height={30} viewBox="0 0 24 24" fill="none">
               <Polygon
                 points="12,2 15,8 22,8 17,12 19,19 12,15 5,19 7,12 2,8 9,8"
                 fill={theme?.amberGlow}
@@ -80,7 +80,7 @@ const ProductCard = ({
               accessible={true}
               accessibilityLabel="Rating"
             >
-              {rating || "N/A"}
+              {rating}
             </AppText>
           </View>
           {/* end of rating box */}
@@ -120,7 +120,7 @@ const ProductCard = ({
                 },
               ]}
             >
-              ${priceRegex(price) || "$N/A"}
+              ${priceRegex(price) || "$"}
             </AppText>
             {companyName && (
               <AppText
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     fontWeight: 'bold',
-    fontSize: 10,
+    fontSize: 8,
     textAlign: 'center',
     position: 'absolute',
     bottom: "35%",

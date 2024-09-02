@@ -57,8 +57,7 @@ function ProductInfoScreen({ route }) {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContainer, { backgroundColor: theme?.midnight }]}>
             <AppText style={{ fontSize: 18, fontWeight: 'bold' }}>Product Ratings</AppText>
-            <AppText style={{fontSize: 30}} color={theme?.amberGlow}>{rating || "nope"}</AppText>
-            <AppText>Based on <AppText color={theme?.amberGlow}>250</AppText> reviews</AppText>
+            <AppText style={{fontSize: 30}} color={theme?.amberGlow}>{rating}</AppText>
             <TouchableOpacity
               style={[styles.closeButton, { backgroundColor: theme?.amberGlowLight }]}
               onPress={() => setRatingsModalVisible(false)}

@@ -180,6 +180,7 @@ function ChatroomScreen({route, navigation}) {
 
         if (response.data) {
           setAddedMembers([...addedMembers, memberId]);
+          fetchGroups();
         }
         
       }
@@ -197,6 +198,26 @@ function ChatroomScreen({route, navigation}) {
         }
       }
     };
+
+    const fetchGroups = async () => {
+      try {
+        const response = await axios.get(`https://www.ishopwit.com/api/user/groups/?userId=${userId}`)
+    
+        if(response.data) {
+          setGroups(response.data);
+        }
+  
+      } catch (error) {
+        console.log('Error fetching groups:', error);
+        if (error.response) {
+          console.log('Error response:', error.response.data);
+        } else if (error.request) {
+          console.log('Error request:', error.request);
+        } else {
+          console.log('Error message:', error.message);
+        }
+      }
+    }
 
     const handleAddMember = () => {
       setMenuVisible(false);

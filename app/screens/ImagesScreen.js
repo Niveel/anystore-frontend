@@ -34,7 +34,7 @@ const ImagesScreen = ({ route }) => {
         accessible={true}
         accessibilityLabel={`image ${index + 1} of ${allImages.length}`}
       >
-        <AppText color={theme?.midnight}>{index + 1} / {allImages.length}</AppText>
+        <AppText color={theme?.midnight} style={{fontSize: 10}}>{index + 1} / {allImages.length}</AppText>
       </View>
     </View>
   );
