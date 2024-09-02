@@ -114,7 +114,7 @@ function ChatroomScreen({route, navigation}) {
       socket.off('connect_error');
     }
 
-  }, [numOfUsersOnline]);
+  }, []);
 
   // sounds
   const PlayReceiveSound = async () => {
