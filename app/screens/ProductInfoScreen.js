@@ -5,13 +5,11 @@ import Screen from '../components/Screen';
 import AppText from '../components/AppText';
 import AppButton from '../components/AppButton';
 import { useTheme } from '../utils/ThemeContext';
+import routes from '../navigation/routes';
 
-function ProductInfoScreen({ route }) {
-  const {productData, rating} = route.params;
+function ProductInfoScreen({ route, navigation }) {
+  const {productData} = route.params;
   const { theme } = useTheme();
-
-  const [isRatingsModalVisible, setRatingsModalVisible] = useState(false);
-  const [isReviewsModalVisible, setReviewsModalVisible] = useState(false);
 
   return (
     <Screen style={[styles.screen, { backgroundColor: theme?.midnight }]}>
@@ -27,69 +25,19 @@ function ProductInfoScreen({ route }) {
           }}
         >
           <AppButton
-            title="Ratings"
+            title="Ask CAFA"
             color={theme?.amberGlowLight}
             style={styles.buttonStyle}
             textStyle={styles.buttonTextStyle}
-            onPress={() => setRatingsModalVisible(true)}
+            onPress={() => navigation.navigate(routes.CAFA, {productData})}
           />
-          <AppButton
-            title="Reviews"
-            color={theme?.horizon}
-            style={styles.buttonStyle}
-            textStyle={styles.buttonTextStyle}
-            onPress={() => setReviewsModalVisible(true)}
-          />
+    
         </View>
 
         <View>
           <AppText>{productData?.description}</AppText>
         </View>
       </ScrollView>
-
-      {/* Ratings Modal */}
-      <Modal
-        visible={isRatingsModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setRatingsModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContainer, { backgroundColor: theme?.midnight }]}>
-            <AppText style={{ fontSize: 18, fontWeight: 'bold' }}>Product Ratings</AppText>
-            <AppText style={{fontSize: 30}} color={theme?.amberGlow}>{rating}</AppText>
-            <TouchableOpacity
-              style={[styles.closeButton, { backgroundColor: theme?.amberGlowLight }]}
-              onPress={() => setRatingsModalVisible(false)}
-            >
-              <AppText style={{ color: '#fff' }}>Close</AppText>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Reviews Modal */}
-      <Modal
-        visible={isReviewsModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setReviewsModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContainer, { backgroundColor: theme?.midnight }]}>
-            <AppText style={{ fontSize: 18, fontWeight: 'bold' }}>Product Reviews</AppText>
-            <AppText>1. "Great product! Highly recommend."</AppText>
-            <AppText>2. "Good value for the price."</AppText>
-            <AppText>3. "Had some issues with shipping."</AppText>
-            <TouchableOpacity
-              style={[styles.closeButton, { backgroundColor: theme?.mistyLight }]}
-              onPress={() => setReviewsModalVisible(false)}
-            >
-              <AppText style={{ color: '#fff' }}>Close</AppText>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </Screen>
   );
 }
