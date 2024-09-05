@@ -26,7 +26,8 @@
       "buildNumber": "8"
     },
     "android": {
-      "versionCode": 3,
+      "versionCode": 4,
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/a_icon.png",
         "backgroundColor": "#ffffff"
@@ -44,6 +45,12 @@
     "owner": "storebuffet",
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f16d98e9-37c8-4f09-80cc-48b39654da97"
+    }
   }
 }
