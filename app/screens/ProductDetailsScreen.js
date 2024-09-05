@@ -258,7 +258,7 @@ function ProductDetails({route, navigation}) {
                     }}
                     onPress={()=> {
                         if(productData?.description)
-                            navigation.navigate(routes.PRODUCT_INFO, {productData, rating: product?.rating})
+                            navigation.navigate(routes.PRODUCT_INFO, {productData, product})
                         return
                     }}
                 />

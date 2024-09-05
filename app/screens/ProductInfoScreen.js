@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Modal, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, ScrollView, } from 'react-native';
 
 import Screen from '../components/Screen';
 import AppText from '../components/AppText';
@@ -8,7 +8,7 @@ import { useTheme } from '../utils/ThemeContext';
 import routes from '../navigation/routes';
 
 function ProductInfoScreen({ route, navigation }) {
-  const {productData} = route.params;
+  const {productData, product} = route.params;
   const { theme } = useTheme();
 
   return (
@@ -29,11 +29,9 @@ function ProductInfoScreen({ route, navigation }) {
             color={theme?.amberGlowLight}
             style={styles.buttonStyle}
             textStyle={styles.buttonTextStyle}
-            onPress={() => navigation.navigate(routes.CAFA, {productData})}
+            onPress={() => navigation.navigate(routes.CAFA, {product})}
           />
-    
         </View>
-
         <View>
           <AppText>{productData?.description}</AppText>
         </View>
