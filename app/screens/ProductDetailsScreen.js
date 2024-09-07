@@ -218,7 +218,7 @@ function ProductDetails({route, navigation}) {
                     accessible={true}
                     accessibilityLabel={`Product rating is ${product?.rating || 0} stars out of 5`}
                 >
-                    <AppText style={{fontSize: 14}}>Rating ({product?.rating})</AppText>
+                    <AppText style={{fontSize: 14}}>Rating ({product?.rating || 0})</AppText>
                     {renderStars(product?.rating || 0)}
                 </View>
             </View>

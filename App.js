@@ -2,7 +2,6 @@ import 'react-native-get-random-values';
 import 'react-native-gesture-handler';
 import React, { useState, useEffect, } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
-import * as Notifications from 'expo-notifications';
 
 // custom imports
 import AppNavigator from './app/navigation/AppNavigator';
