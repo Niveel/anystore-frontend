@@ -12,7 +12,8 @@
       },
       "android": {
         "buildType": "app-bundle"
-      }
+      },
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
@@ -21,7 +22,8 @@
       },
       "android": {
         "buildType": "app-bundle"
-      }
+      },
+      "channel": "preview"
     },
     "production": {
       "ios": {
@@ -29,8 +31,9 @@
       },
       "android": {
         "buildType": "app-bundle",
-        "gradleCommand": ":app:assembleRelease"
-      }
+        "gradleCommand": ":app:bundleRelease"
+      },
+      "channel": "production"
     }
   },
   "submit": {
