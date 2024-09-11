@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, Text, Image, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import * as Yup from 'yup'
 import { ActivityIndicator } from 'react-native'
@@ -52,73 +52,83 @@ const SignUpScreen = ({ navigation }) => {
                 <Text style={[styles.heading, {color: theme?.white,}]}>Shopwit</Text>
                 <Text style={[styles.subHeading, {color: theme?.white,}]}>Create an account</Text>
             </View>
-            <View style={[styles.signUpContainer, {backgroundColor: theme?.horizon,}]}>
-                <KeyboardAvoidingView
-                    behavior="position"
-                    keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 80}
-                >
-                    <ActivityIndicator animating={loading} size="large" />
-                    <AppForm
-                        initialValues={{ username: "", email: "", password: "", confirmPassword: "" }}
-                        onSubmit={handleSubmit}
-                        validationSchema={validationSchema}
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={[styles.signUpContainer, {backgroundColor: theme?.horizon,}]}>
+                    <KeyboardAvoidingView
+                        behavior="position"
+                        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 80}
+                        style={{
+                            backgroundColor: theme?.horizon,
+                        }}
                     >
-                        <ErrorMessage error={error} visible={error} />
+                        <ActivityIndicator animating={loading} size="large" />
+                        <AppForm
+                            initialValues={{ username: "", email: "", password: "", confirmPassword: "" }}
+                            onSubmit={handleSubmit}
+                            validationSchema={validationSchema}
+                        >
+                            <ErrorMessage error={error} visible={error} />
 
-                        <AppFormField
-                            name="username"
-                            icon="account"
-                            placeholder="Username"
-                            placeholderTextColor={theme?.white}
-                            label="Username"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                        />
-                        <AppFormField
-                            name="email"
-                            icon="email"
-                            placeholder="Email"
-                            placeholderTextColor={theme?.white}
-                            label="email"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            textContentType="emailAddress"
-                        />
-                        <AppFormField
-                            name="password"
-                            icon={isSecure ? "eye" : "eye-off"}
-                            placeholder="Password"
-                            placeholderTextColor={theme?.white}
-                            label="password"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry={isSecure}
-                            textContentType="password"
-                            onPress={text => setIsSecure(!isSecure)}
-                        />
-                        <AppFormField
-                            name="confirmPassword"
-                            icon={isConfirmSecure ? "eye" : "eye-off"}
-                            placeholder="Confirm Password"
-                            placeholderTextColor={theme?.white}
-                            label="confirm password"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry={isConfirmSecure}
-                            onPress={() => setIsConfirmSecure(!isConfirmSecure)}
-                            textContentType="password"
-                        />
-                        <SubmitButton color={theme?.amberGlow} title="Sign up" width="90%" />
-                    </AppForm>
-                </KeyboardAvoidingView>
-                <View style={styles.loginBox}>
-                    <Text style={{ color: theme?.white, alignSelf: "center", marginBottom: 10 }}>Already have an account?
-                    </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate(routes.LOGIN)} style={[styles.login, {backgroundColor: theme?.midnight,}]}>
-                        <Text style={[styles.text, {color: theme?.amberGlow,}]}> Login</Text>
-                    </TouchableOpacity>
+                            <AppFormField
+                                name="username"
+                                icon="account"
+                                placeholder="Username"
+                                placeholderTextColor={theme?.white}
+                                label="Username"
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                            />
+                            <AppFormField
+                                name="email"
+                                icon="email"
+                                placeholder="Email"
+                                placeholderTextColor={theme?.white}
+                                label="email"
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                textContentType="emailAddress"
+                            />
+                            <AppFormField
+                                name="password"
+                                icon={isSecure ? "eye" : "eye-off"}
+                                placeholder="Password"
+                                placeholderTextColor={theme?.white}
+                                label="password"
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                secureTextEntry={isSecure}
+                                textContentType="password"
+                                onPress={text => setIsSecure(!isSecure)}
+                            />
+                            <AppFormField
+                                name="confirmPassword"
+                                icon={isConfirmSecure ? "eye" : "eye-off"}
+                                placeholder="Confirm Password"
+                                placeholderTextColor={theme?.white}
+                                label="confirm password"
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                secureTextEntry={isConfirmSecure}
+                                onPress={() => setIsConfirmSecure(!isConfirmSecure)}
+                                textContentType="password"
+                            />
+                            <SubmitButton 
+                                color={theme?.amberGlow} 
+                                title="Sign up" 
+                                width="70%" 
+                                height={40}
+                            />
+                        </AppForm>
+                    </KeyboardAvoidingView>
+                    <View style={styles.loginBox}>
+                        <Text style={{ color: theme?.white, alignSelf: "center", marginBottom: 10 }}>Already have an account?
+                        </Text>
+                        <TouchableOpacity onPress={() => navigation.navigate(routes.LOGIN)} style={[styles.login, {backgroundColor: theme?.midnight,}]}>
+                            <Text style={[styles.text, {color: theme?.amberGlow,}]}> Login</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
         </Screen>
     )
 }
@@ -156,11 +166,10 @@ const styles = StyleSheet.create({
         height: "80%",
         borderTopRightRadius: 20,
         borderTopLeftRadius: 20,
-        padding: 10,
+        padding: 5,
     },
     subHeading: {
         fontSize: 16,
-        marginTop: 5,
         textAlign: "center",
     },
     text: {

@@ -5,14 +5,14 @@ import {MaterialCommunityIcons} from '@expo/vector-icons'
 import appStyles from '../config/appStyles'
 import { useTheme } from '../utils/ThemeContext'
 
-const AppInput = ({color, icon, size = 30,label,onPress,style, ...otherProps }) => {
+const AppInput = ({color, icon, size = 30,label,onPress,style,height=50, ...otherProps }) => {
     const {theme} = useTheme()
     color = color || theme?.amberGlow
   return (
 
     <View style={styles.inputContainer}>
         {label && <Text style={[styles.text, {color: theme?.text}]}>{label}</Text>}
-        <View style={[styles.inputBox, {borderColor: theme?.amberGlow}]}>
+        <View style={[styles.inputBox, {borderColor: theme?.amberGlow, height: height}]}>
             <TextInput style={[appStyles.text, styles.input, style, {color: theme?.amberGlow}]} {...otherProps} />
             {icon && <MaterialCommunityIcons name={icon} size={size} color={color} onPress={onPress} />}
         </View>
@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         gap: 5,
         width: '90%',
-        height: 50,
         marginHorizontal: "auto",
         borderRadius: 5,
         borderWidth: 1,
@@ -53,7 +52,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
     },
     text: {
-        fontSize: 14,
+        fontSize: 12,
         textAlign: 'left',
         fontWeight: 'bold',
         textTransform: 'uppercase',

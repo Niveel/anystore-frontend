@@ -19,7 +19,7 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
                 accessible={true}
                 accessibilityLabel="Back"
             >
-                <MaterialCommunityIcons name="arrow-left" size={30} color={theme?.amberGlow} />
+                <MaterialCommunityIcons name="arrow-left" size={30} color={theme?.punch} />
             </TouchableOpacity>
             <View style={styles.infoBox}>
                 <AppText style={styles.groupName} numberOfLines={1}>{groupName}</AppText>
@@ -30,9 +30,10 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
                     justifyContent: 'flex-start',
                     width: "55%",
                 }}>
-                    <AppText>Chatroom</AppText>
+                    <AppText style={{fontSize: 12}}>Chatroom</AppText>
                     <AppText style={{
                         fontSize: 10,
+
                     }} color={theme?.white}>{numberOfUsersOnline} {numberOfUsersOnline == 1 ? 'member' : 'members'} online</AppText>
                 </View>
             </View>
@@ -50,7 +51,7 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
             accessible={true}
             accessibilityLabel="Add member"
         >
-            <MaterialCommunityIcons name="account-plus" size={30} color={theme?.amberGlow} />
+            <MaterialCommunityIcons name="account-plus" size={25} color={theme?.amberGlow} />
         </TouchableOpacity>}
         <TouchableOpacity 
             onPress={morePress} 
@@ -59,7 +60,7 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
             accessible={true}
             accessibilityLabel="More options"
         >
-            <MaterialCommunityIcons name="dots-vertical" size={30} color={theme?.amberGlow} />
+            <MaterialCommunityIcons name="dots-vertical" size={25} color={theme?.amberGlow} />
         </TouchableOpacity>
         </View>
 
@@ -100,16 +101,15 @@ const styles = StyleSheet.create({
         width: "70%",
     },
     backBtn: {
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderRadius: 5,
+        padding: 5,
+        borderRadius: 20,
     },
     infoBox: {
         flexDirection: 'column',
-        maxWidth: '83%',
+        width: '83%',
     },
     groupName: {
-        fontSize: 19,
+        fontSize: 16,
         fontWeight: 'bold',
     },
     moreList: {

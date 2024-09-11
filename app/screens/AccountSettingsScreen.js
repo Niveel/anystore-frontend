@@ -115,7 +115,7 @@ const AccountSettingsScreen = ({navigation}) => {
           title="Log Out" 
           color={theme?.amberGlow} 
           onPress={logoutAlert} 
-          style={{marginTop:"auto"}}
+          style={{marginTop:"auto", marginBottom: 30}}
         />
       </View>
     </Screen>

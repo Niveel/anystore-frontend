@@ -13,29 +13,35 @@ function ProductInfoScreen({ route, navigation }) {
 
   return (
     <Screen style={[styles.screen, { backgroundColor: theme?.midnight }]}>
-      <ScrollView>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            padding: 10,
-            borderBottomWidth: 1,
-            borderBottomColor: theme?.blackLight,
-            marginBottom: 20,
-          }}
-        >
-          <AppButton
-            title="Ask CAFA"
-            color={theme?.amberGlowLight}
-            style={styles.buttonStyle}
-            textStyle={styles.buttonTextStyle}
-            onPress={() => navigation.navigate(routes.CAFA, {product})}
-          />
-        </View>
-        <View>
-          <AppText>{productData?.description}</AppText>
-        </View>
-      </ScrollView>
+      <View style={{
+          height: "100%", 
+          justifyContent: "space-between", 
+          padding: 10,
+        }}>
+          <ScrollView
+            style={{
+              height: "100%"
+            }}
+          >
+            <View>
+              <AppText>{productData?.description}</AppText>
+            </View>
+        </ScrollView>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginBottom: 20,
+              }}
+            >
+              <AppButton
+                title="Ask CAFA"
+                color={theme?.amberGlowLight}
+                style={styles.buttonStyle}
+                textStyle={styles.buttonTextStyle}
+                onPress={() => navigation.navigate(routes.CAFA, {product})}
+              />
+            </View>
+      </View>
     </Screen>
   );
 }

@@ -17,12 +17,12 @@ const ErrorMessage = ({error, visible}) => {
 
 const styles = StyleSheet.create({
     error: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: '900',
     },
     errorBox: {
         paddingHorizontal: 10,
-        paddingVertical: 5,
+        paddingVertical: 2,
         opacity: 1,
         width: '90%',
         alignSelf: "center",

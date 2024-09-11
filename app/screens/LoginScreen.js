@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Text, Keyboard } from 'react-native'
+import { View, StyleSheet, Image, Text, Keyboard, TouchableWithoutFeedback, } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import React, { useState, } from 'react'
 import * as Yup from 'yup'
@@ -50,73 +50,76 @@ const LoginScreen = () => {
                 <Text style={[styles.heading, {color: theme?.white,}]}>Shopwit</Text>
                 <Text style={[styles.subHeading, {color: theme?.white,}]}>Your one stop app for your shopping needs.</Text>
             </View>
-            <View style={[styles.loginContainer, {backgroundColor: theme?.horizon,}]}>
-                <ActivityIndicator animating={loading} size="large" />
-                <AppForm
-                    initialValues={{ email: "", password: "" }}
-                    onSubmit={handleSubmit}
-                    validationSchema={validationSchema}
-                >
-                    <ErrorMessage error="Invalid email or password" visible={loginFailed} />
-                    <AppFormField
-                        name="email"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        keyboardType="email-address" textContentType="emailAddress"
-                        icon="email"
-                        placeholder="Email"
-                        placeholderTextColor={theme?.amberGlow}
-                        label="email"
-                    />
-                    <AppFormField
-                        name="password"
-                        placeholder="Password"
-                        placeholderTextColor={theme?.amberGlow}
-                        icon={isSecure ? "eye" : "eye-off"}
-                        label="password"
-                        autoCapitalize="none"
-                        secureTextEntry={isSecure}
-                        autoCorrect={false}
-                        textContentType="password"
-                        onPress={() => setIsSecure(!isSecure)}
-                    />
-                    <SubmitButton 
-                        title="Login" 
-                        width="90%" 
-                        disabled={loading}
-                        color={theme?.amberGlow}
-                    />
-                </AppForm>
-                <View style={styles.actionWrapper}>
-                    <View style={{ alignItems: "center", gap: 5 }}>
-                        <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Don't have an account?
-                        </Text>
-                        <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)} style={[styles.signup, {backgroundColor: theme?.midnight,}]}>
-                            <Text style={[styles.text, {color: theme?.text}]}> Sign up</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ alignItems: "center", gap: 5 }}>
-                        <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Forgot password?
-                        </Text>
-                        <TouchableOpacity onPress={() => navigation.navigate(routes.FORGOT_PASSWORD)} style={[styles.reset, {backgroundColor: theme?.misty,}]}>
-                            <Text style={[styles.text, { color: theme?.midnight, fontWeight: "bold" }]}>Reset</Text>
-                        </TouchableOpacity>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={[styles.loginContainer, {backgroundColor: theme?.horizon,}]}>
+                    <ActivityIndicator animating={loading} size="large" />
+                    <AppForm
+                        initialValues={{ email: "", password: "" }}
+                        onSubmit={handleSubmit}
+                        validationSchema={validationSchema}
+                    >
+                        <ErrorMessage error="Invalid email or password" visible={loginFailed} />
+                        <AppFormField
+                            name="email"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            keyboardType="email-address" textContentType="emailAddress"
+                            icon="email"
+                            placeholder="Email"
+                            placeholderTextColor={theme?.amberGlow}
+                            label="email"
+                        />
+                        <AppFormField
+                            name="password"
+                            placeholder="Password"
+                            placeholderTextColor={theme?.amberGlow}
+                            icon={isSecure ? "eye" : "eye-off"}
+                            label="password"
+                            autoCapitalize="none"
+                            secureTextEntry={isSecure}
+                            autoCorrect={false}
+                            textContentType="password"
+                            onPress={() => setIsSecure(!isSecure)}
+                        />
+                        <SubmitButton 
+                            title="Login" 
+                            width="70%" 
+                            disabled={loading}
+                            color={theme?.amberGlow}
+                            height={40}
+                        />
+                    </AppForm>
+                    <View style={styles.actionWrapper}>
+                        <View style={{ alignItems: "center", gap: 5 }}>
+                            <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Don't have an account?
+                            </Text>
+                            <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)} style={[styles.signup, {backgroundColor: theme?.midnight,}]}>
+                                <Text style={[styles.text, {color: theme?.text}]}> Sign up</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ alignItems: "center", gap: 5 }}>
+                            <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Forgot password?
+                            </Text>
+                            <TouchableOpacity onPress={() => navigation.navigate(routes.FORGOT_PASSWORD)} style={[styles.reset, {backgroundColor: theme?.misty,}]}>
+                                <Text style={[styles.text, { color: theme?.midnight, fontWeight: "bold" }]}>Reset</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
         </Screen>
     )
 }
 
 const styles = StyleSheet.create({
     heading: {
-        fontSize: 40,
+        fontSize: 25,
         fontWeight: "900",
-        marginTop: 20,
+        marginTop: 10,
     },
     subHeading: {
         fontSize: 14,
-        marginTop: 10,
+        marginTop: 5,
         textAlign: "center",
     },
     headerContainer: {
@@ -136,7 +139,7 @@ const styles = StyleSheet.create({
         height: "70%",
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        padding: 20,
+        padding: 5,
     },
     text: {
         fontSize: 14,

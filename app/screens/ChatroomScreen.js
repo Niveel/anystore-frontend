@@ -668,7 +668,7 @@ function ChatroomScreen({route, navigation}) {
         Keyboard.dismiss()
       }}>
         <KeyboardAvoidingView
-          style={{ backgroundColor: theme?.midnight, padding: 10, paddingRight: 5, height: "92%", paddingBottom: 45 }}
+          style={{ backgroundColor: theme?.midnight, padding: 10, paddingRight: 5, height: "92%", paddingBottom: 50 }}
         >
         <ScrollView 
           contentContainerStyle={styles.scrollViewContent}

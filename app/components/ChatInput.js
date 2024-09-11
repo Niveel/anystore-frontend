@@ -51,9 +51,9 @@ const ChatInput = ({message, setMessage, sendMessage, reply, clearReply, onScrol
 
 const styles = StyleSheet.create({
     chatInput: {
-        width: "80%",
+        width: "85%",
         height: "100%",
-        fontSize: 16,
+        fontSize: 15,
         borderRadius: 5,
         paddingHorizontal: 10,
     },
@@ -61,18 +61,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 5,
-        paddingVertical: 10,
-        paddingHorizontal: 5,
+        padding: 5,
         paddingRight: 10,
         width: '100%',
-        height: 80,
+        height: 60,
         borderRadius: 5,
         elevation: 5,
     },
     sendBtn: {
         padding: 10,
         borderRadius: 5,
-        width: "20%",
+        width: "15%",
         alignItems: 'center',
         justifyContent: 'center',
         height: "100%",

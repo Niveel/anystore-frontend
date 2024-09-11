@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, FlatList, TouchableWithoutFeedback, TouchableOpacity, KeyboardAvoidingView, Keyboard, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableWithoutFeedback, TouchableOpacity, KeyboardAvoidingView, Keyboard, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import axios from 'axios';
 
 import Screen from '../components/Screen';
@@ -63,7 +63,10 @@ const CafaAiScreen = ({ route }) => {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Screen style={[styles.container, { backgroundColor: theme?.midnight }]}>
-        <KeyboardAvoidingView style={{ backgroundColor: theme?.midnight, padding: 10, paddingRight: 5, height: "100%", paddingBottom: 20 }}>
+        <KeyboardAvoidingView 
+          style={{ backgroundColor: theme?.midnight, padding: 10, paddingRight: 5, height: "100%", paddingBottom: 20 }}
+          behavior={Platform.OS === 'ios' && 'padding'}
+        >
           <FlatList
             data={messages}
             keyExtractor={(item) => item.id.toString()}

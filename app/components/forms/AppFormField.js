@@ -12,6 +12,7 @@ const AppFormField = ({name, ...otherProps}) => {
       <AppInput 
         onChangeText={handleChange(name)}
         onBlur={()=> setFieldTouched(name)}
+        height={40}
         {...otherProps}
       />
       <ErrorMessage error={errors[name]} visible={touched[name]} />
