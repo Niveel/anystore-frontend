@@ -1,13 +1,18 @@
 import { View, StyleSheet, TouchableOpacity,  } from 'react-native'
-import React from 'react'
+import React, {useState} from 'react'
 
 import Screen from '../components/Screen'
 import AppText from '../components/AppText'
 import { useTheme } from '../utils/ThemeContext' 
+import AppInfoModal from '../components/modals/AppInfoModal'
 
 const OtherSettingsScreen = () => {
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const { theme, toggleTheme } = useTheme()
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
 
   return (
     <Screen style={{
@@ -100,6 +105,24 @@ const OtherSettingsScreen = () => {
         </View>
       </View>
       {/* end of section */}
+      {/* section */}
+      <View style={[styles.section, {
+        backgroundColor: theme.horizon,
+      }]}>
+        <AppText color={theme.text} style={styles.headingText}>App Info</AppText>
+        <TouchableOpacity 
+          style={[styles.button, {backgroundColor: theme?.amberGlow}]}
+          onPress={() => setIsModalVisible(true)}
+        >
+          <AppText color={theme.midnight}>About</AppText>
+        </TouchableOpacity>
+      </View>
+      {/* end of section */}
+
+      <AppInfoModal 
+        visible={isModalVisible}
+        onClose={handleCloseModal}
+      />
     </Screen>
   )
 }
@@ -107,6 +130,11 @@ const OtherSettingsScreen = () => {
 const styles = StyleSheet.create({
   box: {
     padding: 10,
+  },
+  button: {
+    padding: 10,
+    borderRadius: 5,
+    
   },
   colorBox: {
     padding: 10,

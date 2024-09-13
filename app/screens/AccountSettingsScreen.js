@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Alert} from 'react-native'
 import React, {useState} from 'react'
 import * as ImagePicker from 'expo-image-picker'
 
+// CUSTOM IMPORTS
 import useAuth from '../auth/useAuth'
 import Screen from '../components/Screen'
 import ListItem from '../components/ListItem' 

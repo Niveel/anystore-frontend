@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, FlatList, Keyboard, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, FlatList, Keyboard, ActivityIndicator, Platform, ToastAndroid } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -11,9 +11,11 @@ import { addToCart } from '../hooks/utils';
 import ListItem from './ListItem';
 import { useTheme } from '../utils/ThemeContext';
 import SortingBar from './SortingBar';
+import FilterBar from './FilterBar';
 
 function StoreList() {
     const [storeProducts, setStoreProducts] = useState([])
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const [searchText, setSearchText] = useState("")
     const [resultNotFound, setResultNotFound] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -107,6 +109,26 @@ function StoreList() {
           setStoreProducts(prevProducts => [...prevProducts].sort((a, b) => a.rating - b.rating));
         }
   }
+  const handlePriceFilter = ({ minPrice, maxPrice }) => {
+    const min = Number(minPrice);
+    const max = Number(maxPrice);
+    
+    // filter products based on price range
+    const filtered = storeProducts.filter(product => {
+        const price = priceRegex(product.price);
+        return price >= min && price <= max;
+    });
+    
+    setFilteredProducts(filtered);
+    // toast when there is no product in the price range
+    if (filtered.length === 0) {
+      if (Platform.OS === 'ios') {
+        alert("No product found in the price range");
+      } else {
+        ToastAndroid.show("No product found in the price range", ToastAndroid.SHORT);
+      }
+    }
+};
 
   return (
     <View style={styles.container}>
@@ -121,10 +143,24 @@ function StoreList() {
             />
         </View>
         <ActivityIndicator animating={loading} size="large" color={theme?.punch} />
-        {storeProducts?.length > 0 && <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />}
+        {storeProducts?.length > 0 && (
+          <View style={{
+            width: '100%',
+            height: 50,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 12,
+            paddingHorizontal: 15,
+            paddingVertical: 30,
+        }}>
+            <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
+            <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
+        </View>
+        )}
          <FlatList 
-          style={{ flex: 1}}
-          data={storeProducts}
+          style={{ flex: 1,}}
+          data={filteredProducts.length > 0 ? filteredProducts : storeProducts}
           keyExtractor={(storeProduct) => storeProduct?.id?.toString() || generateRandomId().toString()}
           renderItem={({item}) => (
               <ProductCard 
@@ -176,7 +212,7 @@ function StoreList() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 5,
     paddingTop: 0,
     paddingBottom: 10,
     marginTop: 0,
@@ -184,7 +220,7 @@ const styles = StyleSheet.create({
   },
   header: {
     marginTop: 0,
-    paddingBottom: 10,
+    paddingBottom: 5,
     paddingTop: 0,
   },
 });

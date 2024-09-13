@@ -20,6 +20,7 @@ import FilterBar from '../components/FilterBar'
 import useAuth from '../auth/useAuth'
 import authStorage from '../auth/storage'
 import registerDeviceToken from '../api/registerDeviceToken'
+import TutorialModal from '../components/modals/TutorialModal'
 
 // notifications
 Notifications.setNotificationHandler({
@@ -203,6 +204,7 @@ Notifications.setNotificationHandler({
 
         return (
             <Screen style={{ backgroundColor: theme?.midnight }}>
+                <TutorialModal />
                 {/* top bar */}
                 <View style={styles.topBarContainer}>
                     <View style={styles.navbar}>

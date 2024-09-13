@@ -6,12 +6,15 @@ import AccountNavigator from './AccountNavigator'
 import ProductNavigator from './ProductNavigator'
 import RadarNavigation from './RadarNavigation'
 import CritNavigation from './CritNavigation'
+import AuthNavigation from './AuthNavigation'
 import { useTheme } from '../utils/ThemeContext'
+import useAuth from '../auth/useAuth'
 
 const Tab = createBottomTabNavigator()
 
 const AppNavigator = () => {
   const {theme} = useTheme() 
+  const {user} = useAuth()
 
   return (
    <Tab.Navigator
@@ -39,7 +42,7 @@ const AppNavigator = () => {
         />
         <Tab.Screen 
             name='Radar' 
-            component={RadarNavigation} 
+            component={user ? RadarNavigation : AuthNavigation} 
             options={{
               headerShown: false,
               tabBarIcon: ({color, size}) => (
@@ -49,7 +52,7 @@ const AppNavigator = () => {
         />
         <Tab.Screen 
             name='Crit' 
-            component={CritNavigation} 
+            component={user ? CritNavigation : AuthNavigation} 
             options={{
               headerShown: false,
               tabBarIcon: ({color, size}) => (
@@ -59,7 +62,7 @@ const AppNavigator = () => {
         />
         <Tab.Screen 
             name='Account' 
-            component={AccountNavigator} 
+            component={user ? AccountNavigator : AuthNavigation} 
             options={{
               headerShown: false,
               tabBarIcon: ({color, size}) => (

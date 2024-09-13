@@ -14,6 +14,7 @@ const FavAndCartNavigator = () => {
         screenOptions={{
             headerStyle: {
                 backgroundColor: theme?.horizon,
+                height: 60,
             },
             headerTintColor: theme?.amberGlow,
             headerTitleStyle: {

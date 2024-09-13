@@ -31,6 +31,7 @@ const ProductNavigator = () => {
             headerTintColor: theme?.amberGlow,
         }}
     >
+
         <Stack.Screen 
             name='Product' 
             component={FavAndCartNavigator}

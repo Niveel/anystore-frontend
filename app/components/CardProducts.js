@@ -6,11 +6,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductCard from './ProductCard';
 import routes from '../navigation/routes';
 import { addToCart } from '../hooks/utils';
+import useAuth from '../auth/useAuth';
 
 const CardProducts = ({ productData, onEndReached, hasMore }) => {
   const navigation = useNavigation();
   const [cartItemAdded, setCartItemAdded] = useState([]);
   const [loadingAnnouncement, setLoadingAnnouncement] = useState('');
+
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchCartItems();
@@ -44,7 +47,12 @@ const CardProducts = ({ productData, onEndReached, hasMore }) => {
   };
 
   const handleAddToCart = async (product) => {
-    addToCart(product);
+    if (!user) {
+      navigation.navigate(routes.LOGIN);
+      return;
+    } else {
+      addToCart(product);
+    }
   };
 
   const priceRegex = (price) => {

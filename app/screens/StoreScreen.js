@@ -33,7 +33,7 @@ function StoreScreen({route, navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 5,
   },
   
 });

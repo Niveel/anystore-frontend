@@ -13,8 +13,8 @@ function RadarScreen(props) {
       backgroundColor: theme?.midnight,
       padding: 10,
     }}>
-        <View>
-          <RadarList />
+        <View style={{paddingBottom: 15,paddingTop: 15, height: "100%",}}>
+            <RadarList/> 
         </View>
     </Screen>
   );

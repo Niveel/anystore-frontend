@@ -7,10 +7,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './app/navigation/AppNavigator';
 import OfflineNotice from './app/components/OfflineNotice';
 import AuthNavigation from './app/navigation/AuthNavigation';
+import RootNavigator from './app/navigation/RootNavigator';
 import AuthContext from './app/auth/context';
 import authStorage from './app/auth/storage';
 import BarcodePolicyProvider from './app/config/BarcodeContext';
 import {ThemeProvider} from './app/utils/ThemeContext';
+import {TutorialProvider} from './app/utils/TutorialContext';
 
 export default function App() {
   const [user, setUser] = useState()
@@ -27,12 +29,15 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthContext.Provider value={{ user, setUser }}>
-        <BarcodePolicyProvider>
-          <OfflineNotice />
-            <NavigationContainer>
-              {user ? <AppNavigator /> : <AuthNavigation />}
-            </NavigationContainer>
-        </BarcodePolicyProvider>
+        <TutorialProvider>
+          <BarcodePolicyProvider>
+            <OfflineNotice />
+              <NavigationContainer>
+                {/* {user ? <AppNavigator /> : <AuthNavigation />} */}
+                <RootNavigator />
+              </NavigationContainer>
+          </BarcodePolicyProvider>
+        </TutorialProvider>
       </AuthContext.Provider>
     </ThemeProvider>
   );

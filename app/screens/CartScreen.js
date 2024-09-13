@@ -4,15 +4,23 @@ import React from 'react'
 import Screen from '../components/Screen'
 import CartList from '../components/CartList'
 import { useTheme } from '../utils/ThemeContext'
+import useAuth from '../auth/useAuth'
+import ItemEmpty from '../components/ItemEmpty'
 
 const CartScreen = () => {
 
   const {theme} = useTheme()
+  const {user} = useAuth()
 
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
         <View style={{paddingBottom: 15, height: "100%"}}>
-            <CartList/>
+            {/* <CartList/> */}
+            {user ? <CartList/> : <ItemEmpty 
+                                      icon="account-cancel"
+                                      text="Not Logged In"
+                                      subText="Please login to view products in your cart."
+                                  />}
         </View>
     </Screen>
   )

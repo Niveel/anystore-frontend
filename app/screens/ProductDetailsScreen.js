@@ -10,6 +10,7 @@ import Icon from '../components/Icon';
 import Screen from '../components/Screen';
 import routes from '../navigation/routes';
 import { useTheme } from '../utils/ThemeContext';
+import useAuth from '../auth/useAuth';
 
 function ProductDetails({route, navigation}) {
     const [cartItemAdded, setCartItemAdded] = useState([]);
@@ -19,6 +20,7 @@ function ProductDetails({route, navigation}) {
     const product = route.params;
 
     const { theme } = useTheme();
+    const { user } = useAuth();
     
     useEffect(() => {
         fetchFavStores()
@@ -237,7 +239,14 @@ function ProductDetails({route, navigation}) {
                         <AppText style={styles.store} color={theme?.misty}>{product?.shop_name}</AppText>
                         <TouchableOpacity 
                             style={{flexDirection: "row", alignItems: "center", alignSelf: "flex-end"}} 
-                            onPress={()=> handleAddToFavStores(product?.shop_name)}
+                            onPress={()=> {
+                                if(!user) {
+                                    navigation.navigate(routes.LOGIN)
+                                    return
+                                } else {
+                                    handleAddToFavStores(product?.shop_name)
+                                }
+                            }}
                         >
                             <AppText style={styles.heart} color={theme?.white}>Add to Favorite Stores</AppText>
                             <Icon
@@ -263,7 +272,17 @@ function ProductDetails({route, navigation}) {
                     }}
                 />
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity style={[styles.addToCartButton, {backgroundColor: theme?.misty,}]} onPress={()=> handleAddToCart(product?.id)}>
+                    <TouchableOpacity 
+                        style={[styles.addToCartButton, {backgroundColor: theme?.misty,}]} 
+                        onPress={()=> {
+                            if(!user) {
+                                navigation.navigate(routes.LOGIN)
+                                return
+                            } else {
+                                handleAddToCart(product?.id)
+                            }
+                        }}
+                    >
                         <AppText style={styles.cartText}>Add to cart</AppText>
                         <Icon
                             name="cart"
@@ -273,7 +292,14 @@ function ProductDetails({route, navigation}) {
                     </TouchableOpacity>
                     <AppButton 
                         title="Add to Radar"
-                        onPress={()=> handleAddToRadar(product?.id)}
+                        onPress={()=> {
+                            if(!user) {
+                                navigation.navigate(routes.LOGIN)
+                                return
+                            } else {
+                                handleAddToRadar(product?.id)
+                            }
+                        }}
                         style={styles.radar}
                         textStyle={{
                             fontSize: 15,
@@ -286,7 +312,17 @@ function ProductDetails({route, navigation}) {
                     <TouchableOpacity style={[styles.button, {backgroundColor: theme?.horizon,}]} onPress={()=> openBuyNowLink(productData?.link || product?.link)}>
                         <AppText style={styles.buttonText} color={theme?.amberGlow}>Buy Now</AppText>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.share, {backgroundColor: theme?.horizon,}]} onPress={()=> handleShare(product)}>
+                    <TouchableOpacity 
+                        style={[styles.share, {backgroundColor: theme?.horizon,}]} 
+                        onPress={()=> {
+                            if(!user) {
+                                navigation.navigate(routes.LOGIN)
+                                return
+                            } else {
+                                handleShare(product)
+                            }
+                        }}
+                    >
                         <Icon 
                             name="share"
                             size={20}

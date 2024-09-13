@@ -16,7 +16,7 @@ const StoreNavigator = () => {
             presentation: "modal",
             headerStyle: {
                 backgroundColor: theme?.horizon,
-                height: 80,   
+                height: 60,   
             },
             headerTitleStyle: {
                 fontSize: 20,
