@@ -241,7 +241,7 @@ function ProductDetails({route, navigation}) {
                             style={{flexDirection: "row", alignItems: "center", alignSelf: "flex-end"}} 
                             onPress={()=> {
                                 if(!user) {
-                                    navigation.navigate(routes.LOGIN)
+                                    navigation.navigate("Auth", { screen: 'Login' })
                                     return
                                 } else {
                                     handleAddToFavStores(product?.shop_name)
@@ -276,7 +276,7 @@ function ProductDetails({route, navigation}) {
                         style={[styles.addToCartButton, {backgroundColor: theme?.misty,}]} 
                         onPress={()=> {
                             if(!user) {
-                                navigation.navigate(routes.LOGIN)
+                                navigation.navigate("Auth", { screen: 'Login' })
                                 return
                             } else {
                                 handleAddToCart(product?.id)
@@ -294,7 +294,7 @@ function ProductDetails({route, navigation}) {
                         title="Add to Radar"
                         onPress={()=> {
                             if(!user) {
-                                navigation.navigate(routes.LOGIN)
+                                navigation.navigate("Auth", { screen: 'Login' })
                                 return
                             } else {
                                 handleAddToRadar(product?.id)
@@ -316,7 +316,7 @@ function ProductDetails({route, navigation}) {
                         style={[styles.share, {backgroundColor: theme?.horizon,}]} 
                         onPress={()=> {
                             if(!user) {
-                                navigation.navigate(routes.LOGIN)
+                                navigation.navigate("Auth", { screen: 'Login' })
                                 return
                             } else {
                                 handleShare(product)

@@ -48,7 +48,7 @@ const CardProducts = ({ productData, onEndReached, hasMore }) => {
 
   const handleAddToCart = async (product) => {
     if (!user) {
-      navigation.navigate(routes.LOGIN);
+      navigation.navigate("Auth", { screen: 'Login' })
       return;
     } else {
       addToCart(product);
