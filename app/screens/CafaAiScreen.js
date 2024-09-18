@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { View, Text, TextInput, FlatList, TouchableWithoutFeedback, TouchableOpacity, KeyboardAvoidingView, Keyboard, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import axios from 'axios';
 
@@ -64,15 +64,23 @@ const CafaAiScreen = ({ route }) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Screen style={[styles.container, { backgroundColor: theme?.midnight }]}>
         <KeyboardAvoidingView 
-          style={{ backgroundColor: theme?.midnight, padding: 10, paddingRight: 5, height: "100%", paddingBottom: 20 }}
-          behavior={Platform.OS === 'ios' && 'padding'}
+          style={{ 
+            backgroundColor: theme?.midnight, 
+            padding: 10, 
+            paddingRight: 5,  
+            paddingBottom: Platform.OS === 'ios' ? 40 : 15,
+            height: '100%'
+          }}
+          behavior={Platform.OS === 'ios' ? 'padding': undefined}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
         >
           <FlatList
             data={messages}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
-            contentContainerStyle={styles.messagesContainer}
+            contentContainerStyle={styles.messagesContainer} 
             ref={scrollViewRef}
+            automaticallyAdjustKeyboardInsets
           />
           {loading && (
             <View style={styles.loadingContainer}>
@@ -85,7 +93,7 @@ const CafaAiScreen = ({ route }) => {
               style={[styles.textInput, { backgroundColor: theme?.horizon, color: theme?.text, borderColor: theme?.white }]}
               value={input}
               onChangeText={setInput}
-              placeholder="Ask Cafa about the product"
+              placeholder="Ask Cafa about this product"
               placeholderTextColor={theme?.text}
               onSubmitEditing={handleSend}
               multiline
@@ -129,7 +137,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    padding: 5,
     borderRadius: 10,
     marginRight: 5,
     shadowColor: '#000',

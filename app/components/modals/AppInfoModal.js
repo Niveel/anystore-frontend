@@ -24,7 +24,7 @@ const AppInfoModal = ({visible=false, onClose}) => {
         if (currentIndex < tutorialScreens.length - 1) {
             carouselRef.current.snapToNext();
         } else {
-            skipTutorial();
+            onClose()
         }
     };
 
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     innerBox: {
         width: '100%',
         height: "90%",
-        marginTop: 20,
+        marginTop: 50,
         borderRadius: 10,
         padding: 10,
     },
@@ -112,6 +112,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         paddingVertical: 5,
         borderRadius: 5,
+        position: 'absolute',
+        zIndex: 2,
+        right: 10,
+        top: 40,
     }
 });
 

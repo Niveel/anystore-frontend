@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
 import axios from 'axios';
 import { Audio } from 'expo-av';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Screen from '../components/Screen';
 import AppButton from '../components/AppButton';
@@ -49,15 +48,6 @@ function FriendlyScreen({navigation}) {
     fetchGroups();
   }, [groups]);
 
-  // permission modal
-  useEffect(() => {
-    openModal();
-
-    return () => {
-      setModalVisible(false);
-    }
-  }, []);
-
   const fetchGroups = async () => {
     try {
       const response = await axios.get(`https://www.ishopwit.com/api/user/groups/?userId=${userId}`)
@@ -82,18 +72,6 @@ function FriendlyScreen({navigation}) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(date).toLocaleDateString(undefined, options);
   }
-
-  const openModal = async () => {
-    try {
-      const barcodePolicyAccepted = await AsyncStorage.getItem('policyAccepted');
-      if (barcodePolicyAccepted !== 'true') {
-        setModalVisible(false);
-        navigation.navigate('BarcodePolicyScreen');
-      }
-    } catch (error) {
-      console.error('Error reading policyAccepted from AsyncStorage:', error);
-    }
-  };
   
 
   const handleCreateGroup = () => {
@@ -136,7 +114,6 @@ function FriendlyScreen({navigation}) {
       <View style={[styles.heading, {backgroundColor: theme?.horizon,}]}>
         <Text style={[styles.headingText, {color: theme?.amberGlow,}]}>GROUPS</Text>
         <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={() => {
-          openModal()
           setModalVisible(true);
           PlayOpenSound();
           }}>

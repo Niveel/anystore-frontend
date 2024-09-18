@@ -1,14 +1,35 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import FriendlyScreen from '../screens/FriendlyScreen'
 import ChatroomScreen from '../screens/ChatroomScreen'
 import { useTheme } from '../utils/ThemeContext'
+import BarcodePolicyScreen from '../screens/BarcodePolicyScreen'
+import { useBarcodePolicy } from '../config/BarcodeContext'
 
 const Stack = createStackNavigator()
 
 const CritNavigation = () => {
     const {theme} = useTheme()
+    const {barcodeCameraAllow, setBarcodeCameraAllow} = useBarcodePolicy()
+
+    useEffect(() => {
+        const checkPolicy = async () => {
+            try {
+                const storedValue = await AsyncStorage.getItem('policyAccepted')
+                if (storedValue === 'true') {
+                    setBarcodeCameraAllow(true)
+                } else {
+                    setBarcodeCameraAllow(false)
+                }
+            } catch (error) {
+                console.error('Error checking barcode policy:', error)
+            }
+        }
+        checkPolicy()
+    }, [barcodeCameraAllow])
+    
     return (
         <Stack.Navigator
             screenOptions={{
@@ -26,7 +47,7 @@ const CritNavigation = () => {
         >
             <Stack.Screen 
                 name='CritScreen' 
-                component={FriendlyScreen}
+                component={barcodeCameraAllow === true ? FriendlyScreen : BarcodePolicyScreen}
                 options={{
                     headerShown: false
                 }}

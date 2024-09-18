@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import { View, Text, StyleSheet, Platform } from 'react-native'
+import { View, Text, StyleSheet, Platform, Linking, Alert , KeyboardAvoidingView, ScrollView} from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { TouchableOpacity, Keyboard, ToastAndroid } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
@@ -7,6 +7,9 @@ import axios from 'axios'
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
+// import AsyncStorage from '@react-native-async-storage/async-storage'
+
+// AsyncStorage.clear()
 
 import Screen from '../components/Screen'
 import CodeSearch from '../components/CodeSearch'
@@ -142,16 +145,17 @@ Notifications.setNotificationHandler({
         });
 
         useEffect(() => {
-            registerForPushNotificationsAsync().then(token => {
-              if(authToken && user) {
-                // console.log("Device Token: ", token, "authToken: ", authToken, "Username: ", user?.username);
-                registerDeviceToken(authToken, user?.username, token).then(response => {
-                  console.log(response.data.message);
-                }).catch(error => {
-                  console.log("Device Registration Error:",error);
+            if(authToken)
+                registerForPushNotificationsAsync().then(token => {
+                if(authToken && user) {
+                    // console.log("Device Token: ", token, "authToken: ", authToken, "Username: ", user?.username);
+                    registerDeviceToken(authToken, user?.username, token).then(response => {
+                    console.log(response.data.message);
+                    }).catch(error => {
+                    console.log("Device Registration Error:",error);
+                    });
+                }
                 });
-              }
-            });
           }, [authToken]);
 
           // register for push notifications
@@ -174,8 +178,24 @@ Notifications.setNotificationHandler({
                 finalStatus = status;
                 }
                 if (finalStatus !== 'granted') {
-                    alert('Could not register your device for push notifications');
-                    return;
+                    Alert.alert(
+                        'Push Notifications Disabled',
+                        'To receive notifications, please enable push notifications in your settings.',
+                        [
+                          { text: 'Cancel', style: 'cancel' },
+                          {
+                            text: 'Open Settings',
+                            onPress: () => {
+                              if (Platform.OS === 'ios') {
+                                Linking.openURL('app-settings:'); // For iOS
+                              } else {
+                                Linking.openSettings(); // For Android
+                              }
+                            },
+                          },
+                        ]
+                      );
+                      return;
                 }
                 try {
                 const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
@@ -205,98 +225,106 @@ Notifications.setNotificationHandler({
         return (
             <Screen style={{ backgroundColor: theme?.midnight }}>
                 <TutorialModal />
-                {/* top bar */}
-                <View style={styles.topBarContainer}>
-                    <View style={styles.navbar}>
-                        <Text style={{ color: theme?.white, fontSize: 20, fontWeight: '900', marginLeft: 10 }}>Store Search</Text>
-                        <View style={styles.iconBox}>
-                            <TouchableOpacity
-                                onPress={handleFavorite}
-                                accessible={true}
-                                accessibilityLabel='Favorite stores'
-                            >
-                                <MaterialCommunityIcons name="heart" size={30} color={theme?.punch} />
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={handleCart}
-                                accessible={true}
-                                accessibilityLabel='Cart'
-                            >
-                                <MaterialCommunityIcons name="cart" size={30} color={theme?.amberGlow} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <SearchInput
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        placeholder="Search Products by Keyword"
-                        placeholderTextColor={theme?.misty}
-                        onChangeText={text => setSearchText(text)}
-                        searchPress={handleSearch}
-                    />
-                    <CodeSearch />
-                </View>
-                {/* end of top bar */}
-                {/* main body */}
-                <View 
-                    style={[styles.mainBody, {backgroundColor: theme?.horizon,}]}
-                    accessible={true}
-                    accessibilityLabel="Products Area."
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : null}
+                    enabled
+                    style={{minHeight: "100%"}}
                 >
-                    {/* sorting bar */}
-                    {products?.length > 0 && (
-                        <View style={{
-                            width: '100%',
-                            height: 50,
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            gap: 12,
-                            paddingHorizontal: 15,
-                            paddingVertical: 30,
-                        }}>
-                            <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
-                            <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
+                    {/* top bar */}
+                    <View style={styles.topBarContainer}>
+                        <View style={styles.navbar}>
+                            <Text style={{ color: theme?.white, fontSize: 20, fontWeight: '900', marginLeft: 10 }}>Store Search</Text>
+                            <View style={styles.iconBox}>
+                                <TouchableOpacity
+                                    onPress={handleFavorite}
+                                    accessible={true}
+                                    accessibilityLabel='Favorite stores'
+                                >
+                                    <MaterialCommunityIcons name="heart" size={30} color={theme?.punch} />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={handleCart}
+                                    accessible={true}
+                                    accessibilityLabel='Cart'
+                                >
+                                    <MaterialCommunityIcons name="cart" size={30} color={theme?.amberGlow} />
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    ) }
-                    {/* end of sorting bar */}
-                    <CardProducts
-                        productData={filteredProducts.length > 0 ? filteredProducts : products}
-                        onEndReached={handleLoadMore}
-                        hasMore={hasMore}
-                    />
-                    {resultNotFound === true &&
-                        <View style={{
-                            width: '100%',
-                            height: "100%",
-                            justifyContent: 'center',
-                        }}>
-                            <ListItem
-                                title="No result found"
-                                subtitle="Try searching with another keyword"
-                                style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
-                                IconComponent={
-                                    <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
-                                }
-                            />
-                        </View>}
-                    {productLoaded === false &&
-                        <View style={{
-                            width: '100%',
-                            height: "100%",
-                            justifyContent: 'center',
-                        }}>
-                            <ListItem
-                                title="No product loaded"
-                                subtitle="There was an error loading products, please try again later."
-                                style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
-                                IconComponent={
-                                    <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
-                                }
-                            />
-                        </View>}
-                </View>
-                {/* end of main body */}
+                        <SearchInput
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            placeholder="Search Products by Keyword"
+                            placeholderTextColor={theme?.misty}
+                            onChangeText={text => setSearchText(text)}
+                            searchPress={handleSearch}
+                            keyboardType="default"
+                            onSubmitEditing={handleSearch}
+                        />
+                        <CodeSearch />
+                    </View>
+                    {/* end of top bar */}
+                    {/* main body */}
+                    <View 
+                        style={[styles.mainBody, {backgroundColor: theme?.horizon,}]}
+                        accessible={true}
+                        accessibilityLabel="Products Area."
+                    >
+                        {/* sorting bar */}
+                        {products?.length > 0 && (
+                            <View style={{
+                                width: '100%',
+                                height: 50,
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                gap: 12,
+                                paddingHorizontal: 15,
+                                paddingVertical: 30,
+                            }}>
+                                <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
+                                <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
+                            </View>
+                        ) }
+                        {/* end of sorting bar */}
+                        <CardProducts
+                            productData={filteredProducts.length > 0 ? filteredProducts : products}
+                            onEndReached={handleLoadMore}
+                            hasMore={hasMore}
+                        />
+                        {resultNotFound === true &&
+                            <View style={{
+                                width: '100%',
+                                height: "100%",
+                                justifyContent: 'center',
+                            }}>
+                                <ListItem
+                                    title="No result found"
+                                    subtitle="Try searching with another keyword"
+                                    style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
+                                    IconComponent={
+                                        <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
+                                    }
+                                />
+                            </View>}
+                        {productLoaded === false &&
+                            <View style={{
+                                width: '100%',
+                                height: "100%",
+                                justifyContent: 'center',
+                            }}>
+                                <ListItem
+                                    title="No product loaded"
+                                    subtitle="There was an error loading products, please try again later."
+                                    style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
+                                    IconComponent={
+                                        <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
+                                    }
+                                />
+                            </View>}
+                    </View>
+                    {/* end of main body */}
+                </KeyboardAvoidingView>
             </Screen>
         )
     }
@@ -314,6 +342,7 @@ Notifications.setNotificationHandler({
             borderTopRightRadius: 30,
             paddingHorizontal: 15,
             paddingBottom: 85,
+            flexShrink: 0,
         },
         navbar: {
             width: '100%',
@@ -326,6 +355,7 @@ Notifications.setNotificationHandler({
         topBarContainer: {
             width: '100%',
             height: "20%",
+            paddingTop: 15,
             gap: 15,
             justifyContent: 'flex-start',
             alignItems: 'center',

@@ -1,6 +1,7 @@
 import React, {useState, useRef} from 'react';
 import { View, StyleSheet, Modal, TouchableOpacity, Dimensions } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
+import { useNavigation } from '@react-navigation/native';
 
 import { useTheme } from '../../utils/ThemeContext';
 import AppText from '../AppText';
@@ -14,6 +15,7 @@ const TutorialModal = () => {
     const { showTutorial, removeTutorialValue,} = useTutorial();
     const [currentIndex, setCurrentIndex] = useState(0);
     const carouselRef = useRef(null);
+    const navigation = useNavigation();
 
     const tutorialScreens = [
         { key: 'home', component: <Home /> },
@@ -24,6 +26,7 @@ const TutorialModal = () => {
 
     const skipTutorial = () => {
         removeTutorialValue();
+        navigation.navigate('App', {screen: 'Product'});
     }
 
     const goToNext = () => {
@@ -31,6 +34,7 @@ const TutorialModal = () => {
             carouselRef.current.snapToNext();
         } else {
             skipTutorial();
+            
         }
     };
 
@@ -108,7 +112,7 @@ const styles = StyleSheet.create({
     innerBox: {
         width: '100%',
         height: "90%",
-        marginTop: 20,
+        marginTop: 50,
         borderRadius: 10,
         padding: 10,
     },
@@ -117,6 +121,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         paddingVertical: 5,
         borderRadius: 5,
+        position: 'absolute',
+        zIndex: 2,
+        right: 10,
+        top: 40,
     }
 });
 

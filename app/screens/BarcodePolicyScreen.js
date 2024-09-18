@@ -9,33 +9,12 @@ import { useBarcodePolicy } from '../config/BarcodeContext';
 import { useTheme } from '../utils/ThemeContext';
 
 function BarcodePolicyScreen({ navigation }) {
-  const { setBarcodeCameraAllow } = useBarcodePolicy();
   const { theme } = useTheme();
-  const [policyChecked, setPolicyChecked] = useState(false);
-
-  // Effect to check if the policy has already been accepted
-  useEffect(() => {
-    const checkPolicyStatus = async () => {
-      try {
-        const policyStatus = await AsyncStorage.getItem('policyAccepted');
-        
-        if (policyStatus === 'true') {
-          navigation.goBack();
-        } else {
-          setPolicyChecked(true); 
-        }
-      } catch (error) {
-        console.error('Error reading policy status from AsyncStorage:', error);
-      }
-    };
-
-    checkPolicyStatus();
-  }, []);
+  const { setBarcodeCameraAllow } = useBarcodePolicy();
 
   const disallowPolicy = async () => {
     try {
-      await AsyncStorage.removeItem('policyAccepted');
-      setBarcodeCameraAllow(false);
+      await AsyncStorage.setItem('policyAccepted', 'false');
       navigation.goBack();
     } catch (error) {
       console.error('Error handling disallow policy:', error);
@@ -45,8 +24,7 @@ function BarcodePolicyScreen({ navigation }) {
   const allowPolicy = async () => {
     try {
       await AsyncStorage.setItem('policyAccepted', 'true');
-      setBarcodeCameraAllow(true); 
-      navigation.goBack();
+      setBarcodeCameraAllow(true);
     } catch (error) {
       console.error('Error handling allow policy:', error);
     }
@@ -55,11 +33,6 @@ function BarcodePolicyScreen({ navigation }) {
   const openPrivacyPolicy = () => {
     Linking.openURL('https://www.niveel.com/privacy/');
   };
-
-
-  if (!policyChecked) {
-    return null;
-  }
 
   return (
     <Screen style={[styles.screen, { backgroundColor: theme?.midnight }]}>

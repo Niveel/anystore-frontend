@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Modal, TouchableHighlight, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, StyleSheet, Modal, TouchableHighlight, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 
 import { useTheme } from '../utils/ThemeContext';
@@ -15,11 +15,11 @@ function CustomModal({visible, onPress, children, ...otherProps}) {
     >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={[styles.container, {backgroundColor: theme?.horizon}]}>
-                <View style={styles.body}>
+                <View style={[styles.body, {paddingVertical: Platform.OS === "ios" ? 50 : 30}]}>
                 {children}
                 </View>
                 <TouchableHighlight 
-                    style={styles.closeBtn}
+                    style={[styles.closeBtn, {top: Platform.OS === "ios" ? 40 : 10}]}
                     onPress={onPress}
                     accessible={true}
                     accessibilityLabel="Close Modal"
@@ -35,18 +35,16 @@ function CustomModal({visible, onPress, children, ...otherProps}) {
 const styles = StyleSheet.create({
     body: {
         padding: 10,
-        paddingVertical: 30,
         borderRadius: 5,
         height: "100%",
     },
     container: {
         paddingHorizontal: 10,
-        paddingVertical: 40,
+        paddingVertical: 50,
         flex: 1,
     },
     closeBtn: {
         position: 'absolute',
-        top: 10,
         right: 20,
 
     },

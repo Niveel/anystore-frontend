@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Text, Keyboard, TouchableWithoutFeedback, } from 'react-native'
+import { View, StyleSheet, Image, Text, Keyboard, TouchableWithoutFeedback, ScrollView } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import React, { useState, } from 'react'
 import * as Yup from 'yup'
@@ -45,68 +45,80 @@ const LoginScreen = () => {
 
     return (
         <Screen style={{backgroundColor: theme?.midnight,}}>
-            <View style={styles.headerContainer}>
-                <Image source={require("../assets/login.png")} style={styles.image} blurRadius={1.5} />
-                <Text style={[styles.heading, {color: theme?.white,}]}>Shopwit</Text>
-                <Text style={[styles.subHeading, {color: theme?.white,}]}>Your one stop app for your shopping needs.</Text>
-            </View>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={[styles.loginContainer, {backgroundColor: theme?.horizon,}]}>
-                    <ActivityIndicator animating={loading} size="large" />
-                    <AppForm
-                        initialValues={{ email: "", password: "" }}
-                        onSubmit={handleSubmit}
-                        validationSchema={validationSchema}
-                    >
-                        <ErrorMessage error="Invalid email or password" visible={loginFailed} />
-                        <AppFormField
-                            name="email"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            keyboardType="email-address" textContentType="emailAddress"
-                            icon="email"
-                            placeholder="Email"
-                            placeholderTextColor={theme?.amberGlow}
-                            label="email"
-                        />
-                        <AppFormField
-                            name="password"
-                            placeholder="Password"
-                            placeholderTextColor={theme?.amberGlow}
-                            icon={isSecure ? "eye" : "eye-off"}
-                            label="password"
-                            autoCapitalize="none"
-                            secureTextEntry={isSecure}
-                            autoCorrect={false}
-                            textContentType="password"
-                            onPress={() => setIsSecure(!isSecure)}
-                        />
-                        <SubmitButton 
-                            title="Login" 
-                            width="70%" 
-                            disabled={loading}
-                            color={theme?.amberGlow}
-                            height={40}
-                        />
-                    </AppForm>
-                    <View style={styles.actionWrapper}>
-                        <View style={{ alignItems: "center", gap: 5 }}>
-                            <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Don't have an account?
-                            </Text>
-                            <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)} style={[styles.signup, {backgroundColor: theme?.midnight,}]}>
-                                <Text style={[styles.text, {color: theme?.text}]}> Sign up</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ alignItems: "center", gap: 5 }}>
-                            <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Forgot password?
-                            </Text>
-                            <TouchableOpacity onPress={() => navigation.navigate(routes.FORGOT_PASSWORD)} style={[styles.reset, {backgroundColor: theme?.misty,}]}>
-                                <Text style={[styles.text, { color: theme?.midnight, fontWeight: "bold" }]}>Reset</Text>
-                            </TouchableOpacity>
+            <ScrollView
+                style={{
+                    minHeight: "100%",
+                }}
+                contentContainerStyle={{
+                    flexGrow: 1,
+                    gap: 0,
+                }}
+            >
+                <View style={styles.headerContainer}>
+                    <Image source={require("../assets/login.png")} style={styles.image} blurRadius={1.5} />
+                    <Text style={[styles.heading, {color: theme?.white,}]}>Shopwit</Text>
+                    <Text style={[styles.subHeading, {color: theme?.white,}]}>Your one stop app for your shopping needs.</Text>
+                </View>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={[styles.loginContainer, {backgroundColor: theme?.horizon,}]}>
+                        <ActivityIndicator animating={loading} size="large" />
+                        <AppForm
+                            initialValues={{ email: "", password: "" }}
+                            onSubmit={handleSubmit}
+                            validationSchema={validationSchema}
+                        >
+                            <ErrorMessage error="Invalid email or password" visible={loginFailed} />
+                            <AppFormField
+                                name="email"
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                keyboardType="email-address" 
+                                textContentType="emailAddress"
+                                icon="email"
+                                placeholder="Email"
+                                placeholderTextColor={theme?.amberGlow}
+                                label="email"
+                            />
+                            <AppFormField
+                                name="password"
+                                placeholder="Password"
+                                placeholderTextColor={theme?.amberGlow}
+                                icon={isSecure ? "eye" : "eye-off"}
+                                label="password"
+                                autoCapitalize="none"
+                                secureTextEntry={isSecure}
+                                autoCorrect={false}
+                                textContentType="password"
+                                onPress={() => setIsSecure(!isSecure)}
+                                visibilityLabel={isSecure ? "show password" : "hide password"}
+                            />
+                            <SubmitButton 
+                                title="Login" 
+                                width="70%" 
+                                disabled={loading}
+                                color={theme?.amberGlow}
+                                height={40}
+                            />
+                        </AppForm>
+                        <View style={styles.actionWrapper}>
+                            <View style={{ alignItems: "center", gap: 5 }}>
+                                <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Don't have an account?
+                                </Text>
+                                <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)} style={[styles.signup, {backgroundColor: theme?.midnight,}]}>
+                                    <Text style={[styles.text, {color: theme?.text}]}> Sign up</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{ alignItems: "center", gap: 5 }}>
+                                <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Forgot password?
+                                </Text>
+                                <TouchableOpacity onPress={() => navigation.navigate(routes.FORGOT_PASSWORD)} style={[styles.reset, {backgroundColor: theme?.misty,}]}>
+                                    <Text style={[styles.text, { color: theme?.midnight, fontWeight: "bold" }]}>Reset</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
-                </View>
-            </TouchableWithoutFeedback>
+                </TouchableWithoutFeedback>
+            </ScrollView>
         </Screen>
     )
 }

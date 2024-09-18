@@ -101,7 +101,7 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                     {
                         flexDirection: 'row', 
                         justifyContent: justifyContent, 
-                        marginBottom: 15,
+                        marginBottom: 10,
                         marginTop: 0,
                     },
                     msgId && selectedMessageIds.includes(msgId) && {backgroundColor: theme?.mistyLight, borderWidth: 1, borderColor: theme?.amberGlow, borderRadius: 5, padding: 2}
@@ -159,9 +159,9 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                         accessibilityHint='This message has been flagged for tone. Double tap to view reason.'
                     />
                     <AppText style={{
-                        fontSize: 16, 
+                        fontSize: 14, 
                         fontWeight: 'bold',
-                        paddingBottom: 6,
+                        paddingBottom: 5,
                         }}
                         color={isCurrentUser ? theme?.midnight : theme?.white}
                     >{msgContent}</AppText>
@@ -172,10 +172,10 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                         alignItems: 'center',
                     }}>
                         <AppText 
-                        style={{fontSize: 8, fontWeight: 'bold'}} color={theme?.white} numberOfLines={1}>{isCurrentUser ? "You" : msgSenderUsername}</AppText>
+                        style={{fontSize: 7, fontWeight: 'bold'}} color={theme?.white} numberOfLines={1}>{isCurrentUser ? "You" : msgSenderUsername}</AppText>
                         <AppText
                         style={{
-                            fontSize: 8,
+                            fontSize: 6,
                             fontWeight: 'bold',
                             marginHorizontal: 5,
                         }}

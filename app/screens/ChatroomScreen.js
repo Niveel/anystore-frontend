@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect, useCallback} from 'react';
-import { View, StyleSheet, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, Alert, Keyboard, BackHandler, ToastAndroid } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, Alert, Keyboard, BackHandler, ToastAndroid, Platform, useWindowDimensions } from 'react-native';
 import axios from 'axios';
 import {io} from 'socket.io-client';
 import { Audio } from 'expo-av';
@@ -663,12 +663,20 @@ function ChatroomScreen({route, navigation}) {
       )}
       {/* end of menu */}
 
-      <TouchableWithoutFeedback onPress={() => {
+      <TouchableWithoutFeedback 
+        onPress={() => {
         setMenuVisible(false)
         Keyboard.dismiss()
-      }}>
+        }}
+      >
         <KeyboardAvoidingView
-          style={{ backgroundColor: theme?.midnight, padding: 10, paddingRight: 5, height: "92%", paddingBottom: 50 }}
+          style={{ 
+            backgroundColor: theme?.midnight,
+            // flex: 1, 
+            height: '93%',
+          }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 30}
         >
         <ScrollView 
           contentContainerStyle={styles.scrollViewContent}
@@ -733,6 +741,7 @@ function ChatroomScreen({route, navigation}) {
                       msgPress={() => {
                         setSelectedMessages([])
                         setMenuVisible(false);
+                        // Keyboard.dismiss();
                       }} 
                       justifyContent={justifyContent}
                       index={index}
@@ -761,15 +770,15 @@ function ChatroomScreen({route, navigation}) {
             {/* end of messages */}
           </View>
         </ScrollView>
-        {/* Chat input */}
-        <ChatInput
-          message={message} 
-          setMessage={setMessage}
-          sendMessage={() => handleSendMsg(groupId, message, user?._id)}
-          reply={replyMessage}
-          clearReply={clearReply}
-        />
-        {/* End of chat input */}
+          {/* Chat input */}
+          <ChatInput
+            message={message} 
+            setMessage={setMessage}
+            sendMessage={() => handleSendMsg(groupId, message, user?._id)}
+            reply={replyMessage}
+            clearReply={clearReply}
+          />
+          {/* End of chat input */}
     </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
         

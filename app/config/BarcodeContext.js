@@ -1,9 +1,13 @@
 import React, {createContext, useContext, useState} from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const BarcodeContext = createContext()
 
 const BarcodePolicyProvider = ({children}) => {
-    const [barcodeCameraAllow, setBarcodeCameraAllow] = useState(false)
+    const [barcodeCameraAllow, setBarcodeCameraAllow] = useState(()=> {
+      const storedValue = AsyncStorage.getItem('policyAccepted')
+      return storedValue === 'true'
+    })
   return (
     <BarcodeContext.Provider value={{barcodeCameraAllow, setBarcodeCameraAllow}}>
         {children}
