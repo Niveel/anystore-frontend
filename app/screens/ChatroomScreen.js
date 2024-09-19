@@ -292,7 +292,7 @@ function ChatroomScreen({route, navigation}) {
             onPress: () => console.log('Cancel Pressed'),
             style: 'cancel'
           },
-          { text: 'YES', onPress: () => exitGroup() }
+          { text: 'Yes', onPress: () => exitGroup() }
         ],
         { cancelable: true }
       );
@@ -628,6 +628,8 @@ function ChatroomScreen({route, navigation}) {
       }
     }, [longPressMsgState]); 
 
+    const {height} = useWindowDimensions()
+ 
     // console.log("messages are:", messages)
     // console.log("selected messages are:", selectedMessages)
   return (
@@ -676,7 +678,7 @@ function ChatroomScreen({route, navigation}) {
             height: '93%',
           }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 30}
+          keyboardVerticalOffset={height > 700 ? 30 : 60}
         >
         <ScrollView 
           contentContainerStyle={styles.scrollViewContent}
@@ -850,8 +852,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   scrollViewContent: {
-    minHeight: '100%',
-    paddingTop: 15
+    minHeight: '93%',
+    paddingTop: 15,
   },
   chatContainer: {
     width: '100%',

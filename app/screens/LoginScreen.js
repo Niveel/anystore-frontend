@@ -4,6 +4,7 @@ import React, { useState, } from 'react'
 import * as Yup from 'yup'
 import { useNavigation } from '@react-navigation/native'
 import { ActivityIndicator } from 'react-native'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 import Screen from '../components/Screen'
 import routes from '../navigation/routes'
@@ -58,6 +59,14 @@ const LoginScreen = () => {
                     <Image source={require("../assets/login.png")} style={styles.image} blurRadius={1.5} />
                     <Text style={[styles.heading, {color: theme?.white,}]}>Shopwit</Text>
                     <Text style={[styles.subHeading, {color: theme?.white,}]}>Your one stop app for your shopping needs.</Text>
+                    <TouchableOpacity 
+                        onPress={() => navigation.goBack()} 
+                        style={[styles.backBtn, {backgroundColor: theme?.horizon,}]}
+                        accessible={true}
+                        accessibilityLabel="Go Back"
+                    >
+                        <MaterialCommunityIcons name="arrow-left" size={30} color={theme?.punch} />
+                    </TouchableOpacity>
                 </View>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={[styles.loginContainer, {backgroundColor: theme?.horizon,}]}>
@@ -124,6 +133,13 @@ const LoginScreen = () => {
 }
 
 const styles = StyleSheet.create({
+    backBtn: {
+        padding: 5,
+        borderRadius: 20,
+        position: "absolute",
+        top: 10,
+        left: 10,
+    },
     heading: {
         fontSize: 25,
         fontWeight: "900",

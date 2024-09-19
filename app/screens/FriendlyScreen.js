@@ -260,6 +260,7 @@ const styles = StyleSheet.create({
   body: {
     width: '100%',
     height: '90%',
+    padding: 10,
   },
   createdGroups: {
     minHeight: "50%",

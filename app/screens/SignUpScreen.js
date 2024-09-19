@@ -2,6 +2,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, KeyboardAvoidingView, 
 import React, { useState } from 'react'
 import * as Yup from 'yup'
 import { ActivityIndicator } from 'react-native'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 import { AppForm, AppFormField, SubmitButton, ErrorMessage } from '../components/forms'
 import routes from '../navigation/routes'
@@ -60,6 +61,14 @@ const SignUpScreen = ({ navigation }) => {
                     <Image source={require("../assets/signup.png")} style={styles.image} blurRadius={10} />
                     <Text style={[styles.heading, {color: theme?.white,}]}>Shopwit</Text>
                     <Text style={[styles.subHeading, {color: theme?.white,}]}>Create an account</Text>
+                    <TouchableOpacity 
+                        onPress={() => navigation.goBack()} 
+                        style={[styles.backBtn, {backgroundColor: theme?.horizon,}]}
+                        accessible={true}
+                        accessibilityLabel="Go Back"
+                    >
+                        <MaterialCommunityIcons name="arrow-left" size={30} color={theme?.punch} />
+                    </TouchableOpacity>
                 </View>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={[styles.signUpContainer, {backgroundColor: theme?.horizon,}]}>
@@ -147,6 +156,13 @@ const SignUpScreen = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
+    backBtn: {
+        padding: 5,
+        borderRadius: 20,
+        position: "absolute",
+        top: 10,
+        left: 10,
+    },
     headerContainer: {
         width: '100%',
         height: "20%",

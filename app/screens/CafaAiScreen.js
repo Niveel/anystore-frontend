@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef} from 'react';
-import { View, Text, TextInput, FlatList, TouchableWithoutFeedback, TouchableOpacity, KeyboardAvoidingView, Keyboard, StyleSheet, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableWithoutFeedback, TouchableOpacity, KeyboardAvoidingView, Keyboard, StyleSheet, ActivityIndicator, Platform, useWindowDimensions } from 'react-native';
 import axios from 'axios';
 
 import Screen from '../components/Screen';
@@ -16,6 +16,7 @@ const CafaAiScreen = ({ route }) => {
   const productTitle = route?.params?.product.title;
 
   const scrollViewRef = useRef();
+  const {height} = useWindowDimensions()
 
   const handleSend = async () => {
     if (input.trim()) {
@@ -88,26 +89,31 @@ const CafaAiScreen = ({ route }) => {
               <Text style={{ color: theme?.text }}>Cafa is thinking...</Text>
             </View>
           )}
-          <View style={[styles.inputContainer, { backgroundColor: theme?.horizon }]}>
-            <TextInput
-              style={[styles.textInput, { backgroundColor: theme?.horizon, color: theme?.text, borderColor: theme?.white }]}
-              value={input}
-              onChangeText={setInput}
-              placeholder="Ask Cafa about this product"
-              placeholderTextColor={theme?.text}
-              onSubmitEditing={handleSend}
-              multiline
-              selectionColor={theme?.text}
-            />
-            <TouchableOpacity
-              style={[styles.sendBtn, { backgroundColor: theme?.amberGlow }]}
-              onPress={handleSend}
-              accessible={true}
-              accessibilityLabel="Send message"
-            >
-              <Text style={{ color: theme?.midnight }}>Send</Text>
-            </TouchableOpacity>
-          </View>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding': undefined}
+            keyboardVerticalOffset={height > 700 ? 80 : 30}
+          >
+            <View style={[styles.inputContainer, { backgroundColor: theme?.horizon }]}>
+              <TextInput
+                style={[styles.textInput, { backgroundColor: theme?.horizon, color: theme?.text, borderColor: theme?.white }]}
+                value={input}
+                onChangeText={setInput}
+                placeholder="Ask Cafa about this product"
+                placeholderTextColor={theme?.text}
+                onSubmitEditing={handleSend}
+                multiline
+                selectionColor={theme?.text}
+              />
+              <TouchableOpacity
+                style={[styles.sendBtn, { backgroundColor: theme?.amberGlow }]}
+                onPress={handleSend}
+                accessible={true}
+                accessibilityLabel="Send message"
+              >
+                <Text style={{ color: theme?.midnight }}>Send</Text>
+              </TouchableOpacity>
+            </View>
+          </KeyboardAvoidingView>
         </KeyboardAvoidingView>
       </Screen>
     </TouchableWithoutFeedback>
