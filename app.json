@@ -2,13 +2,13 @@
   "expo": {
     "name": "Shopwit",
     "slug": "Shopwit",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "orientation": "portrait",
     "icon": "./app/assets/a_icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./app/assets/custom_splash.png",
-      "resizeMode": "cover",
+      "resizeMode": "contain",
       "backgroundColor": "#1a2f56"
     },
     "assetBundlePatterns": [
