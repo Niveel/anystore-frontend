@@ -28,7 +28,7 @@ const send_sound = '../assets/sounds/send_sound.mp3';
 const { height: screenHeight } = Dimensions.get('window');
 
 const keyboardVerticalOffset = Platform.select({
-  ios: screenHeight > 700 ? 100 : 80, 
+  ios: screenHeight > 700 ? 90 : 70, 
   android: screenHeight > 700 ? 30 : 10, 
 });
 
