@@ -16,8 +16,11 @@ const CafaAiScreen = ({ route }) => {
   const productTitle = route?.params?.product.title;
 
   const scrollViewRef = useRef();
-  const {height} = useWindowDimensions()
-
+  const { height } = useWindowDimensions();
+  const keyboardVerticalOffset = Platform.select({
+    ios: height > 700 ? 140 : 100, 
+    android: height > 700 ? 80 : 30, 
+  });
   const handleSend = async () => {
     if (input.trim()) {
       const newMessage = { id: messages.length, text: input, sender: 'user' };
@@ -72,8 +75,8 @@ const CafaAiScreen = ({ route }) => {
             paddingBottom: Platform.OS === 'ios' ? 40 : 15,
             height: '100%'
           }}
-          behavior={Platform.OS === 'ios' ? 'padding': undefined}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+          behavior={Platform.OS === 'ios' ? 'padding': "height"}
+          keyboardVerticalOffset={keyboardVerticalOffset}
         >
           <FlatList
             data={messages}
@@ -81,7 +84,7 @@ const CafaAiScreen = ({ route }) => {
             renderItem={renderItem}
             contentContainerStyle={styles.messagesContainer} 
             ref={scrollViewRef}
-            automaticallyAdjustKeyboardInsets
+            // automaticallyAdjustKeyboardInsets
           />
           {loading && (
             <View style={styles.loadingContainer}>
@@ -89,31 +92,26 @@ const CafaAiScreen = ({ route }) => {
               <Text style={{ color: theme?.text }}>Cafa is thinking...</Text>
             </View>
           )}
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding': undefined}
-            keyboardVerticalOffset={height > 700 ? 80 : 30}
-          >
-            <View style={[styles.inputContainer, { backgroundColor: theme?.horizon }]}>
-              <TextInput
-                style={[styles.textInput, { backgroundColor: theme?.horizon, color: theme?.text, borderColor: theme?.white }]}
-                value={input}
-                onChangeText={setInput}
-                placeholder="Ask Cafa about this product"
-                placeholderTextColor={theme?.text}
-                onSubmitEditing={handleSend}
-                multiline
-                selectionColor={theme?.text}
-              />
-              <TouchableOpacity
-                style={[styles.sendBtn, { backgroundColor: theme?.amberGlow }]}
-                onPress={handleSend}
-                accessible={true}
-                accessibilityLabel="Send message"
-              >
-                <Text style={{ color: theme?.midnight }}>Send</Text>
-              </TouchableOpacity>
-            </View>
-          </KeyboardAvoidingView>
+          <View style={[styles.inputContainer, { backgroundColor: theme?.horizon }]}>
+            <TextInput
+              style={[styles.textInput, { backgroundColor: theme?.horizon, color: theme?.text, borderColor: theme?.white }]}
+              value={input}
+              onChangeText={setInput}
+              placeholder="Ask Cafa about this product"
+              placeholderTextColor={theme?.text}
+              onSubmitEditing={handleSend}
+              multiline
+              selectionColor={theme?.text}
+            />
+            <TouchableOpacity
+              style={[styles.sendBtn, { backgroundColor: theme?.amberGlow }]}
+              onPress={handleSend}
+              accessible={true}
+              accessibilityLabel="Send message"
+            >
+              <Text style={{ color: theme?.midnight }}>Send</Text>
+            </TouchableOpacity>
+          </View>
         </KeyboardAvoidingView>
       </Screen>
     </TouchableWithoutFeedback>

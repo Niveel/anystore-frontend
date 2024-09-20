@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect, useCallback} from 'react';
-import { View, StyleSheet, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, Alert, Keyboard, BackHandler, ToastAndroid, Platform, useWindowDimensions } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, Alert, Keyboard, BackHandler, ToastAndroid, Platform, useWindowDimensions, Dimensions } from 'react-native';
 import axios from 'axios';
 import {io} from 'socket.io-client';
 import { Audio } from 'expo-av';
@@ -25,6 +25,12 @@ import ChatRoomMenu from '../components/ChatRoomMenu';
 
 const receive_sound = '../assets/sounds/receive_sound.wav';
 const send_sound = '../assets/sounds/send_sound.mp3';
+const { height: screenHeight } = Dimensions.get('window');
+
+const keyboardVerticalOffset = Platform.select({
+  ios: screenHeight > 700 ? 100 : 80, 
+  android: screenHeight > 700 ? 30 : 10, 
+});
 
 function ChatroomScreen({route, navigation}) {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -627,8 +633,6 @@ function ChatroomScreen({route, navigation}) {
         setSelectedMessages([]);
       }
     }, [longPressMsgState]); 
-
-    const {height} = useWindowDimensions()
  
     // console.log("messages are:", messages)
     // console.log("selected messages are:", selectedMessages)
@@ -678,7 +682,7 @@ function ChatroomScreen({route, navigation}) {
             height: '93%',
           }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={height > 700 ? 30 : 60}
+          keyboardVerticalOffset={keyboardVerticalOffset}
         >
         <ScrollView 
           contentContainerStyle={styles.scrollViewContent}
