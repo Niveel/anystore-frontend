@@ -1,4 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack'
+import React from 'react'
+import { Platform } from 'react-native'
 
 import CartScreen from '../screens/CartScreen'
 import ProductsScreen from '../screens/ProductsScreen'
@@ -14,7 +16,7 @@ const FavAndCartNavigator = () => {
         screenOptions={{
             headerStyle: {
                 backgroundColor: theme?.horizon,
-                height: 60,
+                height: Platform.OS === 'ios' ? 110 : 60,
             },
             headerTintColor: theme?.amberGlow,
             headerTitleStyle: {

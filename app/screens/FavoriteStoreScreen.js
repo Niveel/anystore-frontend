@@ -12,7 +12,7 @@ const FavoriteStoreScreen = () => {
     const {user} = useAuth();
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
-        <View style={{paddingBottom: 15,paddingTop: 5, height: "100%",}}>
+        <View style={{paddingBottom: 15,paddingTop: 15, height: "100%",}}>
             {user ? <FavoriteStoreList/> : <ItemEmpty 
                                                 icon="account-cancel"
                                                 text="Not Logged In"

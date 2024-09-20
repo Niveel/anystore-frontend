@@ -34,6 +34,7 @@ function StoreScreen({route, navigation}) {
 const styles = StyleSheet.create({
   container: {
     padding: 5,
+    paddingTop: 15,
   },
   
 });

@@ -14,7 +14,7 @@ const CartScreen = () => {
 
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
-        <View style={{paddingBottom: 15, height: "100%"}}>
+        <View style={{paddingBottom: 15, paddingTop: 10, height: "100%"}}>
             {/* <CartList/> */}
             {user ? <CartList/> : <ItemEmpty 
                                       icon="account-cancel"

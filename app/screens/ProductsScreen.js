@@ -231,7 +231,7 @@ Notifications.setNotificationHandler({
                     style={{minHeight: "100%"}}
                 >
                     {/* top bar */}
-                    <View style={styles.topBarContainer}>
+                    <View style={[styles.topBarContainer, {paddingTop: Platform.OS === "ios" ? 30 : 20}]}>
                         <View style={styles.navbar}>
                             <Text style={{ color: theme?.white, fontSize: 20, fontWeight: '900', marginLeft: 10 }}>Store Search</Text>
                             <View style={styles.iconBox}>
@@ -355,7 +355,6 @@ Notifications.setNotificationHandler({
         topBarContainer: {
             width: '100%',
             height: "20%",
-            paddingTop: 15,
             gap: 15,
             justifyContent: 'flex-start',
             alignItems: 'center',
