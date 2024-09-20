@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import { View, Text, StyleSheet, Platform, Linking, Alert , KeyboardAvoidingView, ScrollView} from 'react-native'
+import { View, Text, StyleSheet, Platform, Linking, Alert , KeyboardAvoidingView, ScrollView } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { TouchableOpacity, Keyboard, ToastAndroid } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
@@ -231,7 +231,7 @@ Notifications.setNotificationHandler({
                     style={{minHeight: "100%"}}
                 >
                     {/* top bar */}
-                    <View style={[styles.topBarContainer, {paddingTop: Platform.OS === "ios" ? 30 : 20}]}>
+                    <View style={[styles.topBarContainer, {paddingTop: Platform.OS === "ios" ? Constants.statusBarHeight + 5 : 10}]}>
                         <View style={styles.navbar}>
                             <Text style={{ color: theme?.white, fontSize: 20, fontWeight: '900', marginLeft: 10 }}>Store Search</Text>
                             <View style={styles.iconBox}>

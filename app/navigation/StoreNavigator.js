@@ -1,5 +1,6 @@
-import Reacct from 'react'
+import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
+import { Platform } from 'react-native'
 
 import FavoriteStoreScreen from '../screens/FavoriteStoreScreen'
 import ProductDetails from '../screens/ProductDetailsScreen'
@@ -16,7 +17,7 @@ const StoreNavigator = () => {
             presentation: "modal",
             headerStyle: {
                 backgroundColor: theme?.horizon,
-                height: 60,   
+                height: Platform.OS === 'ios' ? 100 : 60,   
             },
             headerTitleStyle: {
                 fontSize: 20,
