@@ -19,7 +19,7 @@ const CafaAiScreen = ({ route }) => {
   const { height } = useWindowDimensions();
   const keyboardVerticalOffset = Platform.select({
     ios: height > 700 ? 140 : 100, 
-    android: height > 700 ? 80 : 30, 
+    android: height > 700 ? 80 : 60, 
   });
   const handleSend = async () => {
     if (input.trim()) {

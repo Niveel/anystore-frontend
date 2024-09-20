@@ -27,7 +27,7 @@ const FavAndCartNavigator = () => {
         <Stack.Screen 
             name='Products' 
             component={ProductsScreen}
-            options={{headerShown: false}} 
+        options={{headerShown: false}}  
         />
         <Stack.Screen 
             name='Favorites' 

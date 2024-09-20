@@ -29,7 +29,7 @@ const { height: screenHeight } = Dimensions.get('window');
 
 const keyboardVerticalOffset = Platform.select({
   ios: screenHeight > 700 ? 90 : 70, 
-  android: screenHeight > 700 ? 30 : 10, 
+  android: screenHeight > 700 ? 30 : 40, 
 });
 
 function ChatroomScreen({route, navigation}) {
