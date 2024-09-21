@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
         height: "15%",
         alignItems: 'center',
         justifyContent: 'center',
-        paddingBottom: 10,
+        paddingVertical: 20,
     },
     login: {
         paddingVertical: 10,

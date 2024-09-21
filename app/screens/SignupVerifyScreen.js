@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { View, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native'
 
 import Screen from '../components/Screen';
 import AppButton from '../components/AppButton';
@@ -19,6 +20,7 @@ function SignupVerifyScreen({ route }) {
   const userInfo = route.params.userInfo;
   const auth = useAuth();
   const {theme} = useTheme();
+  const navigation = useNavigation();
 
   const codeInputs = Array(4).fill(0).map((_, i) => useRef(null));
 
@@ -60,6 +62,7 @@ function SignupVerifyScreen({ route }) {
         // If code verification is successful, proceed with user login
         const response = await authApi.login(userInfo.email, userInfo.password);
         auth.logIn(response.data.token);
+        navigation.navigate("App", { screen: 'Product' })
   
         setHasError(false);
       } catch (error) {

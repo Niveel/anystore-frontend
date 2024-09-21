@@ -17,7 +17,7 @@ const ListItem = ({IconComponent, title, subtitle, onPress, Chevron, style}) => 
                     numberOfLines={1}
                     color={theme?.amberGlow}
                 >{title}</AppText>
-                <Text style={[{color: theme?.misty, fontWeight: "bold"}, style]}>{subtitle}</Text>
+                <Text style={[{ fontWeight: "bold"}, style]}>{subtitle}</Text>
             </View>
             {Chevron && <Icon name="chevron-right" size={35} color={theme?.amberGlowLight} />}
         </View>

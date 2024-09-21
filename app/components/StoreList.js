@@ -64,6 +64,8 @@ function StoreList() {
         navigation.navigate("ProductDetails", item);
     };
 
+    // console.log("store name", storeName)
+
     const handleSearch = () => {
         setLoading(true)
         setProductLoaded(true)
@@ -74,12 +76,14 @@ function StoreList() {
         })
         .then(res => {
             const result = res.data.map(product => ({ ...product, id: generateRandomId() }));
-            setStoreProducts(result)
+            const filteredResult = result.filter(product => product.shop_name === storeName);
+
+            setStoreProducts(filteredResult)
 
             setLoading(false)
             setProductLoaded(true)
 
-            if (result.length === 0) {
+            if (filteredResult.length === 0) {
                 setResultNotFound(true)
             } else {
                 setResultNotFound(false)
@@ -185,7 +189,7 @@ function StoreList() {
                     <ListItem
                       title="No result found"
                       subtitle="Try searching with another keyword"
-                      style={{color: theme?.midnight, fontSize: 18, fontWeight: "bold"}}
+                      style={{color: theme?.text, fontSize: 18, fontWeight: "bold"}}
                       IconComponent={
                           <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
                       }
