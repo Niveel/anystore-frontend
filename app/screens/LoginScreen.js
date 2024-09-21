@@ -38,6 +38,7 @@ const LoginScreen = () => {
             setLoginFailed(false)
             const token = result.data.token
             logIn(token)
+            navigation.navigate("App", { screen: 'Product' })
         } catch (error) {
             setLoading(false)
             console.log("error logging in: ", error)
