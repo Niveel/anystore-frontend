@@ -9,14 +9,19 @@ function SearchNotFound(props) {
   const {theme} = useTheme()
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[StyleSheet.absoluteFillObject,styles.container]}>
+        <View style={[StyleSheet.absoluteFillObject,styles.container]}
+          accessible={true}
+          accessibilityLabel="No results found"
+        >
             <FontAwesome5 name="frown-open" size={85} color={theme?.amberGlow} />
-            <AppText style={{
-                fontSize: 24,
+            <AppText 
+              style={{
+                fontSize: 20,
                 fontWeight: "bold",
-                color: theme?.punch,
                 marginTop: 10
-            }}>No results found</AppText>
+              }}
+              color={theme?.punch}
+            >No results found</AppText>
         </View>
     </TouchableWithoutFeedback>
   );

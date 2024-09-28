@@ -1,16 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, ToastAndroid, TouchableOpacity, Alert, Linking } from 'react-native';
+import { View, StyleSheet, Alert, Linking, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import axios from 'axios';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 
-import AppText from '../components/AppText';
-import AppButton from '../components/AppButton'; 
-import Icon from '../components/Icon';
 import Screen from '../components/Screen';
 import routes from '../navigation/routes';
 import { useTheme } from '../utils/ThemeContext';
 import useAuth from '../auth/useAuth';
+import ImageSlider from '../components/ImageSlider';
+import ProductInfo from '../components/ProductInfo';
+
+// REMEMBER THE PRODUCT TITLE IS RENAMED TO NAME FOR TESTING OOOOOOO HMMMMM
 
 function ProductDetails({route, navigation}) {
     const [cartItemAdded, setCartItemAdded] = useState([]);
@@ -22,12 +23,14 @@ function ProductDetails({route, navigation}) {
     const { theme } = useTheme();
     const { user } = useAuth();
     
+    // Fetch cart items, radar items and fav stores
     useEffect(() => {
         fetchFavStores()
         fetchCartItems();
         fetchRadarItems();
     }, []);
 
+    // Fetch product details
     useEffect(() => {
         try {
             const fetchProductDetails = async () => {
@@ -40,15 +43,23 @@ function ProductDetails({route, navigation}) {
         }
     }, []);
 
+    // header title to the product name
     useEffect(() => {
         navigation.setOptions({
             headerTitle: product?.title || "Product Details",
         });
     }, []);
 
-    const imagesReadyToast = () => {
-        ToastAndroid.show("Images are not ready yet!", ToastAndroid.SHORT);  
-    }
+    const formatImageData = (images) => {
+        return images.slice(0, 7).map((image, index) => ({
+          id: index + 1,
+          url: image
+        }));
+    };
+
+    const formattedImages = formatImageData(productData.images || []);
+
+    // console.log("formattedImages", formattedImages);
 
     const fetchRadarItems = async () => {
         try {
@@ -82,6 +93,10 @@ function ProductDetails({route, navigation}) {
     };
 
     const handleAddToCart = async (productID) =>{
+        if(!user) {
+            navigation.navigate("Auth", { screen: 'Login' })
+            return
+        }
         try {
             // Retrieve existing cart items from AsyncStorage
             const existingCartItems = await AsyncStorage.getItem('cartItems');
@@ -117,6 +132,10 @@ function ProductDetails({route, navigation}) {
     }
 
     const handleAddToRadar = async (productID) => {
+        if(!user) {
+            navigation.navigate("Auth", { screen: 'Login' })
+            return
+        }
         try {
             // Retrieve existing radar items from AsyncStorage
             const existingRadarItems = await AsyncStorage.getItem('radarItems');
@@ -142,6 +161,10 @@ function ProductDetails({route, navigation}) {
     }
 
     const handleAddToFavStores = async (store) => {
+        if(!user) {
+            navigation.navigate("Auth", { screen: 'Login' })
+            return
+        }
         try {
             // Retrieve existing stores from AsyncStorage
             const existingStores = await AsyncStorage.getItem('favStores');
@@ -173,13 +196,6 @@ function ProductDetails({route, navigation}) {
         navigation.navigate(routes.SHARE_SCREEN, product) 
     }
 
-    const handleViewImages = () => {
-        if(productData?.images?.length > 0 || product?.images?.length > 0) {
-            navigation.navigate(routes.PRODUCT_IMAGES, {images: productData?.images, fallbackImage: product?.images})
-        } else {
-            imagesReadyToast();
-        }
-    }
     const renderStars = (rating) => {
         const fullStars = Math.floor(rating);
         const hasHalfStar = rating % 1 >= 0.5;
@@ -187,289 +203,50 @@ function ProductDetails({route, navigation}) {
         
         return (
             <View style={{ flexDirection: 'row' }}>
-            {[...Array(fullStars)].map((_, i) => (
-                <MaterialCommunityIcons key={`full-${i}`} name="star" color={theme?.amberGlow} size={24} />
-            ))}
-            {hasHalfStar && <MaterialCommunityIcons name="star-half" color={theme?.amberGlow} size={24} />}
-            {[...Array(emptyStars)].map((_, i) => (
-                <MaterialCommunityIcons key={`empty-${i}`} name="star-outline" color={theme?.amberGlow} size={24} />
-            ))}
+                {[...Array(fullStars)].map((_, i) => (
+                    <MaterialCommunityIcons key={`full-${i}`} name="star" color={theme?.amberGlow} size={16} />
+                ))}
+                {hasHalfStar && <MaterialCommunityIcons name="star-half" color={theme?.amberGlow} size={16} />}
+                {[...Array(emptyStars)].map((_, i) => (
+                    <MaterialCommunityIcons key={`empty-${i}`} name="star-outline" color={theme?.amberGlow} size={16} />
+                ))}
             </View>
         );
     };
-      
+
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
-        <View style={styles.container}>
-            <View style={[styles.image, {backgroundColor: theme?.horizon,}]}>
-                <AppButton
-                    title="View Images"
-                    color={theme?.amberGlowLight}
-                    onPress={handleViewImages}
-                    width='90%'
-                />
-                <View 
-                    style={{
-                        width: "100%",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        paddingVertical: 10,
-                        backgroundColor: theme?.midnight,
-                        marginTop: 10,
-                    }}
-                    accessible={true}
-                    accessibilityLabel={`Product rating is ${product?.rating || 0} stars out of 5`}
-                >
-                    <AppText style={{fontSize: 14}}>Rating ({product?.rating || 0})</AppText>
-                    {renderStars(product?.rating || 0)}
-                </View>
-            </View>
-            <View style={styles.detailsContainer}>  
-                <View style={styles.details}>
-                    <View style={{alignSelf: "flex-start"}}>
-                        <AppText style={{
-                            textTransform: "capitalize",
-                            fontSize: 16,
-                        }}>{product?.title}</AppText>
-                    </View>
-                    <AppText style={styles.price} color={theme?.amberGlow}>{product?.price || "$"}</AppText>
-                </View>
-                {product?.shop_name && 
-                    <View style={styles.storeWrapper}>
-                        <AppText style={styles.store} color={theme?.misty}>{product?.shop_name}</AppText>
-                        <TouchableOpacity 
-                            style={{flexDirection: "row", alignItems: "center", alignSelf: "flex-end"}} 
-                            onPress={()=> {
-                                if(!user) {
-                                    navigation.navigate("Auth", { screen: 'Login' })
-                                    return
-                                } else {
-                                    handleAddToFavStores(product?.shop_name)
-                                }
-                            }}
-                        >
-                            <AppText style={styles.heart} color={theme?.white}>Add to Favorite Stores</AppText>
-                            <Icon
-                                name="heart"
-                                size={25}
-                                color={theme?.punch}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                }
-                <AppButton
-                    title="Product Information"
-                    color={theme?.amberGlowLight}
-                    style={styles.productInfo}
-                    textStyle={{
-                        fontSize: 14,
-                        fontWeight: "normal",
-                    }}
-                    onPress={()=> {
-                        if(productData?.description)
-                            navigation.navigate(routes.PRODUCT_INFO, {productData, product})
-                        return
-                    }}
-                />
-                <View style={styles.buttonWrapper}>
-                    <TouchableOpacity 
-                        style={[styles.addToCartButton, {backgroundColor: theme?.misty,}]} 
-                        onPress={()=> {
-                            if(!user) {
-                                navigation.navigate("Auth", { screen: 'Login' })
-                                return
-                            } else {
-                                handleAddToCart(product?.id)
-                            }
-                        }}
-                    >
-                        <AppText style={styles.cartText}>Add to cart</AppText>
-                        <Icon
-                            name="cart"
-                            size={25}
-                            color={theme?.midnight}
-                        />
-                    </TouchableOpacity>
-                    <AppButton 
-                        title="Add to Radar"
-                        onPress={()=> {
-                            if(!user) {
-                                navigation.navigate("Auth", { screen: 'Login' })
-                                return
-                            } else {
-                                handleAddToRadar(product?.id)
-                            }
-                        }}
-                        style={styles.radar}
-                        textStyle={{
-                            fontSize: 15,
-                            fontWeight: "normal",
-                        }}
-                    />
-                    
-                </View>
-                <View style={styles.radarShareWrapper}>
-                    <TouchableOpacity style={[styles.button, {backgroundColor: theme?.horizon,}]} onPress={()=> openBuyNowLink(productData?.link || product?.link)}>
-                        <AppText style={styles.buttonText} color={theme?.amberGlow}>Buy Now</AppText>
-                    </TouchableOpacity>
-                    <TouchableOpacity 
-                        style={[styles.share, {backgroundColor: theme?.horizon,}]} 
-                        onPress={()=> {
-                            if(!user) {
-                                navigation.navigate("Auth", { screen: 'Login' })
-                                return
-                            } else {
-                                handleShare(product)
-                            }
-                        }}
-                    >
-                        <Icon 
-                            name="share"
-                            size={20}
-                            color={theme?.amberGlow}
-                        />
-                        <AppText style={styles.shareText}>SHARE</AppText>
-                    </TouchableOpacity>
-                </View>
-                <AppButton
-                    title="Ask Cafa"
-                    color={theme?.amberGlowLight}
-                    style={styles.longBtn}
-                    textStyle={{
-                        fontSize: 14,
-                        fontWeight: "normal",
-                    }}
-                    onPress={()=> navigation.navigate(routes.CAFA, {product})}
-                />
-            </View>
-        </View>
+        <ScrollView
+            style={{flex: 1}}
+            contentContainerStyle={{flexGrow: 1}}
+        >
+            <ImageSlider imagesData={formattedImages} />
+
+            <ProductInfo 
+                title={product?.title}
+                description={product.description}
+                rating={renderStars(product.rating || 0)}
+                price={product.price}
+                askCafa={()=> navigation.navigate(routes.CAFA, {product})}
+                handleAddToCart={()=> handleAddToCart(product.id)}
+                handleAddToFavStores={()=> handleAddToFavStores(product.shop_name)}
+                handleAddToRadar={()=> handleAddToRadar(product.id)}
+                handleBuyNow={()=> openBuyNowLink(productData?.link || product?.link)}
+                productImg={product?.images[0] || "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"}
+                store={product.shop_name}
+                category={product.category || "N/A"}
+                condition={product.condition || "N/A"}
+                type={product.type || "N/A"}
+                productId={product.id}
+            />
+        </ScrollView>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-    addToCartButton: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderRadius: 5,
-    },
-    button: {
-        borderRadius: 5,
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    buttonText: {
-        textTransform: "uppercase",
-        fontWeight: "normal",
-        fontSize: 14,
-    },
-    buttonWrapper: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        width: "100%",
-        gap: 20,
-        marginVertical: 10,
-        marginBottom: 20,
-    },
-    cartText: {
-        textTransform: "uppercase",
-        fontSize: 15,
-    },
-  container: {
-    width: '100%',
-    height: "100%",
-    padding: 10,
-  },
-    details: {
-        width: "100%",
-        gap: 5,
-    },
-    detailsContainer: {
-        padding: 10,
-        width: '100%',
-        height: "65%",
-
-    },
-    longBtn: {
-        borderRadius: 5,
-        width: 'max-content',
-        paddingHorizontal: 10,
-        height: 40,
-        alignSelf: 'center'
-    },
-    heart: {
-        fontSize: 14,
-    },
-    image: {
-        width: '100%',
-        borderRadius: 5,
-        overflow: "hidden",
-        justifyContent: "center",
-        alignItems: "center",
-        paddingVertical: 10,
-    },
-    name: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "#fff",
-        maxWidth: "80%",
-    },
-    price: {
-        fontSize: 28,
-        fontWeight: "900",
-        alignSelf: "flex-end",
-    },
-    productInfo: {
-        borderRadius: 5,
-        marginVertical: 10,
-        width: 'max-content',
-        paddingHorizontal: 10,
-        height: 40,
-        alignSelf: 'center'
-    },
-    radar: {
-        borderRadius: 5,
-        width: 'auto',
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        height: 36,
-    },
-    radarShareWrapper: {
-        marginBottom: 10,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        width: "100%",
-        gap: 20,
-        marginVertical: 10,
-    },
     screen: {
         paddingTop: 0,
-    },
-    share: {
-        borderRadius: 5,
-        paddingVertical: 2,
-        width: "20%",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    shareText: {
-        fontSize: 10,
-    },
-    store: {
-        fontSize: 18,
-        textTransform: "capitalize",
-    },
-    storeWrapper: {
-        width: "100%",
-        gap: 10,
-        marginVertical: 10,
     },
 });
 

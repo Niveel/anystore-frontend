@@ -3,6 +3,22 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const themes = {
     default: {
+        white: '#fff',
+        light: 'rgba(255,255,255,0.2)',
+        lighter: 'rgba(255,255,255,0.1)',
+        black: '#000',
+        blackLight: 'rgba(0,0,0,.2)',  
+        midnight: '#f1f8ff', // background color
+        midnightLight: 'rgba(0, 128, 129, .05)', // text color
+        horizon: '#008081', // bg color
+        misty: '#001F3F', // bg color
+        mistyLight: 'rgba(127, 154, 189,.6)', // bg color
+        amberGlow: '#ecb245', //border color
+        amberGlowLight: 'rgba(255, 133, 27, .8)', //border color
+        punch: '#ff0000', // accent color
+        text: '#001F3E',
+    },
+    horizon: {
         white: '#f4f1e4',
         light: 'rgba(255,255,255,0.2)',
         lighter: 'rgba(255,255,255,0.1)',
@@ -19,14 +35,14 @@ const themes = {
         text: '#f4f1e4',
     },
     light: {
-        white: '#141414',
+        white: '#eef4f5',
         light: 'rgba(6,6,6,0.2)',
         lighter: 'rgba(6,6,6,0.1)',
         black: '#000',
-        blackLight: 'rgba(0,0,0,.05)',
+        blackLight: 'rgba(0,0,0,.06)',
         midnight: '#f0f8ff', // background color
         midnightLight: 'rgba(240, 248, 255,.3)', // text color 
-        horizon: '#a8ceeb', // bg color
+        horizon: '#87b1d1', // bg color
         misty: '#507088', // bg color
         mistyLight: 'rgba(80, 112, 136,.6)', // bg color
         amberGlow: '#db9704', //border color
@@ -38,12 +54,12 @@ const themes = {
         white: '#fff',
         light: 'rgba(255,255,255,0.2)',
         lighter: 'rgba(255,255,255,0.1)',
-        black: '#000', 
+        black: '#fff', 
         blackLight: 'rgba(255,255,255,.1)',
-        midnight: '#1a1a1a', // background color
+        midnight: '#4d4545', // background color
         midnightLight: 'rgba(26, 26, 26, .3)', // text color
-        horizon: '#333333', // bg color
-        misty: '#aaa8a8', // bg color
+        horizon: '#8d845e', // bg color
+        misty: '#1a1a1a', // bg color
         mistyLight: 'rgba(89, 89, 89,.6)', // bg color
         amberGlow: '#c7c110', //border color
         amberGlowLight: 'rgba(199, 193, 16,.8)', //border color

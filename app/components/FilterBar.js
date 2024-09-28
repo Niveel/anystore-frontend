@@ -85,7 +85,7 @@ const FilterBar = ({ onFilterApply }) => {
     <View style={styles.container}>
       {/* Main Filter button */}
       <TouchableOpacity onPress={() => setPriceModalVisible(true)} style={[styles.filterButton, { backgroundColor: theme?.misty }]}>
-        <AppText style={styles.filterButtonText}>Filter</AppText>
+        <AppText style={styles.filterButtonText} color={theme?.white}>Filter</AppText>
       </TouchableOpacity>
 
       {/* Modal for Price Filter */}

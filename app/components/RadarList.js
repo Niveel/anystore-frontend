@@ -78,7 +78,7 @@ function RadarList(props) {
       return
     }
 
-    const filteredItems = radarData.filter(item => item?.title.toLowerCase().includes(text.toLowerCase()) || item?.websiteName.toLowerCase().includes(text.toLowerCase()) || item?.websiteDescription.toLowerCase().includes(text.toLowerCase()))
+    const filteredItems = radarData.filter(item => item?.title.toLowerCase().includes(text.toLowerCase()) || item?.shop_name.toLowerCase().includes(text.toLowerCase()) || item?.description.toLowerCase().includes(text.toLowerCase()))
 
     if (filteredItems.length > 0) {
       setRadarData([...filteredItems])
@@ -94,18 +94,21 @@ function RadarList(props) {
   return (
     <View
       style={{
-        height: "100%"
+        flex: 1,
       }}
     >
-      <AppText style={[styles.text, {
-        fontSize: radarData.length > 0 ? 12 : 20,
-        }]} color={theme?.white} >Track your products to get notified of price changes.</AppText>
+      <View style={[styles.heading, {backgroundColor: theme?.misty}]}>
+        <AppText style={[styles.text, {
+          fontSize: radarData.length > 0 ? 12 : 20,
+          }]} color={theme?.white} >Track your products to get notified of price changes.</AppText>
+      </View>
       {radarData.length > 0 && <View style={[styles.headBox, {backgroundColor: theme?.light,}]}>
         <SearchInput 
           placeholder="Search Product" 
-          placeholderTextColor={theme?.amberGlow} 
+          placeholderTextColor={theme?.misty} 
           value={searchQuery}
           onChangeText={handleSearch}
+          inputStyle={{paddingHorizontal: 10}}
         />
       </View>}
       {radarData.length === 0 && <ItemEmpty 
@@ -114,7 +117,8 @@ function RadarList(props) {
           subText="Add items to your radar to see them here. If you added items and they are not showing, pull down to refresh." 
         />}
         
-      {resultNotFound === true ? <SearchNotFound /> : <FlatList 
+      {resultNotFound === true ? <SearchNotFound /> : 
+      <FlatList 
           data={radarData}
           keyExtractor={(item, index) => item.id ? item.id.toString() : generateRandomId().toString()}  
           renderItem={({item})=> <CartItem 
@@ -123,6 +127,7 @@ function RadarList(props) {
                                       image={item?.images || ["https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"]}
                                       name={item?.title}
                                       onPress={()=> handleRadarItemPress(item)}
+                                      rating={item?.rating}
                                       price={item?.price}
                                       delPress={() => handleDelete(item)}
                                   />}
@@ -131,6 +136,7 @@ function RadarList(props) {
             setLoading(true);
             fetchRadarItems();
           }}
+          contentContainerStyle={{paddingHorizontal: 10}}
       />}
     </View>
   );
@@ -153,6 +159,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10
+  },
+  heading: {
+    paddingTop: 10,
   }
 })
 export default RadarList;

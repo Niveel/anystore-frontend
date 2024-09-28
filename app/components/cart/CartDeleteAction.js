@@ -11,8 +11,8 @@ const CartDeleteAction = ({onPress}) => {
       accessible={true}
       accessibilityLabel="Delete item from cart"
     >
-        <View style={[styles.container, {backgroundColor: theme?.amberGlow}]}>
-            <MaterialCommunityIcons name='trash-can' size={50} color={theme?.punch}/>
+        <View style={[styles.container, {backgroundColor: theme?.horizon}]}>
+            <MaterialCommunityIcons name='trash-can' size={50} color={theme?.amberGlow}/>
         </View>
     </TouchableWithoutFeedback>
   )

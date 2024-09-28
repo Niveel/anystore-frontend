@@ -4,6 +4,7 @@ import { View,} from 'react-native';
 import Screen from '../components/Screen';
 import RadarList from '../components/RadarList';
 import { useTheme } from '../utils/ThemeContext';
+import CustomHeader from '../components/CustomHeader';
 
 function RadarScreen(props) {
   const { theme } = useTheme();
@@ -11,9 +12,10 @@ function RadarScreen(props) {
   return (
     <Screen style={{
       backgroundColor: theme?.midnight,
-      padding: 10,
+      paddingTop: 0,
     }}>
-        <View style={{paddingBottom: 15,paddingTop: 15, height: "100%",}}>
+        <CustomHeader title="Radar" showIcons />
+        <View style={{paddingBottom: 15,paddingTop: 15, flex: 1,}}>
             <RadarList/> 
         </View>
     </Screen>

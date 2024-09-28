@@ -1,4 +1,4 @@
-import { FlatList, ActivityIndicator, View, Text, AccessibilityInfo } from 'react-native';
+import { FlatList, ActivityIndicator, View, Text, AccessibilityInfo, Animated, Dimensions } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,17 +8,21 @@ import routes from '../navigation/routes';
 import { addToCart } from '../hooks/utils';
 import useAuth from '../auth/useAuth';
 
-const CardProducts = ({ productData, onEndReached, hasMore }) => {
+const { width } = Dimensions.get("window");
+
+const CardProducts = ({ productData, onEndReached, hasMore, onScroll }) => {
   const navigation = useNavigation();
   const [cartItemAdded, setCartItemAdded] = useState([]);
   const [loadingAnnouncement, setLoadingAnnouncement] = useState('');
 
   const { user } = useAuth();
+  const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
   useEffect(() => {
     fetchCartItems();
   }, []);
 
+  // accessibility announcement
   useEffect(() => {
     if (hasMore) {
       setLoadingAnnouncement('Loading products...');
@@ -60,7 +64,7 @@ const CardProducts = ({ productData, onEndReached, hasMore }) => {
   };
 
   return (
-    <FlatList
+    <AnimatedFlatList
       data={productData}
       keyExtractor={(product) => product?.id?.toString()}
       windowSize={10}
@@ -68,6 +72,7 @@ const CardProducts = ({ productData, onEndReached, hasMore }) => {
       maxToRenderPerBatch={10}
       updateCellsBatchingPeriod={100}
       removeClippedSubviews={true}
+      onScroll={onScroll}
       renderItem={({ item }) => (
         <ProductCard
           name={item?.title}
@@ -79,11 +84,15 @@ const CardProducts = ({ productData, onEndReached, hasMore }) => {
           addToCart
           addToCartOnPress={() => handleAddToCart(item)}
           onPress={() => handleProductPress(item)}
-          buyPress={() => console.log("Buy Now pressed")}
         />
       )}
       onEndReached={onEndReached}
       onEndReachedThreshold={0.5}
+      numColumns={width > 300 ? 3: 2}
+      contentContainerStyle={{
+        paddingRight: 5, 
+        justifyContent: 'center',
+      }}
       ListFooterComponent={hasMore ? (
         <View
           accessible={true}

@@ -16,4 +16,5 @@ export default Object.freeze({
     OTHER_SETTINGS: 'OtherSettingsScreen',
     CAFA: 'CafaAiScreen',
     PRODUCT_IMAGES: 'ImagesScreen',
+    ACCOUNT_DETAILS_SETTINGS: 'AccountDetailsSettingsScreen',
 })

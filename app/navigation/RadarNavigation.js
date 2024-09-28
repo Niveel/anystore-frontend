@@ -16,14 +16,16 @@ const RadarNavigation = () => {
         screenOptions={{
             presentation: "modal",
             headerStyle: {
-                backgroundColor: theme?.horizon,
-                height: 80,   
+                backgroundColor: theme?.misty,
+                height: 60,   
+                borderBottomLeftRadius: 25,
+                borderBottomRightRadius: 25,
             },
             headerTitleStyle: {
                 fontSize: 20,
                 fontWeight: 'bold',
             },
-            headerTintColor: theme?.amberGlow,
+            headerTintColor: theme?.white,
         }}
     >
         <Stack.Screen 
@@ -35,7 +37,7 @@ const RadarNavigation = () => {
             name='RadarList'
             component={RadarList}
             options={{
-                headerShown: true,
+                headerShown: false,
             }}
         />
         <Stack.Screen

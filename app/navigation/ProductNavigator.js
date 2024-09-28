@@ -21,14 +21,16 @@ const ProductNavigator = () => {
         screenOptions={{
             presentation: "modal",
             headerStyle: {
-                backgroundColor: theme?.horizon,
+                backgroundColor: theme?.misty,
                 height: 60,   
+                borderBottomLeftRadius: 25,
+                borderBottomRightRadius: 25,
             },
             headerTitleStyle: {
                 fontSize: 20,
                 fontWeight: 'bold',
             },
-            headerTintColor: theme?.amberGlow,
+            headerTintColor: theme?.white,
         }}
     >
 

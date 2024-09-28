@@ -1,24 +1,21 @@
-import { View, Text, StyleSheet, Alert} from 'react-native'
+import { View, StyleSheet, Alert, ScrollView} from 'react-native'
 import React, {useState} from 'react'
-import * as ImagePicker from 'expo-image-picker'
 
 // CUSTOM IMPORTS
 import useAuth from '../auth/useAuth'
 import Screen from '../components/Screen'
-import ListItem from '../components/ListItem' 
-import Icon from '../components/Icon'
+import List from '../components/List'
 import AppButton from '../components/AppButton'
 import ImageInput from '../components/ImageInput'
 import routes from '../navigation/routes'
-import deleteAccount from '../api/deleteAccount'
-import storage from '../auth/storage'
 import { useTheme } from '../utils/ThemeContext'
+import CustomHeader from '../components/CustomHeader'
+import AppText from '../components/AppText'
 
 const AccountSettingsScreen = ({navigation}) => {
   const {user, logOut} = useAuth()
   const [imageUri, setImageUri] = useState()
 
-  const {email} = user;
   const {theme} = useTheme()
 
   const logoutAlert = () => {
@@ -33,91 +30,83 @@ const AccountSettingsScreen = ({navigation}) => {
     )
 } 
 
-  const performDeleteAccount = async () => {
-    const authToken = await storage.getToken();
-
-    if (!authToken) {
-      console.log('Authentication token not found.');
-      alert('Authentication token not found.');
-      return;
-    }
-
-    if (!email) {
-      console.log('User not found.');
-      alert('User not found.');
-      return;
-    }
-
-    const result = await deleteAccount.deleteAccount(email, authToken);
-    
-    if (!result.ok) {
-      console.log(result.data.message);
-      alert(result.data.message);
-      return;
-    }
-
-    logOut();
-  }
-
   return (
-    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
-      <View>
-        <Text style={[styles.heading, {color: theme?.amberGlow, backgroundColor: theme?.horizon,}]}>Account Settings</Text>
-      </View>
+    <Screen style={[styles.screen, {backgroundColor: theme?.midnightLight,}]}>
+      <CustomHeader title='Account'/>
       <View style={styles.itemsContainer}>
-        {/* <View style={{marginBottom: 20,}}>
-          <ImageInput 
-            imageUri={imageUri} 
-            onChangeImage={uri => setImageUri(uri)}
-          />
-        </View> */}
+        {/* account details */}
+        <View style={styles.accountDetails}>
+          <View style={[styles.infoBox, {backgroundColor: theme?.horizon}]}>
+            <View style={styles.detailsInnerBox}>
+              <AppText 
+                style={{
+                  fontSize: 16,
+                  textAlign: "center",
+                }}
+                color={theme?.white}
+              >{user?.username.toUpperCase()}</AppText>
+              <AppText 
+                style={{
+                  fontSize: 14,
+                  textAlign: "center",
+                }}
+                color={theme?.white}
+              >{user?.email.toLowerCase()}</AppText>
+            </View>
+            <ImageInput 
+              imageUri={imageUri} 
+              onChangeImage={uri => setImageUri(uri)}
+              style={styles.imageInput}
+            />
+          </View>
+        </View>
+        {/* end of account details */}
+        {/* List container */}
         <View style={styles.listContainer}>
-          <ListItem 
-            title="Name"
-            subtitle={user?.username?.toUpperCase()}
-            IconComponent={<Icon name="account" size={30} color={theme?.amberGlow} />}
-            // onPress={()=> navigation.navigate(routes.NAME_RESET)}
-          />
-          <ListItem 
-            title="Email"
-            subtitle={user?.email}
-            IconComponent={<Icon name="email" size={30} color={theme?.amberGlow} />}
-            // onPress={()=> navigation.navigate(routes.EMAIL_RESET)}
-          />
-           <ListItem 
-            title="Password"
-            subtitle="*********"
-            IconComponent={<Icon name="lock" size={30} color={theme?.amberGlow} />}
-            onPress={()=> navigation.navigate(routes.PASSWORD_RESET)}
-          />
-           <ListItem 
-            title="Other Settings"
-            subtitle="Change theme and more"
-            IconComponent={<Icon name="wrench" size={30} color={theme?.amberGlow} />}
-            onPress={()=> navigation.navigate(routes.OTHER_SETTINGS)}
-          />
-          <ListItem
-            title="Delete account"
-            subtitle="Delete your account permanently. This action cannot be undone."
-            style={{color: theme?.punch, backgroundColor: theme?.midnight === "#f0f8ff" ? theme?.horizon :theme?.midnight, borderRadius: 5, padding: 5,}}
-            IconComponent={<Icon name="delete" size={30} color={theme?.punch} />}
-            onPress={()=> Alert.alert(
-              "Account Termination",
-              "Are you sure you want to delete your account? This action cannot be undone!",
-              [
-                { text: "Yes", onPress: () => performDeleteAccount() },
-                  { text: "No" },
-              ],
-              { cancelable: true }
-          )}
+          <ScrollView contentContainerStyle={{flexGrow: 1, gap: 15}}>
+            <List
+              icon='heart-outline'
+              title="Favorite Stores" 
+              onPress={() => navigation.navigate(routes.FAVORITES)}
+            />
+            <List
+              icon='cart-outline'
+              title="My Cart" 
+              onPress={() => navigation.navigate(routes.CART)}
+            />
+            <List
+              icon='bell-outline'
+              title="Notifications" 
+              onPress={() => navigation.navigate(routes.CART)}
+            />
+            <List
+              icon='account-tie-outline'
+              title="Account Settings" 
+              onPress={() => navigation.navigate(routes.ACCOUNT_DETAILS_SETTINGS)}
+            />
+            <List
+              icon='cog-outline'
+              title="Other Settings" 
+              onPress={() => navigation.navigate(routes.CART)}
+            />
+            <List
+              icon='headset'
+              title="Help & Support" 
+              onPress={() => navigation.navigate(routes.CART)}
+            />
+          </ScrollView>
+        </View>
+        {/* end of List container */}
+        <View style={styles.logout}>
+          <AppButton 
+            title="Log Out" 
+            width='60%'
+            color={theme?.horizon} 
+            onPress={logoutAlert} 
+            textColor={theme?.white}
+            style={{marginTop:"auto", marginBottom: 30}}
           />
         </View>
-        <AppButton 
-          title="Log Out" 
-          color={theme?.amberGlow} 
-          onPress={logoutAlert} 
-          style={{marginTop:"auto", marginBottom: 30}}
-        />
       </View>
     </Screen>
   )
@@ -125,24 +114,42 @@ const AccountSettingsScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({
   itemsContainer: {
-    height: "90%",
-    paddingVertical: 10,
-    gap : 10, 
+    flex: 1,
+    paddingBottom: 50,
   },
-  heading: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginVertical: 10,
-    padding: 10,
-    borderRadius: 5,
+  accountDetails: {
+    flex: 2,
+    justifyContent: "flex-end",
+    paddingHorizontal: 10,
   },
   listContainer: {
+    flex: 6,
+    padding: 10,
+  },
+  logout: { 
+    flex: 1,
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  infoBox: {
+    width: "100%",
     marginBottom: 20,
-    gap: 15,
+    borderRadius: 10,
+    padding: 10,
   },
   screen: {
-    padding: 10,
-  }
+    paddingTop: 0,
+  },
+  imageInput: {
+    position: "absolute",
+    top: -50,
+    left: 10,
+  },
+  detailsInnerBox: {
+    marginLeft: "auto",
+    width: "95%",
+  },
 })
 
 export default AccountSettingsScreen

@@ -3,19 +3,20 @@ import React from 'react'
 
 import { useTheme } from '../utils/ThemeContext'
 
-const AppButton = ({title, color, textStyle, onPress, width = "100%",height=55, style, ...otherProps}) => {
+const AppButton = ({title="button", textColor, color, textStyle, onPress, width = "100%",height=55, style, ...otherProps}) => {
     const {theme} = useTheme()
-    color = color || theme?.misty
+    color = color || theme?.horizon
+    textColor = textColor || theme?.text
   return (
     <TouchableHighlight onPress={onPress} style={[styles.button, {backgroundColor: color, width: width, height: height}, style]} underlayColor={theme?.light} {...otherProps}>
-        <Text style={[styles.text, textStyle, {color: theme?.text}]}>{title}</Text>
+        <Text style={[styles.text, textStyle, {color: textColor}]}>{title}</Text>
     </TouchableHighlight>
   )
 }
 
 const styles = StyleSheet.create({
     button: {
-        borderRadius: 35,
+        borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
     },

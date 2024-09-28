@@ -15,15 +15,17 @@ const StoreNavigator = () => {
     <Stack.Navigator
         screenOptions={{
             presentation: "modal",
-            headerStyle: {
-                backgroundColor: theme?.horizon,
-                height: Platform.OS === 'ios' ? 100 : 60,   
-            },
-            headerTitleStyle: {
-                fontSize: 20,
-                fontWeight: 'bold',
-            },
-            headerTintColor: theme?.amberGlow,
+                headerStyle: {
+                    backgroundColor: theme?.misty,
+                    height: 60,   
+                    borderBottomLeftRadius: 25,
+                    borderBottomRightRadius: 25,
+                },
+                headerTitleStyle: {
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                },
+                headerTintColor: theme?.white,
         }}
     >
         <Stack.Screen 

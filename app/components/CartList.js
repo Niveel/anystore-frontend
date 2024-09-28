@@ -1,5 +1,5 @@
 import { FlatList, ActivityIndicator, View, StyleSheet } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo} from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -9,6 +9,7 @@ import SearchInput from './SearchInput';
 import SearchNotFound from './SearchNotFound';
 import ItemEmpty from './ItemEmpty';
 import { useTheme } from '../utils/ThemeContext';
+import Screen from './Screen';
 
 const CardList = () => { 
   const [cartData, setCartData] = useState([]);
@@ -66,7 +67,8 @@ const CardList = () => {
       fetchCartItems();
       return;
     }
-    const filteredItems = cartData.filter(item => item?.title.toLowerCase().includes(text.toLowerCase()) || item?.websiteName.toLowerCase().includes(text.toLowerCase()) || item?.websiteDescription.toLowerCase().includes(text.toLowerCase()));
+
+    const filteredItems = cartData.filter(item => item?.title.toLowerCase().includes(text.toLowerCase()) || item?.shop_name.toLowerCase().includes(text.toLowerCase()) || item?.description.toLowerCase().includes(text.toLowerCase()));
 
     if(filteredItems.length) {
       setCartData([...filteredItems]);
@@ -74,6 +76,9 @@ const CardList = () => {
       setResultNotFound(true);
     }
   }
+
+  // reverse the order of the cart items 
+  const reversedCartData = useMemo(() => cartData.slice().reverse(), [cartData]);
 
   if (loading) {
     // Display a loading indicator while data is being fetched
@@ -85,59 +90,61 @@ const CardList = () => {
   }
 
   return (
-    <View style={{
-      height: "100%"
-    }}>
-    {cartData.length > 0 && <View style={[styles.headBox, {backgroundColor: theme?.light}]}>
-        <SearchInput 
-          placeholder="Search Product" 
-          placeholderTextColor={theme?.amberGlow} 
-          value={searchQuery}
-          onChangeText={handleSearch}
-          inputStyle={{backgroundColor: theme?.midnight}}
-        />
-      </View>}
-      {cartData.length === 0 && <ItemEmpty 
-                                  icon="cart-remove" 
-                                  text="Your cart is empty" 
-                                  subText="Add items to your cart to see them here" 
-                                />}
-    {resultNotFound ? <SearchNotFound /> : <FlatList
-        data={cartData}
-        keyExtractor={(item, index) => item.id ? item.id.toString() : generateRandomId().toString()}
-        renderItem={({ item }) => (
-          <CartItem
-            companyName={item?.shop_name}
-            desc={item?.description}
-            image={item?.images || ["https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"]}
-            name={item?.title}
-            onPress={() => handleCartItemPress(item)}
-            price={item?.price}
-            delPress={() => handleDelete(item)}
-            rating={item?.rating}
+    <Screen style={{paddingTop: 0}}>
+      <View style={{
+        flex: 1,
+      }}>
+      {cartData.length > 0 && <View style={[styles.headBox, {backgroundColor: theme?.light}]}>
+          <SearchInput 
+            placeholder="Search Product" 
+            placeholderTextColor={theme?.misty} 
+            value={searchQuery}
+            onChangeText={handleSearch}
+            inputStyle={{backgroundColor: theme?.midnight}}
           />
-        )}
-        refreshing={loading} 
-        onRefresh={() => {
-          // This will refetch the data from AsyncStorage
-          setLoading(true);
-          fetchCartItems();
-        }}
-      />}
-    </View>
+        </View>}
+        {cartData.length === 0 && <ItemEmpty 
+                                    icon="cart-remove" 
+                                    text="Your cart is empty" 
+                                    subText="Add items to your cart to see them here" 
+                                  />}
+      {resultNotFound ? <SearchNotFound /> : <FlatList
+          data={reversedCartData}
+          keyExtractor={(item, index) => item.id ? item.id.toString() : generateRandomId().toString()}
+          renderItem={({ item }) => (
+            <CartItem
+              companyName={item?.shop_name}
+              desc={item?.description}
+              image={item?.images || ["https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"]}
+              name={item?.title}
+              onPress={() => handleCartItemPress(item)}
+              price={item?.price}
+              delPress={() => handleDelete(item)}
+              rating={item?.rating}
+            />
+          )}
+          refreshing={loading} 
+          onRefresh={() => {
+            // This will refetch the data from AsyncStorage
+            setLoading(true);
+            fetchCartItems();
+          }}
+        />}
+      </View>
+    </Screen>
   );
 };
 
 const styles = StyleSheet.create({
     headBox: {
       width: "100%",
-      padding: 10,
+      paddingBottom: 10,
       gap: 5,
       marginBottom: 15,
-      borderRadius: 5
+      borderRadius: 5,
   },
   head: {
-      fontWeight: "900",
+    fontWeight: "900",
   },
   loadingContainer: {
     flex: 1,

@@ -4,15 +4,14 @@ import React, { useState, useEffect, } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 
 // custom imports
-import AppNavigator from './app/navigation/AppNavigator';
 import OfflineNotice from './app/components/OfflineNotice';
-import AuthNavigation from './app/navigation/AuthNavigation';
 import RootNavigator from './app/navigation/RootNavigator';
 import AuthContext from './app/auth/context';
 import authStorage from './app/auth/storage';
 import BarcodePolicyProvider from './app/config/BarcodeContext';
 import {ThemeProvider} from './app/utils/ThemeContext';
 import {TutorialProvider} from './app/utils/TutorialContext';
+import { linking } from './app/config/linking';
 
 export default function App() {
   const [user, setUser] = useState()
@@ -32,7 +31,7 @@ export default function App() {
         <TutorialProvider>
           <BarcodePolicyProvider>
             <OfflineNotice />
-              <NavigationContainer>
+              <NavigationContainer linking={linking}>
                 {/* {user ? <AppNavigator /> : <AuthNavigation />} */}
                 <RootNavigator />
               </NavigationContainer>

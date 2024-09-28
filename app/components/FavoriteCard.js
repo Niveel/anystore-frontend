@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableHighlight, Alert } from 'react-native'
+import { View, StyleSheet, TouchableHighlight, Alert, TouchableOpacity } from 'react-native'
 import React from 'react'
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 
@@ -22,83 +22,84 @@ const ProductCard = ({shopName, onPress, removeFavorite}) => {
     }
 
   return (
-        <View style={styles.storeContainer}>
-            <TouchableHighlight 
-                style={[styles.card, {backgroundColor: theme?.midnightLight,}]} 
-                onPress={onPress} 
-                underlayColor="rgba(0,0,0,.3)"
-                accessible={true}
-                accessibilityLabel="Double tap to enter store."
-            >
-                <View style={[styles.cardInner]}>
-                    <View style={[styles.image, {backgroundColor: theme?.midnight, borderWidth: 2,}]}>
-                        <MaterialCommunityIcons name="store" size={80} color={theme?.amberGlow} />
-                    </View>
-                    <View style={styles.details}>
-                        <AppText style={styles.name} color={theme?.amberGlow} numberOfLines={1}>{shopName}</AppText>
-                        <AppButton title="Remove" onPress={removeAlert} color={theme?.amberGlowLight} />
-                    </View>
+        <TouchableHighlight 
+            style={styles.card}
+            underlayColor={theme?.blackLight}
+            onPress={onPress}
+            accessible={true}
+            accessibilityLabel="Double tap to enter store."
+        >
+            <View style={styles.cardWrapper}>
+                <TouchableOpacity
+                    style={styles.remove}
+                    onPress={removeAlert}
+                    accessible={true}
+                    accessibilityLabel="Double tap to remove store."
+                >
+                    <MaterialCommunityIcons name="minus-circle" size={30} color={theme?.punch} />
+                </TouchableOpacity>
+                <View style={[styles.image, {backgroundColor: theme?.blackLight}]}>
+                   <MaterialCommunityIcons name="store" size={80} color={theme?.horizon} />
                 </View>
-            </TouchableHighlight>
-        </View>
+                <View style={styles.storeCta}>
+                    <AppText style={styles.name} color={theme?.horizon} numberOfLines={1}>{shopName}</AppText>
+                    <AppButton 
+                        title="Visit store" 
+                        onPress={removeAlert} 
+                        color={theme?.horizon} 
+                        height={35}
+                        width='75%'
+                        textStyle={{fontSize: 14}}
+                        textColor={theme?.white}
+                    />
+                </View>
+                <View style={{flex: 1}}/>
+            </View>
+        </TouchableHighlight>
   )
 }
 
 const styles = StyleSheet.create({
-    storeContainer: {
-        width: "50%",
-        height: 260, 
-        padding: 5,
-    },
-   card: {
-       borderRadius: 15,
-       overflow: "hidden",
-       paddingVertical: 15,
-       paddingHorizontal: 10,
-       borderWidth: 2,
-        borderColor: "rgba(100,100,100,.6)",
-       width: "100%",
-       height: "100%",
-       backgroundColor: "rgba(10,10,10,.4)",
-    },
-    cardInner: {
-        height: "100%",
+    card: {
         width: "100%",
-       
+        height: 110,
+        borderRadius: 15,
     },
-    favWrapper: {
-        height: 260,
+    cardWrapper: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
         width: "100%",
-        padding: 5,
+        height: "100%",
+        borderRadius: 15,
+        overflow: "hidden",
+        borderWidth: 2,
     },
     image: {
-        width: "100%",
-        height: "60%",
-        borderRadius: 25,
-        overflow: "hidden",
+        flex: 2,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 1,
+        borderRadius: 10,
+    },
+    storeCta: {
+        flex: 3,
+        padding: 5,
+        paddingBottom: 10,
         justifyContent: "center",
         alignItems: "center",
     },
-    details: {
-        width: "100%",
-        height: "40%",
-        justifyContent: "space-between",
-        paddingTop: 5,
-    },
     name: {
-        fontWeight: "bold",
-        fontSize: 16,
-        letterSpacing: 1,
-        textAlign: "center",
-        textTransform: "uppercase",
+        fontSize: 20,
+        fontWeight: 'bold',
+        textTransform: 'capitalize',
+        marginBottom: 10,
     },
-    productContainer: {
-        width: "50%", 
+    remove: {
+        position: "absolute",
+        top: 5,
+        right: 5,
+        zIndex: 1,
         padding: 5,
-        height: "100%",
-    },
+        borderRadius: 35,
+    }
 })
 export default ProductCard

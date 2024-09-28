@@ -18,26 +18,57 @@ const AppNavigator = () => {
 
   return (
    <Tab.Navigator
-        tabBarOptions={{
-            activeTintColor: theme?.amberGlow,
-            activeBackgroundColor: theme?.midnight,
-            inactiveBackgroundColor: theme?.horizon,  
-            inactiveTintColor: theme?.misty,
-            labelStyle: {
-                fontSize: 14,
-                fontWeight: 'bold',
-            },
-            keyboardHidesTabBar: true,
-        }}
+        screenOptions={({ route }) => ({
+          tabBarActiveTintColor: theme?.misty,
+          tabBarInactiveTintColor: theme?.horizon,
+          tabBarActiveBackgroundColor: theme?.midnightLight,
+          tabBarInactiveBackgroundColor: theme?.white,
+          tabBarHideOnKeyboard: true,
+
+          tabBarIcon: ({ focused, color, size }) => {
+              let iconName
+              if (route.name === "Home") {
+                  iconName = focused ? "home" : "home-outline"
+              } else if (route.name === "Radar") {
+                  iconName = focused ? "radar" : "compass-outline"
+              } else if (route.name === "Crit") {
+                  iconName = focused ? "chat-processing" : "chat-processing-outline"
+              } else if (route.name === "Account") {
+                  iconName = focused ? "account" : "account-outline"
+              }
+              return <MaterialCommunityIcons name={iconName} size={focused ? size + 8 : size} color={color} />
+          },
+          tabBarItemStyle: {
+            borderRadius: 
+              route.name === "Home"
+              ? 0 
+              : route.name === "Account"
+              ? 0 
+              : 0, 
+            borderTopRightRadius: route.name === "Home" ? 36 : 16,
+            borderTopLeftRadius: route.name === "Account" ? 36 : 16,
+          },
+          // tabBarShowLabel: false,
+          tabBarLabelStyle: {
+              fontSize: 10,
+          },
+          tabBarStyle: {
+              height: 50,
+              position: "absolute",
+              bottom: 12,
+              left: 14,
+              right: 14,
+              borderRadius: 18,
+              overflow: "hidden",
+              elevation: 5,
+          },
+      })}
    >
         <Tab.Screen  
             name='Home' 
             component={ProductNavigator} 
             options={{
               headerShown: false,
-              tabBarIcon: ({color, size}) => (
-                <MaterialCommunityIcons name='home' color={color} size={size}/>
-              ),
             }}
         />
         <Tab.Screen 
@@ -45,9 +76,6 @@ const AppNavigator = () => {
             component={user ? RadarNavigation : AuthNavigation} 
             options={{
               headerShown: false,
-              tabBarIcon: ({color, size}) => (
-                <MaterialCommunityIcons name='radar' color={color} size={size}/>
-              ),
             }}
         />
         <Tab.Screen 
@@ -55,9 +83,6 @@ const AppNavigator = () => {
             component={user ? CritNavigation : AuthNavigation} 
             options={{
               headerShown: false,
-              tabBarIcon: ({color, size}) => (
-                <MaterialCommunityIcons name='chat-processing' color={color} size={size}/>
-              ),
             }}
         />
         <Tab.Screen 
@@ -65,9 +90,6 @@ const AppNavigator = () => {
             component={user ? AccountNavigator : AuthNavigation} 
             options={{
               headerShown: false,
-              tabBarIcon: ({color, size}) => (
-                <MaterialCommunityIcons name='account' color={color} size={size}/>
-              ),
             }}
         />
     </Tab.Navigator>

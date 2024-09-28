@@ -1,20 +1,20 @@
 import React, { useState, useEffect} from 'react'
-import { View, Text, StyleSheet, Platform, Linking, Alert , KeyboardAvoidingView, ScrollView } from 'react-native'
+import { View, StyleSheet, Platform, Linking, Alert , BackHandler, Animated, TouchableWithoutFeedback, Button } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { TouchableOpacity, Keyboard, ToastAndroid } from 'react-native'
+import { Keyboard, ToastAndroid } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
+import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import Constants from 'expo-constants';
+import * as expoLinking from 'expo-linking';
+import * as WebBrowser from 'expo-web-browser';
 // import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // AsyncStorage.clear()
 
 import Screen from '../components/Screen'
-import CodeSearch from '../components/CodeSearch'
-import SearchInput from '../components/SearchInput'
-import routes from '../navigation/routes'
+import AdHero from '../components/AdHero'
 import CardProducts from '../components/CardProducts'
 import ListItem from '../components/ListItem'
 import { useTheme } from '../utils/ThemeContext'
@@ -24,6 +24,8 @@ import useAuth from '../auth/useAuth'
 import authStorage from '../auth/storage'
 import registerDeviceToken from '../api/registerDeviceToken'
 import TutorialModal from '../components/modals/TutorialModal'
+import HomeHeader from '../components/HomeHeader'
+import { TouchableOpacity } from 'react-native'
 
 // notifications
 Notifications.setNotificationHandler({
@@ -44,6 +46,7 @@ Notifications.setNotificationHandler({
         const [page, setPage] = useState(1)
         const [hasMore, setHasMore] = useState(false)
         const [authToken, setAuthToken] = useState()
+        const [hasSearched, setHasSearched] = useState(false)
         const navigation = useNavigation()
         const { theme } = useTheme();
         const { user } = useAuth();
@@ -78,6 +81,7 @@ Notifications.setNotificationHandler({
 
         const handleSearch = () => {
             if (searchText.trim() === "") return;
+            setHasSearched(true);
             setProducts([]);
             setFilteredProducts([]);
             setPage(1);
@@ -94,14 +98,6 @@ Notifications.setNotificationHandler({
                 setHasMore(false);
             }
         };
-
-        const handleFavorite = () => {
-            navigation.navigate(routes.FAVORITES)
-        }
-
-        const handleCart = () => {
-            navigation.navigate(routes.CART)
-        }
 
         const priceRegex = (price) => {
             return parseFloat(price.replace(/[^0-9.-]+/g, ""));
@@ -136,6 +132,26 @@ Notifications.setNotificationHandler({
             }
         };
 
+        // back button handler. when back button is pressed after search
+        const backAction = () => {
+            if (hasSearched) {
+                setHasSearched(false);
+                setProducts([]);
+                setFilteredProducts([]);
+                setPage(1);
+                setHasMore(true);
+                fetchProducts(1);
+                return true;
+            }
+            return false;
+        };
+
+        // back button listener
+        useEffect(() => {
+            const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+            return () => backHandler.remove();
+        }, [hasSearched]);
+
         // notifications====================
         // getting auth token
         authStorage.getToken().then(token => {
@@ -144,6 +160,7 @@ Notifications.setNotificationHandler({
             console.log("Error getting auth token", error);
         });
 
+        // register device token
         useEffect(() => {
             if(authToken)
                 registerForPushNotificationsAsync().then(token => {
@@ -220,112 +237,119 @@ Notifications.setNotificationHandler({
         }
         }
 
+        // animating header on scroll
+        const headerHeight = 168.5
+        const scrollY = new Animated.Value(0);
+        const diffClamp = Animated.diffClamp(scrollY, 0, headerHeight);
+        // interpolating the header
+        const translateY = diffClamp.interpolate({
+            inputRange: [0, headerHeight],
+            outputRange: [0, -headerHeight],
+            extrapolate: 'clamp',
+        });
+        // interpolating the paddingTop of the main container
+        const paddingTop = diffClamp.interpolate({
+            inputRange: [0, headerHeight],
+            outputRange: [headerHeight, 0], 
+            extrapolate: 'clamp',
+        });
         // console.log("products are", products)
 
         return (
-            <Screen style={{ backgroundColor: theme?.midnight }}>
+            <>
                 <TutorialModal />
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : null}
-                    enabled
-                    style={{minHeight: "100%"}}
-                >
-                    {/* top bar */}
-                    <View style={[styles.topBarContainer, {paddingTop: Platform.OS === "ios" ? Constants.statusBarHeight + 5 : 10}]}>
-                        <View style={styles.navbar}>
-                            <Text style={{ color: theme?.white, fontSize: 20, fontWeight: '900', marginLeft: 10 }}>Store Search</Text>
-                            <View style={styles.iconBox}>
-                                <TouchableOpacity
-                                    onPress={handleFavorite}
-                                    accessible={true}
-                                    accessibilityLabel='Favorite stores'
-                                >
-                                    <MaterialCommunityIcons name="heart" size={30} color={theme?.punch} />
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={handleCart}
-                                    accessible={true}
-                                    accessibilityLabel='Cart'
-                                >
-                                    <MaterialCommunityIcons name="cart" size={30} color={theme?.amberGlow} />
-                                </TouchableOpacity>
+                <Screen style={{ backgroundColor: theme?.midnight }}>
+                    <Animated.View 
+                        style={styles.main}>
+                        <Animated.View
+                            style={{
+                                transform: [
+                                    {translateY: translateY},
+                                ],
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                zIndex: 100,
+                                elevation: 5,
+                            }}
+                        >
+                            <HomeHeader 
+                                setSearchText={setSearchText}
+                                handleSearch={handleSearch}
+                                showIcons
+                                title="Home"
+                            />
+                        </Animated.View>
+                        {/* main body */}
+                        <Animated.View style={{flex: 1, paddingTop}}>
+                            {!hasSearched ? 
+                                (<AdHero/>) :
+                            ( 
+                                <View style={{flex: 1, paddingHorizontal: 5}}>
+                                    {/* sorting bar */}
+                                    {products?.length > 0 && (
+                                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                                            <View style={[styles.sortBar, {backgroundColor: theme?.horizon}]}>
+                                                {/* back button */}
+                                                <TouchableOpacity 
+                                                    onPress={backAction}
+                                                    style={[styles.backBtn, {borderColor: theme?.white}]}
+                                                >
+                                                    <MaterialCommunityIcons name="arrow-left" size={25} color={theme?.white} />
+                                                </TouchableOpacity>
+                                                <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
+                                                <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
+                                            </View>
+                                        </TouchableWithoutFeedback>
+                                    ) }
+                                    {/* end of sorting bar */}
+                                    <CardProducts
+                                        productData={filteredProducts.length > 0 ? filteredProducts : products}
+                                        onEndReached={handleLoadMore}
+                                        hasMore={hasMore}
+                                        onScroll={Animated.event(
+                                            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                                            { useNativeDriver: false }
+                                        )}
+                                    />
+                                    {resultNotFound === true &&
+                                        <View style={{
+                                            width: '100%',
+                                            height: "100%",
+                                            justifyContent: 'center',
+                                        }}>
+                                            <ListItem
+                                                title="No result found"
+                                                subtitle="Try searching with another keyword"
+                                                style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
+                                                IconComponent={
+                                                    <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
+                                                }
+                                            />
+                                        </View>}
+                                    {productLoaded === false &&
+                                        <View style={{
+                                            width: '100%',
+                                            height: "100%",
+                                            justifyContent: 'center',
+                                        }}>
+                                            <ListItem
+                                                title="No product loaded"
+                                                subtitle="There was an error loading products, please try again later."
+                                                style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
+                                                IconComponent={
+                                                    <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
+                                                }
+                                            />
+                                        </View>}
                             </View>
-                        </View>
-                        <SearchInput
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            placeholder="Search Products by Keyword"
-                            placeholderTextColor={theme?.misty}
-                            onChangeText={text => setSearchText(text)}
-                            searchPress={handleSearch}
-                            keyboardType="default"
-                            onSubmitEditing={handleSearch}
-                        />
-                        <CodeSearch />
-                    </View>
-                    {/* end of top bar */}
-                    {/* main body */}
-                    <View 
-                        style={[styles.mainBody, {backgroundColor: theme?.horizon,}]}
-                        accessible={true}
-                        accessibilityLabel="Products Area."
-                    >
-                        {/* sorting bar */}
-                        {products?.length > 0 && (
-                            <View style={{
-                                width: '100%',
-                                height: 50,
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                gap: 12,
-                                paddingHorizontal: 15,
-                                paddingVertical: 30,
-                            }}>
-                                <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
-                                <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
-                            </View>
-                        ) }
-                        {/* end of sorting bar */}
-                        <CardProducts
-                            productData={filteredProducts.length > 0 ? filteredProducts : products}
-                            onEndReached={handleLoadMore}
-                            hasMore={hasMore}
-                        />
-                        {resultNotFound === true &&
-                            <View style={{
-                                width: '100%',
-                                height: "100%",
-                                justifyContent: 'center',
-                            }}>
-                                <ListItem
-                                    title="No result found"
-                                    subtitle="Try searching with another keyword"
-                                    style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
-                                    IconComponent={
-                                        <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
-                                    }
-                                />
-                            </View>}
-                        {productLoaded === false &&
-                            <View style={{
-                                width: '100%',
-                                height: "100%",
-                                justifyContent: 'center',
-                            }}>
-                                <ListItem
-                                    title="No product loaded"
-                                    subtitle="There was an error loading products, please try again later."
-                                    style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
-                                    IconComponent={
-                                        <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
-                                    }
-                                />
-                            </View>}
-                    </View>
-                    {/* end of main body */}
-                </KeyboardAvoidingView>
-            </Screen>
+                            )}
+                        </Animated.View>
+                        {/* end of main body */}
+                    </Animated.View>
+                </Screen>
+            </>
         )
     }
 
@@ -334,15 +358,13 @@ Notifications.setNotificationHandler({
             flexDirection: "row",
             gap: 20,
         },
-        mainBody: {
-            width: '100%',
-            height: '80%',
-            marginTop: 35,
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-            paddingHorizontal: 15,
-            paddingBottom: 85,
-            flexShrink: 0,
+        main: {
+            // width: '100%',
+            // minHeight: "100%",
+            flex: 1,
+            paddingBottom: 0,
+            backgroundColor: "redorange",
+            // flexShrink: 0,
         },
         navbar: {
             width: '100%',
@@ -358,6 +380,27 @@ Notifications.setNotificationHandler({
             gap: 15,
             justifyContent: 'flex-start',
             alignItems: 'center',
+        },
+        backBtn: {
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 20,
+            position: 'absolute',
+            top: 8,
+            left: 5,
+            borderWidth: 2,
+            padding: 5,
+
+        },
+        sortBar: {
+            width: '100%',
+            height: 45,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 12,
+            paddingHorizontal: 15,
+            paddingVertical: 30,
         },
     });
 

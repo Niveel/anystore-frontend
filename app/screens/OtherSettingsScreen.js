@@ -31,7 +31,7 @@ const OtherSettingsScreen = () => {
 
             <View style={styles.colorWrapper}>
               <TouchableOpacity 
-                style={[styles.colorBox, {backgroundColor: "#1a2f56"}]}
+                style={[styles.colorBox, {backgroundColor: "rgb(0, 31, 62)"}]}
                 onPress={() => toggleTheme('default')}
                 accessible={true}
                 accessibilityLabel="Default theme"
@@ -39,8 +39,20 @@ const OtherSettingsScreen = () => {
               >
                 <AppText 
                   style={styles.colorText}
-                  color="#f4f1e4"
+                  color="#fff"
                 >Default</AppText>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.colorBox, {backgroundColor: "#1a2f56"}]}
+                onPress={() => toggleTheme('horizon')}
+                accessible={true}
+                accessibilityLabel="Horizon theme"
+                accessibilityHint='Change to default theme'
+              >
+                <AppText 
+                  style={styles.colorText}
+                  color="#f4f1e4"
+                >Horizon</AppText>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={[styles.colorBox, {backgroundColor: "#1a1a1a"}]}

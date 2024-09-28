@@ -7,9 +7,9 @@ import Icon from './Icon';
 import {useTheme} from '../utils/ThemeContext';
 import useAuth from '../auth/useAuth';
 
-function ImageInput({imageUri, onChangeImage}) {
+function ImageInput({imageUri, onChangeImage, style}) {
     const {user} = useAuth()
-    const {colors} = useTheme()
+    const {theme} = useTheme()
 
     const requestPermission = async () => {
         const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -79,7 +79,7 @@ function ImageInput({imageUri, onChangeImage}) {
 
   return (
     <TouchableWithoutFeedback onPress={handlePress}>
-        <View style={[styles.container, {backgroundColor: theme?.mistyLight,}]}>
+        <View style={[styles.container, style, {backgroundColor: theme?.horizon, borderColor: theme?.white}]}>
             {!imageUri && <Icon
                             iconName="camera"
                             size={50}
@@ -98,13 +98,14 @@ function ImageInput({imageUri, onChangeImage}) {
 
 const styles = StyleSheet.create({
   container: {
-     width: 100,
-     height: 100,
+     width: 75,
+     height: 75,
      alignSelf: "center",
      borderRadius: 50,
      justifyContent: "center",
      alignItems: "center",
      overflow: "hidden",
+     borderWidth: 2,
   },
     image: {
         width: "100%",

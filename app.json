@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./app/assets/a_icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "shopwit",
     "splash": {
       "image": "./app/assets/custom_splash.png",
       "resizeMode": "contain",
@@ -23,7 +24,11 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "com.niveel.shopwit",
-      "buildNumber": "8"
+      "buildNumber": "8",
+      "associatedDomains": [
+        "applinks:shopwit.com"
+      ],
+      "scheme": "shopwit"
     },
     "android": {
       "versionCode": 4,
@@ -32,7 +37,20 @@
         "foregroundImage": "./app/assets/a_icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.niveel.shopwit"
+      "package": "com.niveel.shopwit",
+      "intentFilters": [
+          {
+            "action": "VIEW",
+            "data": {
+              "scheme": "shopwit",
+              "host": "product"
+            },
+            "category": [
+              "BROWSABLE",
+              "DEFAULT"
+            ]
+          }
+        ]
     },
     "web": {
       "favicon": "./app/assets/a_icon.png"

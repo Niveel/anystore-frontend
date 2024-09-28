@@ -6,6 +6,7 @@ import Screen from './Screen';
 import AppText from './AppText';
 import AppButton from './AppButton';
 import { useTheme } from '../utils/ThemeContext';
+import { formatNumber } from '../utils/utils';
 
 function RadarPriceCheckScreen({route, navigation}) {
   const {price} = route.params;
@@ -32,7 +33,6 @@ function RadarPriceCheckScreen({route, navigation}) {
   }
 
   const handleDecPrice = () => {
-    console.log("price", price, "thePrice", thePrice)
     if(thePrice > 1) {
       setThePrice(prevPrice => prevPrice - 1);
     }
@@ -74,14 +74,14 @@ function RadarPriceCheckScreen({route, navigation}) {
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
       <View style={styles.container}>
-        <AppText style={{fontSize: 20}}>Current Price</AppText>
+        <AppText style={{fontSize: 20}}>Current Price:</AppText>
         <View style={[styles.currentPrice, {backgroundColor: theme?.light,}]}>
-          <AppText style={{fontSize: 25}}>{price}</AppText>
+          <AppText style={{fontSize: 25}}>${formatNumber(price)}</AppText>
         </View>
       </View>
-      <View style={[styles.setPriceContainer, {backgroundColor: theme?.light,}]}>
+      <View style={[styles.setPriceContainer, {backgroundColor: theme?.misty,}]}>
         <View style={styles.setPriceBox}>
-          <AppText style={{fontSize: 20}}>Notify me when price drops to:</AppText>
+          <AppText style={{fontSize: 18, textAlign: "center"}} color={theme?.white}>Notify me when price drops to:</AppText>
           <View style={styles.priceDropBox}>
             <TouchableOpacity
               style={[styles.controlBtn, {backgroundColor: theme?.amberGlow,}]}
@@ -94,7 +94,7 @@ function RadarPriceCheckScreen({route, navigation}) {
               <MaterialCommunityIcons name="minus" size={30} color={theme?.text} />
             </TouchableOpacity>
             <View style={styles.currentPrice}>
-              <AppText style={{fontSize: 25}}>${thePrice.toFixed(2)}</AppText>
+              <AppText style={{fontSize: 25}} color={theme?.white}>${formatNumber(thePrice.toFixed(2))}</AppText>
             </View>
             <TouchableOpacity
               style={[styles.controlBtn, {backgroundColor: theme?.amberGlow,}]}
@@ -109,6 +109,7 @@ function RadarPriceCheckScreen({route, navigation}) {
           </View>
           <AppButton 
             title="Set Price" 
+            textColor={theme?.white}
             onPress={() => {
               if(!thePrice) return;
               Alert.alert(
@@ -117,7 +118,7 @@ function RadarPriceCheckScreen({route, navigation}) {
                 [
                   {text: 'OK', onPress: () => {
                     navigation.goBack()
-                    navigation.navigate("Home")
+                    // navigation.navigate("Radar")
                   }}
                 ],
                 {cancelable: false}
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 10,
     paddingHorizontal: 30,
-    paddingVertical: 20
+    paddingVertical: 20,
   }
 });
 

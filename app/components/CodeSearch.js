@@ -16,23 +16,26 @@ const CodeSearch = () => {
 
   return (
     <TouchableHighlight
-      style={[styles.searchBar, {backgroundColor: theme?.light,}]}
+      style={[styles.searchBar, {backgroundColor: theme?.horizon,}]}
       onPress={handleCodeSearch}
       underlayColor={theme.lighter}
     >
-      <AppText>Search by Barcode / QR Code</AppText>
+      <AppText style={styles.text} color={theme?.white}>Search by Barcode / QR Code</AppText>
     </TouchableHighlight>
   );
 };
 
 const styles = StyleSheet.create({
   searchBar: {
-    width: '90%',
     alignSelf: 'center',
-    height: 45,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 5,
+    borderRadius: 30,
+  },
+  text: {
+    fontSize: 14,
   },
 });
 

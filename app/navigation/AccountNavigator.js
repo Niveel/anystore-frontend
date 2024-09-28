@@ -6,6 +6,7 @@ import PasswordResetScreen from '../screens/PasswordResetScreen';
 import EmailResetScreen from '../screens/EmailResetScreen';
 import NameResetScreen from '../screens/NameResetScreen';
 import OtherSettingsScreen from '../screens/OtherSettingsScreen';
+import AccountDetailsSettingsScreen from '../screens/AccountDetailsSettingsScreen';
 import routes from './routes';
 import { useTheme } from '../utils/ThemeContext';
 
@@ -18,12 +19,16 @@ const AccountNavigator = () => {
         screenOptions={{
             presentation: "modal",
             headerStyle: {
-                backgroundColor: theme?.horizon,
+                backgroundColor: theme?.misty,
+                height: 60,   
+                borderBottomLeftRadius: 25,
+                borderBottomRightRadius: 25,
             },
-            headerTintColor: theme?.amberGlow,
             headerTitleStyle: {
-                fontWeight: "bold",
+                fontSize: 20,
+                fontWeight: 'bold',
             },
+            headerTintColor: theme?.white,
         }}
     >
         <Stack.Screen 
@@ -61,6 +66,13 @@ const AccountNavigator = () => {
             component={OtherSettingsScreen} 
             options={{
                 title: "Other Settings",
+            }}
+        />
+        <Stack.Screen 
+            name={routes.ACCOUNT_DETAILS_SETTINGS} 
+            component={AccountDetailsSettingsScreen} 
+            options={{
+                title: "Account Details",
             }}
         />
     </Stack.Navigator>

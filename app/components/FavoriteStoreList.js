@@ -9,6 +9,7 @@ import SearchInput from './SearchInput'
 import SearchNotFound from './SearchNotFound'
 import ItemEmpty from './ItemEmpty'
 import { useTheme } from '../utils/ThemeContext'
+import Screen from './Screen'
  
 const FavoriteStoreList = () => {
     const [favStore, setFavStore] = useState([]);
@@ -63,15 +64,16 @@ const FavoriteStoreList = () => {
     }
     
     return (
-        <>
+        <Screen style={{paddingTop: 0}}>
          {favStore.length > 0 && <View style={[styles.headBox, {backgroundColor: theme?.light,}]}>
           <SearchInput 
             placeholder="Search Store" 
-            placeholderTextColor={theme?.amberGlow} 
+            placeholderTextColor={theme?.misty} 
             autoCapitalize="none"
             autoCorrect={false}
             value={searchQuery}
             onChangeText={handleOnSearch}
+            inputStyle={{paddingHorizontal: 10}}
           />
          </View>}
          {favStore.length === 0 && <ItemEmpty 
@@ -79,32 +81,33 @@ const FavoriteStoreList = () => {
                                         text="Favorite store empty" 
                                         subText="You have not added any store to your favorite list."
                                     />}
-            {resultNotFound ? <SearchNotFound /> : <FlatList 
-                data={favStore}
-                keyExtractor={item => item.toString()}
-                renderItem={({item}) => (
-                    <FavoriteCard 
-                        shopName={item}
-                        onPress={() => {
-                            navigation.navigate("Store", { shopName: item })
-                        }}
-                        removeFavorite={() => handleFavDelete(item)}
-                    />
-                )}
-                refreshing={refreshing}
-                onRefresh={() => {
-                    fetchFavoriteStores();
-                }}
-                numColumns={2}
-            />}
-        </>
+            {resultNotFound ? <SearchNotFound /> : 
+                <FlatList 
+                    data={favStore}
+                    keyExtractor={item => item.toString()}
+                    contentContainerStyle={{padding: 10}}
+                    renderItem={({item}) => (
+                        <FavoriteCard 
+                            shopName={item}
+                            onPress={() => {
+                                navigation.navigate("Store", { shopName: item })
+                            }}
+                            removeFavorite={() => handleFavDelete(item)}
+                        />
+                    )}
+                    refreshing={refreshing}
+                    onRefresh={() => {
+                        fetchFavoriteStores();
+                    }}
+                />}
+        </Screen>
     );
 };
 
 const styles = StyleSheet.create({
     headBox: {
         width: "100%",
-        padding: 10,
+        paddingBottom: 10,
         marginBottom: 10,
         gap: 5,
         borderRadius: 5

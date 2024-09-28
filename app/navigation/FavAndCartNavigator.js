@@ -14,20 +14,24 @@ const FavAndCartNavigator = () => {
   return (
    <Stack.Navigator
         screenOptions={{
-            headerStyle: {
-                backgroundColor: theme?.horizon,
-                height: Platform.OS === 'ios' ? 110 : 60,
-            },
-            headerTintColor: theme?.amberGlow,
-            headerTitleStyle: {
-                fontWeight: 'bold',
-            },
+            presentation: "modal",
+                headerStyle: {
+                    backgroundColor: theme?.misty,
+                    height: 60,   
+                    borderBottomLeftRadius: 25,
+                    borderBottomRightRadius: 25,
+                },
+                headerTitleStyle: {
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                },
+                headerTintColor: theme?.white,
         }}
-   >
+    >
         <Stack.Screen 
             name='Products' 
             component={ProductsScreen}
-        options={{headerShown: false}}  
+            options={{headerShown: false}}  
         />
         <Stack.Screen 
             name='Favorites' 
