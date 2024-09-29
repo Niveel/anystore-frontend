@@ -83,6 +83,9 @@ const AppNavigator = () => {
             component={user ? CritNavigation : AuthNavigation} 
             options={{
               headerShown: false,
+              tabBarStyle: {
+                display: 'none',
+              }
             }}
         />
         <Tab.Screen 
@@ -90,6 +93,9 @@ const AppNavigator = () => {
             component={user ? AccountNavigator : AuthNavigation} 
             options={{
               headerShown: false,
+              tabBarStyle: {
+                display: 'none',
+              }
             }}
         />
     </Tab.Navigator>

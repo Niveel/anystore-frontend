@@ -87,7 +87,7 @@ const AccountSettingsScreen = ({navigation}) => {
             <List
               icon='cog-outline'
               title="Other Settings" 
-              onPress={() => navigation.navigate(routes.CART)}
+              onPress={() => navigation.navigate(routes.OTHER_SETTINGS)}
             />
             <List
               icon='headset'

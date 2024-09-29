@@ -3,13 +3,18 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
 } from "react-native";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import AppText from "./AppText";
 import { useTheme } from "../utils/ThemeContext";
+import routes from "../navigation/routes";
+import useAuth from "../auth/useAuth";
+import { addToCart } from "../hooks/utils";
 
 const { width, height } = Dimensions.get("window");
 
@@ -20,12 +25,47 @@ const ProductCard = ({
   price,
   companyName,
   onPress,
-  addToCart,
+  addToCartVisible,
   addToCartOnPress,
   rating,
+  item,
   ...otherPops
 }) => {
+  const [cartItemAdded, setCartItemAdded] = useState([]);
   const { theme } = useTheme();
+  const navigation = useNavigation();
+
+  const { user } = useAuth();
+
+  const fetchCartItems = async () => {
+    try {
+      const existingCartItems = await AsyncStorage.getItem('cartItems');
+      const parsedExistingCartItems = JSON.parse(existingCartItems) || [];
+      setCartItemAdded(parsedExistingCartItems);
+    } catch (error) {
+      console.error('Error fetching cart items:', error);
+    }
+  };
+
+  const handleAddToCart = async (product) => {
+    if (!user) {
+      navigation.navigate("Auth", { screen: 'Login' })
+      return;
+    } else {
+      addToCart(product);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
+
+  const handleProductPress = (item) => {
+    navigation.navigate(routes.PRODUCT_DETAILS, item);
+    navigation.setOptions({
+      headerTitle: item?.shop_name,
+    });
+  };
 
   const priceRegex = (price) => {
     return price.replace(/\$/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -35,7 +75,7 @@ const ProductCard = ({
     <TouchableOpacity
       activeOpacity={0.9}
       style={styles.card}
-      onPress={onPress}
+      onPress={()=> handleProductPress(item)}
       {...otherPops}
       accessible={true}
       accessibilityLabel={name}
@@ -48,10 +88,10 @@ const ProductCard = ({
       {/* details */}
       <View style={[styles.details, {backgroundColor: theme?.midnight, shadowColor: theme?.black}]}>
         {/* add to cart */}
-      {addToCart && (
+      {addToCartVisible && (
         <TouchableOpacity
           style={[styles.addToCartButton, {backgroundColor: theme?.misty}]}
-          onPress={addToCartOnPress}
+          onPress={() => handleAddToCart(item)}
           accessible={true}
           accessibilityLabel="Add to cart"
           accessibilityHint={`Double tap to add ${name} to cart`}
@@ -76,27 +116,27 @@ const ProductCard = ({
 
 const styles = StyleSheet.create({
   card: {
-    width: width > 300 ? width / 3.3 : width / 2.2,
-    height: height > 750 ? height / 5 : height / 4.5,
+    width: width > 250 ? width / 2.16: width / 2.2,
+    height: height > 650 ? height / 3.5 : height / 4.5,
     margin: 5,
     justifyContent: "center",
     alignItems: "center",
   },
   image: {
     width: "100%",
-    height: 90,
-    resizeMode: "cover",
+    height: "100%",
+    resizeMode: "contain",
     borderRadius: 7,
   },
   imgBox: {
     width: "100%",
-    height: "45%",
+    height: "50%",
     backgroundColor: "blue",
     padding: 5,
     borderRadius: 10,
   },
   details: {
-    height: "55%",
+    height: "50%",
     width: "95%",
     padding: 4,
     marginTop: -8,

@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect, useCallback} from 'react';
-import { View, StyleSheet, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, Alert, Keyboard, BackHandler, ToastAndroid, Platform, useWindowDimensions, Dimensions } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, Alert, Keyboard, BackHandler, ToastAndroid, Platform, Dimensions, FlatList } from 'react-native';
 import axios from 'axios';
 import {io} from 'socket.io-client';
 import { Audio } from 'expo-av';
@@ -176,7 +176,7 @@ function ChatroomScreen({route, navigation}) {
     // network functions 
     const handleMorePress = (event) => {
       setMenuPosition({ x: event.nativeEvent.pageX, y: event.nativeEvent.pageY });
-      setMenuVisible(!menuVisible);
+      setMenuVisible(prev => !prev);
     };  
 
     const addMemberToGroup = async (memberId, memberName) => {
@@ -207,7 +207,7 @@ function ChatroomScreen({route, navigation}) {
 
     const fetchGroups = async () => {
       try {
-        const response = await axios.get(`https://www.ishopwit.com/api/user/groups/?userId=${userId}`)
+        const response = await axios.get(`https://www.ishopwit.com/api/user/groups/?userId=${memberId}`)
     
         if(response.data) {
           setGroups(response.data);
@@ -548,15 +548,17 @@ function ChatroomScreen({route, navigation}) {
     };
 
     const scrollToMessage = (messageId) => {
-      if (messageRefs.current[messageId]) {
-          scrollViewRef.current.scrollTo({
-              y: messageRefs.current[messageId].offsetTop,
-              animated: true,
-          });
+      const messageIndex = messages.findIndex(msg => msg._id === messageId);
+    
+      if (messageIndex !== -1) {
+        scrollViewRef.current.scrollToIndex({
+          index: messageIndex,
+          animated: true,
+        });
       } else {
-          console.log(`Message ID ${messageId} not found in refs`);
+        console.log(`Message ID ${messageId} not found`);
       }
-  };
+    };
 
     const updateBubbleRef = useCallback((ref, msgId) => {
       if (ref && replyMessage && msgId === replyMessage._id) {
@@ -571,7 +573,6 @@ function ChatroomScreen({route, navigation}) {
         swipeBubbleRef.current = null;
       }
     }, [replyMessage, swipeBubbleRef]);
-
     // end of reply
 
     // fetch messages
@@ -606,7 +607,6 @@ function ChatroomScreen({route, navigation}) {
       fetchAppUsers();
     }, [searchQuery]);
 
-
 // fetch group members
     useEffect(() => {
       if(viewMembersModalVisible || addMembersVisible) fetchGroupMembers();
@@ -637,7 +637,7 @@ function ChatroomScreen({route, navigation}) {
     // console.log("messages are:", messages)
     // console.log("selected messages are:", selectedMessages)
   return (
-    <Screen style={{backgroundColor: theme?.midnight,}}>
+    <Screen >
       {/* header */}
       <ChatRoomHeader 
         navigation={navigation}
@@ -677,105 +677,99 @@ function ChatroomScreen({route, navigation}) {
       >
         <KeyboardAvoidingView
           style={{ 
-            backgroundColor: theme?.midnight,
-            // flex: 1, 
-            height: '93%',
+            flex: 1,
+            paddingBottom: 5,
           }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={keyboardVerticalOffset}
         >
-        <ScrollView 
-          contentContainerStyle={styles.scrollViewContent}
-          ref={scrollViewRef}
-        >
-          <View style={styles.chatContainer}>
-            {/* messages */}
-            {
-              messages?.map((msg, index) => {
-                const isCurrentUser = msg?.sender?._id === user?._id || msg?.sender === user?._id;
-                const justifyContent = isCurrentUser ? 'flex-end' : 'flex-start';
-                const selectedMessageIds = selectedMessages.map(msg => msg._id)
-                const msgIsInFlaggedMessages = flaggedMessages.includes(msg?._id);
-              
-                // if the message is a shared product it is treated as a product card
-                if (msg?.isShared) {
-                  const product = JSON.parse(msg.content);
+          {/* messages list */}
+        <FlatList 
+          ref={scrollViewRef} 
+          data={messages}  
+          keyExtractor={(msg, index) => msg?._id || index.toString()} 
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item: msg, index }) => {
 
-                  return (
-                    <MessageProductBubble
-                      key={msg?._id || index}
-                      msgPress={() => {
-                        setSelectedMessages([])
-                        setMenuVisible(false);
-                      }} 
-                      justifyContent={justifyContent}
-                      index={index}
-                      msgId={msg?._id}
-                      selectedMessageIds={selectedMessageIds}
-                      isCurrentUser={isCurrentUser}
-                      msgSenderUsername={msg?.sender?.username}
-                      msgTime={msg?.createdAt}
-                      selectedMessages={selectedMessages}
-                      msgIsInFlaggedMessages={msgIsInFlaggedMessages}
-                      longPress={() => handleSelectMessageLongPress(msg)}
-                      productPress={() => {
-                        if(longPressMsgState) {
-                          setSelectedMessages([...selectedMessages, msg]);
-                          // if the message is already selected, deselect it
-                          if(selectedMessages.includes(msg)) {
-                            setSelectedMessages(selectedMessages.filter(message => message !== msg));
-                          }
-                          return;
-                        }
-                        navigation.navigate(routes.PRODUCT_DETAILS, product);
-                      }}
-                      productTitle={product?.title}
-                      productImageUrl={product?.images[0]}
-                    />
-                  );
+            const isCurrentUser = msg?.sender?._id === user?._id || msg?.sender === user?._id;
+            const justifyContent = isCurrentUser ? 'flex-end' : 'flex-start';
+            const selectedMessageIds = selectedMessages.map(msg => msg._id);
+            const msgIsInFlaggedMessages = flaggedMessages.includes(msg?._id);
 
-                } else {
-                  return (
-                    <MessageBubble
-                      key={msg?._id || index}
-                      onLayout={(event) => {
-                        const { layout } = event.nativeEvent;
-                        messageRefs.current[msg?._id] = {
-                            offsetTop: layout.y,
-                        };
-                      }}
-                      msgPress={() => {
-                        setSelectedMessages([])
-                        setMenuVisible(false);
-                        // Keyboard.dismiss();
-                      }} 
-                      justifyContent={justifyContent}
-                      index={index}
-                      msgId={msg?._id}
-                      selectedMessageIds={selectedMessageIds}
-                      msgContent={msg?.content}
-                      isCurrentUser={isCurrentUser}
-                      msgSenderUsername={msg?.sender?.username}
-                      msgTime={msg?.createdAt}
-                      selectedMessages={selectedMessages}
-                      msgIsInFlaggedMessages={msgIsInFlaggedMessages}
-                      messageLongPress={() => handleSelectMessageLongPress(msg)}
-                      selectMessage={() => handleSelectMessage(msg)}
-                      doubleTapMessage={() => handleDoubleTapMessage(msg)}
-                      msgSentiment={msg?.sentiment}
-                      setReplyOnSwipeOpen={() => setReplyMessage(msg)}
-                      updateBubbleRef={updateBubbleRef}
-                      message={msg}
-                      onReplyPress={scrollToMessage}
-                    />
-                  )
-                }
-              
-              })
+            // Check if the message is a shared product
+            if (msg?.isShared) {
+              const product = JSON.parse(msg.content);
+
+              return (
+                <MessageProductBubble
+                  key={msg?._id || index}
+                  msgPress={() => {
+                    setSelectedMessages([]);
+                    setMenuVisible(false);
+                  }} 
+                  justifyContent={justifyContent}
+                  index={index}
+                  msgId={msg?._id}
+                  selectedMessageIds={selectedMessageIds}
+                  isCurrentUser={isCurrentUser}
+                  msgSenderUsername={msg?.sender?.username}
+                  msgTime={msg?.createdAt}
+                  selectedMessages={selectedMessages}
+                  msgIsInFlaggedMessages={msgIsInFlaggedMessages}
+                  longPress={() => handleSelectMessageLongPress(msg)}
+                  productPress={() => {
+                    if (longPressMsgState) {
+                      setSelectedMessages([...selectedMessages, msg]);
+                      if (selectedMessages.includes(msg)) {
+                        setSelectedMessages(selectedMessages.filter(message => message !== msg));
+                      }
+                      return;
+                    }
+                    navigation.navigate(routes.PRODUCT_DETAILS, product);
+                  }}
+                  productTitle={product?.title}
+                  productImageUrl={product?.images[0]}
+                />
+              );
+            } else {
+              return (
+                <MessageBubble
+                  key={msg?._id || index}
+                  msgPress={() => {
+                    setSelectedMessages([]);
+                    setMenuVisible(false);
+                  }} 
+                  onLayout={(event) => {
+                    const { layout } = event.nativeEvent;
+                    messageRefs.current[msg?._id] = {
+                        offsetTop: layout.y,
+                    };
+                  }}
+                  justifyContent={justifyContent}
+                  index={index}
+                  msgId={msg?._id}
+                  selectedMessageIds={selectedMessageIds}
+                  msgContent={msg?.content}
+                  isCurrentUser={isCurrentUser}
+                  msgSenderUsername={msg?.sender?.username}
+                  msgTime={msg?.createdAt}
+                  selectedMessages={selectedMessages}
+                  msgIsInFlaggedMessages={msgIsInFlaggedMessages}
+                  messageLongPress={() => handleSelectMessageLongPress(msg)}
+                  selectMessage={() => handleSelectMessage(msg)}
+                  doubleTapMessage={() => handleDoubleTapMessage(msg)}
+                  msgSentiment={msg?.sentiment}
+                  setReplyOnSwipeOpen={() => setReplyMessage(msg)}
+                  updateBubbleRef={updateBubbleRef}
+                  message={msg}
+                  onReplyPress={scrollToMessage}
+                />
+              );
             }
-            {/* end of messages */}
-          </View>
-        </ScrollView>
+          }}
+          contentContainerStyle={styles.scrollViewContent}
+        />
+          {/* enf of messages list */}
           {/* Chat input */}
           <ChatInput
             message={message} 
@@ -792,8 +786,7 @@ function ChatroomScreen({route, navigation}) {
                 {/* view members modal */}
       <ViewMembersModal 
         visible={viewMembersModalVisible}
-        onPress={() => setViewMembersModalVisible(false)}
-        onRequestClose={() => setViewMembersModalVisible(false)}
+        closeModal={() => setViewMembersModalVisible(false)}
         groupName={groupName}
         isCreatedGroup={isCreatedGroup}
         groupMembers={groupMembers}
@@ -805,8 +798,7 @@ function ChatroomScreen({route, navigation}) {
                 {/* add members modal */}
       <AddMembersModal
         visible={addMembersVisible}
-        onPress={() => setAddMembersVisible(false)}
-        onRequestClose={() => setAddMembersVisible(false)}
+        closeModal={() => setAddMembersVisible(false)}
         groupName={groupName}
         searchQuery={searchQuery}
         onChangeQueryText={(text) => setSearchQuery(text)}
@@ -846,23 +838,8 @@ function ChatroomScreen({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
-  chatControl: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    position: 'absolute',
-    bottom: 0,
-    width: "100%",
-  },
   scrollViewContent: {
-    minHeight: '93%',
-    paddingTop: 15,
-  },
-  chatContainer: {
-    width: '100%',
-    height: '100%',
-    paddingRight: 5,
+    padding: 5,
   },
 });
 

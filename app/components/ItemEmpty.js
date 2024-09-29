@@ -10,7 +10,11 @@ function ItemEmpty({icon,subText,text}) {
   const {theme} = useTheme()
   return (
     <TouchableWithoutFeedback>
-        <View style={[StyleSheet.absoluteFillObject,styles.container]}>
+        <View 
+          style={[StyleSheet.absoluteFillObject,styles.container]}
+          accessible={true}
+          accessibilityLabel={`empty list: ${text}. ${subText}`}
+        >
             <MaterialCommunityIcons name={icon} size={180} color={theme?.amberGlow} />
             <AppText style={styles.text} color={theme?.text}>{text}</AppText>
             <AppText style={styles.subText} color={theme?.misty}>{subText}</AppText>

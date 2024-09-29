@@ -2,20 +2,21 @@ import React, {useState, useRef} from 'react';
 import { View, StyleSheet, Modal, TouchableOpacity, Dimensions } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useTheme } from '../../utils/ThemeContext';
 import AppText from '../AppText';
-import {useTutorial} from '../../utils/TutorialContext';
 import { Home, FavStoreInfo, RadarInfo, CritInfo } from '../tutorial';
+import AppButton from '../AppButton';
 
 const { width: screenWidth } = Dimensions.get('window')
 
 const TutorialModal = () => {
-    const { theme } = useTheme();
-    const { showTutorial, removeTutorialValue,} = useTutorial();
+    const { theme } = useTheme();;
     const [currentIndex, setCurrentIndex] = useState(0);
     const carouselRef = useRef(null);
     const navigation = useNavigation();
+    const [isModalVisible, setIsModalVisible] = useState(true);
 
     const tutorialScreens = [
         { key: 'home', component: <Home /> },
@@ -24,10 +25,19 @@ const TutorialModal = () => {
         { key: 'critInfo', component: <CritInfo /> },
     ];
 
-    const skipTutorial = () => {
-        removeTutorialValue();
-        navigation.navigate('App', {screen: 'Product'});
-    }
+    const skipTutorial = async () => {
+        try {
+          await AsyncStorage.setItem('appFirstLaunched', 'false');
+    
+          navigation.navigate('App', {
+            screen: 'ProductScreen',
+          });
+    
+          setIsModalVisible(false);
+        } catch (error) {
+          console.error('Failed to save appFirstLaunched:', error);
+        }
+      };
 
     const goToNext = () => {
         if (currentIndex < tutorialScreens.length - 1) {
@@ -45,46 +55,57 @@ const TutorialModal = () => {
     };
 
   return (
-    <Modal 
-        visible={showTutorial} 
-        animationType="slide"
-    >
-      <View style={[styles.container, {backgroundColor: theme?.midnight}]}>
-        <TouchableOpacity onPress={skipTutorial} style={[styles.skip, {backgroundColor: theme.punch}]}>
-            <AppText>Skip</AppText>
-        </TouchableOpacity>
-        <View style={[styles.innerBox, {backgroundColor: theme?.horizon}]}>
-            <View style={[styles.controlBox, {backgroundColor: theme?.mistyLight}]}>
-                <TouchableOpacity
-                    onPress={goToPrev}
-                    style={[styles.ctrlBtn,{backgroundColor: theme?.midnight}]} 
+        <Modal 
+            visible={isModalVisible} 
+            animationType="slide"
+        >
+        <View style={[styles.container, {backgroundColor: theme?.misty}]}>
+            <View style={styles.skipBox}>
+                <TouchableOpacity 
+                    onPress={skipTutorial} 
+                    style={[styles.skip, {backgroundColor: theme.punch}]}
                 >
-                    <AppText>Prev</AppText>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={goToNext}
-                    style={[styles.ctrlBtn,{backgroundColor: theme?.amberGlow}]} 
-                >
-                    <AppText color={theme?.midnight}>Next</AppText>
+                    <AppText color={theme?.white}>Skip</AppText>
                 </TouchableOpacity>
             </View>
-            {/* tutorial carousel */}
-            <Carousel
-                ref={carouselRef}
-                data={tutorialScreens}
-                renderItem={({ item }) => (
-                    <View style={styles.carouselItem}>
-                        {item.component}
-                    </View>
-                )}
-                sliderWidth={screenWidth}
-                itemWidth={screenWidth}
-                onSnapToItem={(index) => setCurrentIndex(index)} // Update index when swiped
-            />
-            {/* end of tutorial carousel */}
+            <View style={[styles.innerBox, {backgroundColor: theme?.horizon}]}>
+                {/* tutorial carousel */}
+                <Carousel
+                    ref={carouselRef}
+                    data={tutorialScreens}
+                    renderItem={({ item }) => (
+                        <View style={styles.carouselItem}>
+                            {item.component}
+                        </View>
+                    )}
+                    sliderWidth={screenWidth}
+                    itemWidth={screenWidth}
+                    onSnapToItem={(index) => setCurrentIndex(index)} // Update index when swiped
+                />
+                {/* end of tutorial carousel */}
+            </View>
+            {/* controls */}
+                <View style={[styles.controlBox, {backgroundColor: theme?.misty}]}>
+                    {currentIndex > 0 &&
+                        <AppButton 
+                        title="Prev" 
+                        onPress={goToPrev} 
+                        style={[styles.ctrlBtn]}
+                        width='35%'
+                        textColor={theme?.white}
+                        color={theme?.amberGlow}
+                    />}
+                    <AppButton 
+                        title={currentIndex < tutorialScreens.length - 1 ? 'Next' : 'Finish'} 
+                        onPress={goToNext} 
+                        style={[styles.ctrlBtn, {backgroundColor: theme?.horizon}]}
+                        width='35%'
+                        textColor={theme?.white}
+                    />
+                </View>
+            {/* end of controls */}
         </View>
-      </View>
-    </Modal>
+        </Modal>
   );
 }
 
@@ -96,36 +117,33 @@ const styles = StyleSheet.create({
     controlBox: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: '95%',
-        alignSelf: 'center',
-        padding: 5,
-        bottom: 15,
-        position: 'absolute',
+        alignItems: 'center',
+        padding: 10,
         borderRadius: 10,
-        zIndex: 2,
+        width: '100%',
+        flex: 1,
     },
     ctrlBtn: {
         paddingVertical: 5,
         paddingHorizontal: 15,
-        borderRadius: 5,
+        borderRadius: 45,
     },
     innerBox: {
-        width: '100%',
-        height: "90%",
-        marginTop: 50,
+        flex: 7,
         borderRadius: 10,
         padding: 10,
     },
     skip: {
-        alignSelf: 'flex-end',
         paddingHorizontal: 15,
         paddingVertical: 5,
         borderRadius: 5,
-        position: 'absolute',
-        zIndex: 2,
-        right: 10,
-        top: 40,
-    }
+    },
+    skipBox: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        paddingHorizontal: 20,
+    },
 });
 
 export default TutorialModal;

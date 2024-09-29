@@ -9,6 +9,7 @@ import routes from '../navigation/routes'
 import Screen from '../components/Screen'
 import usersApi from '../api/users'
 import { useTheme } from '../utils/ThemeContext'
+import AppButton from '../components/AppButton'
 
 const validationSchema = Yup.object().shape({
     username: Yup.string().required("Enter your name").label("Username").min(3, "Name too short").max(40, "Name too long"),
@@ -48,6 +49,32 @@ const SignUpScreen = ({ navigation }) => {
 
     return (
         <Screen style={{ backgroundColor: theme?.midnight }}>
+            {/* bottom circles */}
+            <View style={[styles.bottomCircle, {
+                    backgroundColor: theme?.horizon,
+                    bottom: -20,
+                    left: 0,
+                }]}
+            />
+            <View style={[styles.bottomCircle, {
+                    backgroundColor: theme?.horizon,
+                    bottom: 20,
+                    left: -40,
+                }]}
+            />
+            <View style={[styles.bottomCircle, {
+                    backgroundColor: theme?.horizon,
+                    bottom: -20,
+                    right: 0,
+                }]}
+            />
+            <View style={[styles.bottomCircle, {
+                    backgroundColor: theme?.horizon,
+                    bottom: 20,
+                    right: -40,
+                }]}
+            />
+            {/* end of bottom circles */}
             <ScrollView 
                 style={{
                     minHeight: "100%",
@@ -58,9 +85,7 @@ const SignUpScreen = ({ navigation }) => {
                 }}
             >
                 <View style={styles.headerContainer}>
-                    <Image source={require("../assets/signup.png")} style={styles.image} blurRadius={10} />
-                    <Text style={[styles.heading, {color: theme?.white,}]}>Shopwit</Text>
-                    <Text style={[styles.subHeading, {color: theme?.white,}]}>Create an account</Text>
+                    <Text style={[styles.subHeading, {color: theme?.misty,}]}>Create account</Text>
                     <TouchableOpacity 
                         onPress={() => navigation.goBack()} 
                         style={[styles.backBtn, {backgroundColor: theme?.horizon,}]}
@@ -71,12 +96,13 @@ const SignUpScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={[styles.signUpContainer, {backgroundColor: theme?.horizon,}]}>
+                    <View style={styles.signUpContainer}>
                         <KeyboardAvoidingView
                             behavior={Platform.OS === "ios" ? "padding" : null}
                             enabled
-                            style={{
-                                backgroundColor: theme?.horizon,
+                            style={{ 
+                                flex: 1, 
+                                alignItems: "center" 
                             }}
                         >
                             <ActivityIndicator animating={loading} size="large" />
@@ -90,28 +116,30 @@ const SignUpScreen = ({ navigation }) => {
                                 <AppFormField
                                     name="username"
                                     icon="account"
-                                    placeholder="Username"
-                                    placeholderTextColor={theme?.white}
+                                    placeholder="Violet Jones"
+                                    placeholderTextColor={theme?.mistyLight}
                                     label="Username"
                                     autoCapitalize="none"
                                     autoCorrect={false}
+                                    color={theme?.misty}
                                 />
                                 <AppFormField
                                     name="email"
                                     icon="email"
-                                    placeholder="Email"
-                                    placeholderTextColor={theme?.white}
+                                    placeholder="jonpa@niklo.pt"
+                                    placeholderTextColor={theme?.mistyLight}
                                     keyboardType="email-address"
                                     label="email"
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     textContentType="emailAddress"
+                                    color={theme?.misty}
                                 />
                                 <AppFormField
                                     name="password"
                                     icon={isSecure ? "eye" : "eye-off"}
-                                    placeholder="Password"
-                                    placeholderTextColor={theme?.white}
+                                    placeholder="*******"
+                                    placeholderTextColor={theme?.mistyLight}
                                     label="password"
                                     autoCapitalize="none"
                                     autoCorrect={false}
@@ -119,12 +147,13 @@ const SignUpScreen = ({ navigation }) => {
                                     textContentType="password"
                                     onPress={text => setIsSecure(!isSecure)}
                                     visibilityLabel={isSecure ? "show password" : "hide password"}
+                                    color={theme?.misty}
                                 />
                                 <AppFormField
                                     name="confirmPassword"
                                     icon={isConfirmSecure ? "eye" : "eye-off"}
-                                    placeholder="Confirm Password"
-                                    placeholderTextColor={theme?.white}
+                                    placeholder="*******"
+                                    placeholderTextColor={theme?.mistyLight}
                                     label="confirm password"
                                     autoCapitalize="none"
                                     autoCorrect={false}
@@ -132,21 +161,36 @@ const SignUpScreen = ({ navigation }) => {
                                     onPress={() => setIsConfirmSecure(!isConfirmSecure)}
                                     textContentType="password"
                                     visibilityLabel={isConfirmSecure ? "show password" : "hide password"}
+                                    color={theme?.misty}
                                 />
                                 <SubmitButton 
-                                    color={theme?.amberGlow} 
+                                    color={theme?.horizon} 
                                     title="Sign up" 
-                                    width="70%" 
-                                    height={40}
+                                    width="60%" 
+                                    height={45}
+                                    disabled={loading}
+                                    textColor={theme?.white}
                                 />
                             </AppForm>
                         </KeyboardAvoidingView>
                         <View style={styles.loginBox}>
-                            <Text style={{ color: theme?.white, alignSelf: "center", marginBottom: 10 }}>Already have an account?
+                            <Text style={{ color: theme?.misty, alignSelf: "center", marginBottom: 10 }}>Already have an account?
                             </Text>
-                            <TouchableOpacity onPress={() => navigation.navigate(routes.LOGIN)} style={[styles.login, {backgroundColor: theme?.midnight,}]}>
-                                <Text style={[styles.text, {color: theme?.amberGlow,}]}> Login</Text>
-                            </TouchableOpacity>
+                            <AppButton
+                                title="Login"
+                                onPress={() => navigation.navigate(routes.LOGIN)}
+                                color={theme?.midnight}
+                                style={{
+                                    width: "50%",
+                                    height: 45,
+                                    borderWidth: 1,
+                                    borderRadius: 5,
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    borderColor: theme?.horizon,
+                                }}
+                                textColor={theme?.horizon}
+                            />
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
@@ -165,7 +209,7 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         width: '100%',
-        height: "20%",
+        height: "10%",
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -174,17 +218,11 @@ const styles = StyleSheet.create({
         fontWeight: '900',
         marginTop: 5,
     },
-    image: {
-        height: 75,
-        width: 100,
-        borderRadius: 10,
-    },
     loginBox: {
         width: '100%',
-        height: "15%",
         alignItems: 'center',
-        justifyContent: 'center',
         paddingVertical: 20,
+        flex: 3,
     },
     login: {
         paddingVertical: 10,
@@ -193,22 +231,28 @@ const styles = StyleSheet.create({
     },
     signUpContainer: {
         width: '100%',
-        height: "80%",
-        borderRadius: 20,
+        height: "90%",
         padding: 5,
-        paddingVertical: 20,
         marginTop: 50,
         overflow: "hidden",
     },
     subHeading: {
-        fontSize: 16,
+        fontSize: 20,
         textAlign: "center",
+        fontWeight: "bold",
     },
     text: {
         fontSize: 14,
         fontWeight: "bold",
         padding: 0,
         textTransform: "capitalize",
+    },
+    bottomCircle: {
+        width: 80,
+        height: 80,
+        opacity: 0.5,
+        position: "absolute",
+        borderRadius: 45,
     }
 })
 

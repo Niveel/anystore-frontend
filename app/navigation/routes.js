@@ -17,4 +17,7 @@ export default Object.freeze({
     CAFA: 'CafaAiScreen',
     PRODUCT_IMAGES: 'ImagesScreen',
     ACCOUNT_DETAILS_SETTINGS: 'AccountDetailsSettingsScreen',
+    CATEGORIES_SCREEN: 'CategoriesScreen',
+    HOME: 'Product',
+    EMAIL_RESET: 'EmailReset',
 })

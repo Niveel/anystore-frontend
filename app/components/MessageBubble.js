@@ -113,7 +113,7 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                         {
                             backgroundColor: msgIsInFlaggedMessages 
                                 ? theme?.punch 
-                                : (isCurrentUser ? theme?.amberGlow : theme?.horizon),
+                                : (isCurrentUser ? theme?.misty : theme?.horizon),
                             padding: 10, 
                             paddingBottom: 5,
                             borderRadius: 5, 
@@ -133,10 +133,13 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                                 top: -10,
                                 left: isCurrentUser ? -10 : "unset",
                                 right: isCurrentUser ? "unset" : -10,
-                                width: 20,
-                                height: 20,
-                                borderRadius: 10,
-                                backgroundColor: isCurrentUser ? theme?.amberGlow : theme?.horizon,
+                                width: 25,
+                                height: 25,
+                                backgroundColor: isCurrentUser ? theme?.misty : theme?.horizon,
+                                // zIndex: -1,
+                                transform: [{rotate: isCurrentUser ? "45deg" : "225deg"}],
+                                borderBottomLeftRadius: 2,
+                                // borderBottomRightRadius: 5,
                             }}
                         />
                         {/* end of bubble point */}
@@ -147,8 +150,8 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                                 onPress={() => onReplyPress(message?.replyTo)}
                                 accessible={true}
                             >
-                                <MaterialCommunityIcons name='reply' size={15} color={theme?.text} />
-                                <AppText numberOfLines={3} style={{fontSize: 12, color: theme?.text}}>{message.replyMessageContent}</AppText>
+                                <MaterialCommunityIcons name='reply' size={15} color={theme?.white} />
+                                <AppText numberOfLines={3} style={{fontSize: 12}} color={theme?.white}>{message.replyMessageContent}</AppText>
                             </TouchableOpacity>
                         )}
                         {/* end of reply preview */}
@@ -179,7 +182,7 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                             fontWeight: 'bold',
                             marginHorizontal: 5,
                         }}
-                        color={isCurrentUser ? theme?.horizon : theme?.white}
+                        color={isCurrentUser ? theme?.midnight : theme?.white}
                         >
                         {formatTime(msgTime)}
                         </AppText>

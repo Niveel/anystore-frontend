@@ -85,7 +85,7 @@ const FavoriteStoreList = () => {
                 <FlatList 
                     data={favStore}
                     keyExtractor={item => item.toString()}
-                    contentContainerStyle={{padding: 10}}
+                    contentContainerStyle={{padding: 10, gap: 10}}
                     renderItem={({item}) => (
                         <FavoriteCard 
                             shopName={item}

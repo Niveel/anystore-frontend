@@ -59,6 +59,8 @@ function MsgLongPressOptions({style, deleteMsg, reportMsg, messages, deselectMsg
             }
           : undefined;
       }, [sound]);
+
+      const buttonBgColor = theme?.horizon;
     
 
   return (
@@ -68,16 +70,16 @@ function MsgLongPressOptions({style, deleteMsg, reportMsg, messages, deselectMsg
         accessibilityLabel="Message options menu"
     >
         <View style={styles.row}>
-            <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={deleteMsg}>
+            <TouchableOpacity style={[styles.button, {backgroundColor: buttonBgColor,}]} onPress={deleteMsg}>
                 <AppText style={styles.buttonText} color={theme?.midnight}>Delete</AppText>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={handleCopyMessages}>
+            <TouchableOpacity style={[styles.button, {backgroundColor: buttonBgColor,}]} onPress={handleCopyMessages}>
                 <AppText style={styles.buttonText} color={theme?.midnight}>Copy</AppText>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={reportMsg}>
+            <TouchableOpacity style={[styles.button, {backgroundColor: buttonBgColor,}]} onPress={reportMsg}>
                 <AppText style={styles.buttonText} color={theme?.midnight}>Report</AppText>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={handleFlagToggle}>
+            <TouchableOpacity style={[styles.button, {backgroundColor: buttonBgColor,}]} onPress={handleFlagToggle}>
                 <AppText style={styles.buttonText} color={theme?.midnight}>{isFlagged? "Unflag" : "Flag"}</AppText>
             </TouchableOpacity>
         </View>

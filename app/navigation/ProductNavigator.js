@@ -9,6 +9,7 @@ import ShareTitleScreen from '../screens/ShareTitleScreen'
 import ProductInfoScreen from '../screens/ProductInfoScreen'
 import CafaAiScreen from '../screens/CafaAiScreen'
 import ImagesScreen from '../screens/ImagesScreen'
+import CategoriesScreen from '../screens/CategoriesScreen'
 import { useTheme } from '../utils/ThemeContext'
 import routes from './routes'
 
@@ -85,11 +86,9 @@ const ProductNavigator = () => {
             }}
         />
         <Stack.Screen 
-            name={routes.PRODUCT_IMAGES} 
-            component={ImagesScreen}
-            options={{
-                headerTitle: "Images",
-            }}
+            name={routes.CATEGORIES_SCREEN} 
+            component={CategoriesScreen}
+            options={{headerShown: false}}
         />
     </Stack.Navigator>
   )

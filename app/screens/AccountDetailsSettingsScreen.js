@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
+import * as Yup from 'yup';
 
 import Screen from '../components/Screen';
 import AppText from '../components/AppText';
@@ -11,10 +12,17 @@ import PopupModal from '../components/modals/PopupModal';
 import Icon from '../components/Icon';
 import deleteAccount from '../api/deleteAccount';
 import storage from '../auth/storage';
+import DescriptionModal from '../components/modals/DescriptionModal';
+import { AppForm, AppFormField, SubmitButton, } from '../components/forms';
+import routes from '../navigation/routes';
 
+const validationSchema = Yup.object().shape({
+    username: Yup.string().required("Enter your name").label("Username").min(3, "Name too short").max(40, "Name too long"),
+});
 
-const AccountDetailsSettingsScreen = ({}) => {
+const AccountDetailsSettingsScreen = ({navigation}) => {
     const [modalVisible, setModalVisible] = useState(false)
+    const [changeNameModalVisible, setChangeNameModalVisible] = useState(false)
     const {theme} = useTheme()
     const {user} = useAuth()
 
@@ -44,8 +52,52 @@ const AccountDetailsSettingsScreen = ({}) => {
         logOut();
       }
 
+    const handleChangeName = async (values) => {
+        console.log("name values", values);
+
+        setTimeout(() => {
+            setChangeNameModalVisible(false);
+        }, 1000);
+    }
+
   return (
     <Screen style={{backgroundColor: theme?.midnight}}>
+        {/* new name modal */}
+        <DescriptionModal
+            visible={changeNameModalVisible}
+            header='Change your name'
+            closeModal={() => setChangeNameModalVisible(false)}
+        >
+            <View style={{
+                width: '100%',
+                paddingVertical: 10,
+                gap: 10,
+                marginVertical: 30,
+            }}>
+                <AppForm
+                    initialValues={{username: user.username}}
+                    validationSchema={validationSchema}
+                    onSubmit={handleChangeName}
+                >
+                    <AppFormField
+                        name="username"
+                        icon="account"
+                        placeholder="Violet Jones"
+                        placeholderTextColor={theme?.mistyLight}
+                        label="New Username"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        color={theme?.misty}
+                    />
+                    <SubmitButton 
+                        title="Save" 
+                        textColor={theme?.white}
+                        width="50%"
+                    />
+                </AppForm>
+            </View>
+        </DescriptionModal>
+        {/* main screen */}
         <ScrollView contentContainerStyle={{
                 flexGrow: 1, 
                 gap: 10, 
@@ -57,7 +109,7 @@ const AccountDetailsSettingsScreen = ({}) => {
                 <AppText style={styles.listTitle} color={theme?.horizon}>Username:</AppText>
                 <List
                     title={user.username.toUpperCase()}
-                    onPress={() => console.log('email')}
+                    onPress={() => setChangeNameModalVisible(true)}
                     accessibilityLabel="Double tap to change email"
                 />
             </View>
@@ -67,7 +119,7 @@ const AccountDetailsSettingsScreen = ({}) => {
                 <AppText style={styles.listTitle} color={theme?.horizon}>Email:</AppText>
                 <List
                     title={user.email.toLowerCase()}
-                    onPress={() => console.log('email')}
+                    onPress={() => navigation.navigate(routes.EMAIL_RESET)}
                     accessibilityLabel="Double tap to change email"
                 />
             </View>
@@ -77,7 +129,7 @@ const AccountDetailsSettingsScreen = ({}) => {
                 <AppText style={styles.listTitle} color={theme?.horizon}>Password</AppText>
                 <List
                     title="********"
-                    onPress={() => console.log('password')}
+                    onPress={() => navigation.navigate(routes.PASSWORD_RESET)}
                     accessibilityLabel="Double tap to change password"
                 />
             </View>
@@ -94,6 +146,7 @@ const AccountDetailsSettingsScreen = ({}) => {
                 />
             </View>
         </ScrollView>
+        {/* permanent delete modal */}
         <PopupModal 
             visible={modalVisible}
             closeModal={() => setModalVisible(false)}
@@ -112,7 +165,7 @@ const AccountDetailsSettingsScreen = ({}) => {
                 <View>
                     <AppButton
                         title="Delete forever"
-                        onPress={() => console.log('delete account')}
+                        onPress={performDeleteAccount}
                         color={theme?.horizon}
                         accessibilityLabel="Double tap to delete account"
                         textColor={theme?.white}

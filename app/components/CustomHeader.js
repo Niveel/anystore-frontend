@@ -20,6 +20,10 @@ const CustomHeader = ({showIcons, title="header",}) => {
         navigation.navigate(routes.CART)
     }
 
+    const goHome = () => {
+        navigation.navigate(routes.HOME)
+    }
+
     const handleNotification = () => {
         console.log('Notification route')
     }
@@ -28,9 +32,11 @@ const CustomHeader = ({showIcons, title="header",}) => {
     <View 
         style={[styles.container, {backgroundColor: theme?.misty}]} 
         accessible={true}
-        accessibilityLabel="ShopWit logo"
+        accessibilityLabel="navigation header"
     >
-        <Image source={logo} style={styles.logo} />
+        <TouchableOpacity onPress={goHome} activeOpacity={0.9}>
+            <Image source={logo} style={styles.logo} />
+        </TouchableOpacity>
 
         <AppText style={styles.text} color={theme.white}>{title}</AppText>
 

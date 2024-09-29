@@ -61,7 +61,7 @@ function EmailResetScreen(props) {
         <TouchableWithoutFeedback
             onPress={Keyboard.dismiss}
         >
-        <View style={[styles.container, {backgroundColor: theme?.midnight},]}>
+        <View style={[styles.container,]}>
             <AppForm
                 initialValues={{email: ""}}
                 onSubmit={handleChangeEmail}
@@ -74,15 +74,17 @@ function EmailResetScreen(props) {
                     autoCorrect={false}
                     icon="email"
                     keyboardType="email-address"
-                    placeholder="Enter new email"
-                    placeholderTextColor={theme?.misty}
+                    placeholder="hizifi@gerfolmal.ao"
+                    placeholderTextColor={theme?.mistyLight}
                     textContentType="emailAddress"
+                    color={theme?.misty}
+                    height={50}
                 />
                 <SubmitButton 
                     title="Change email" 
-                    width="90%"
-                    color={theme?.amberGlow}
-                    textColor={theme?.midnight}
+                    width="60%"
+                    color={theme?.horizon}
+                    textColor={theme?.white}
                 />
             </AppForm>
         </View>
@@ -94,7 +96,8 @@ function EmailResetScreen(props) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1,
+    paddingVertical: 40,
   },
 });
 

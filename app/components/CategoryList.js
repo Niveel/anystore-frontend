@@ -1,56 +1,18 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, FlatList, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import AppText from './AppText';
 import { useTheme } from '../utils/ThemeContext';
 import TitleBar from './TitleBar';
-import catImg from '../assets/catg_img.jpg';
+import { categories } from '../dummyData';
+import routes from '../navigation/routes';
 
-const categories = [
-    {
-        id: 1,
-        name: "Electronics",
-        image: catImg,
-    },
-    {
-        id: 2,
-        name: "Clothing",
-        image: catImg,
-    },
-    {
-        id: 3,
-        name: "Furniture",
-        image: catImg,
-    },
-    {
-        id: 4,
-        name: "Books",
-        image: catImg,
-    },
-    {
-        id: 5,
-        name: "Appliances",
-        image: catImg,
-    },
-    {
-        id: 6,
-        name: "Automobiles",
-        image: catImg,
-    },
-    {
-        id: 7,
-        name: "Services",
-        image: catImg,
-    },
-    {
-        id: 8,
-        name: "Miscellaneous",
-        image: catImg,
-    },
-]
+const {width} = Dimensions.get('window');
 
 const CategoryList = (props) => {
     const { theme } = useTheme();
+    const navigation = useNavigation();
 
     const CategoryComponent = ({item}) => (
         <TouchableOpacity 
@@ -59,7 +21,7 @@ const CategoryList = (props) => {
             borderColor: theme?.misty,
             
             }]}
-            onPress={() => console.log(item.name)}
+            onPress={() => navigation.navigate(routes.CATEGORIES_SCREEN, {category: item})}
         >
             <Image source={item.image} style={{width: 40, height: 40}} />
             <AppText style={{fontSize: 8, textAlign: "center"}} numberOfLines={1}>{item.name}</AppText>
@@ -73,7 +35,7 @@ const CategoryList = (props) => {
             data={categories}
             keyExtractor={item => item.id.toString()}
             renderItem={({item}) => <CategoryComponent item={item} />}
-            numColumns={4}
+            numColumns={width > 300 ? 4 : 3}
             contentContainerStyle={{
                 padding: 5,  
                 justifyContent: 'center', 

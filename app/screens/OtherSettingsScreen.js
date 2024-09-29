@@ -15,19 +15,13 @@ const OtherSettingsScreen = () => {
   };
 
   return (
-    <Screen style={{
-      backgroundColor: theme.midnight,
-      padding: 10,
-      paddingTop: 0,
-    }}>
+    <Screen style={{paddingTop: 0}}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* section */}
-        <View style={[styles.section, {
-          backgroundColor: theme.horizon,
-        }]}>
+        <View style={[styles.section, {backgroundColor: theme.misty}]}>
           <View style={styles.box}>
-            <AppText color={theme.text} style={styles.headingText}>Change Theme</AppText>
-            <AppText color={theme.text} style={styles.desc}>Change the app's theme base.</AppText>
+            <AppText color={theme.white} style={styles.headingText}>Change Theme</AppText>
+            <AppText color={theme.midnight} style={styles.desc}>Change the app's theme base.</AppText>
 
             <View style={styles.colorWrapper}>
               <TouchableOpacity 
@@ -120,11 +114,11 @@ const OtherSettingsScreen = () => {
         {/* end of section */}
         {/* section */}
         <View style={[styles.section, {
-          backgroundColor: theme.horizon,
+          backgroundColor: theme.misty,
         }]}>
-          <AppText color={theme.text} style={styles.headingText}>App Info</AppText>
+          <AppText color={theme.white} style={styles.headingText}>App Info</AppText>
           <TouchableOpacity 
-            style={[styles.button, {backgroundColor: theme?.amberGlow}]}
+            style={[styles.button, {backgroundColor: theme?.horizon, marginTop: 10}]}
             onPress={() => setIsModalVisible(true)}
           >
             <AppText color={theme.midnight}>About</AppText>
@@ -148,12 +142,13 @@ const styles = StyleSheet.create({
   button: {
     padding: 10,
     borderRadius: 5,
-    
+    justifyContent: "center",
+    alignItems: "center",
   },
   colorBox: {
     padding: 10,
     flex: 1,
-    minWidth: '30%',
+    minWidth: '40%',
     height: 90,
     borderRadius: 5,
     justifyContent: "center",

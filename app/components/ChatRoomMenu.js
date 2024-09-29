@@ -15,14 +15,14 @@ const ChatRoomMenu = ({py, px, viewMembers, isCreatedGroup, exitGroup, deleteGro
             onPress={viewMembers}
             underlayColor={theme?.blackLight}
           >
-            <AppText style={styles.menuItemText} color={theme?.amberGlow}>View Members</AppText>
+            <AppText style={styles.menuItemText} color={theme?.misty}>View Members</AppText>
           </TouchableHighlight>
           {!isCreatedGroup && <TouchableHighlight 
             style={styles.menuItem} 
             onPress={exitGroup}
             underlayColor={theme?.blackLight}
           >
-            <AppText style={styles.menuItemText} color={theme?.amberGlow}>Exit Group</AppText>
+            <AppText style={styles.menuItemText} color={theme?.misty}>Exit Group</AppText>
           </TouchableHighlight>}
 
           {isCreatedGroup &&  <TouchableHighlight 
@@ -30,7 +30,7 @@ const ChatRoomMenu = ({py, px, viewMembers, isCreatedGroup, exitGroup, deleteGro
             onPress={deleteGroup}
             underlayColor={theme?.blackLight}
           >
-            <AppText style={styles.menuItemText} color={theme?.amberGlow}>Delete Group</AppText>
+            <AppText style={styles.menuItemText} color={theme?.misty}>Delete Group</AppText>
           </TouchableHighlight>}
           
           {!isCreatedGroup && <TouchableHighlight 
@@ -38,7 +38,7 @@ const ChatRoomMenu = ({py, px, viewMembers, isCreatedGroup, exitGroup, deleteGro
             onPress={blockUser}
             underlayColor={theme?.blackLight}
           >
-            <AppText style={styles.menuItemText} color={theme?.amberGlow}>Block User</AppText>
+            <AppText style={styles.menuItemText} color={theme?.misty}>Block User</AppText>
           </TouchableHighlight>}
         </View>
   );
@@ -50,6 +50,14 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingVertical: 5,
         paddingHorizontal: 10,
+        zIndex: 3,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
     menuItem: {
         padding: 8,

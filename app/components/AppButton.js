@@ -8,7 +8,12 @@ const AppButton = ({title="button", textColor, color, textStyle, onPress, width 
     color = color || theme?.horizon
     textColor = textColor || theme?.text
   return (
-    <TouchableHighlight onPress={onPress} style={[styles.button, {backgroundColor: color, width: width, height: height}, style]} underlayColor={theme?.light} {...otherProps}>
+    <TouchableHighlight 
+        onPress={onPress} 
+        style={[styles.button, {backgroundColor: color, width: width, height: height}, style]} 
+        underlayColor={theme?.light} 
+        {...otherProps}
+    >
         <Text style={[styles.text, textStyle, {color: textColor}]}>{title}</Text>
     </TouchableHighlight>
   )

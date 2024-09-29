@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableHighlight, Linking } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as WebBrowser from 'expo-web-browser';
 
 // custom imports
 import Screen from '../components/Screen';
@@ -31,13 +32,17 @@ function BarcodePolicyScreen({ navigation }) {
   };  
 
   const openPrivacyPolicy = () => {
-    Linking.openURL('https://www.niveel.com/privacy/');
+    WebBrowser.openBrowserAsync('https://www.niveel.com/privacy/');
+
   };
 
   return (
-    <Screen style={[styles.screen, { backgroundColor: theme?.midnight }]}>
+    <Screen 
+      style={styles.screen} 
+      statusColor={theme?.horizon}
+    >
       <View style={[styles.container, { backgroundColor: theme?.horizon }]}>
-        <AppText style={styles.text}>
+        <AppText style={styles.text} color={theme?.white}>
           You are responsible for content you post on the App. You agree not to post content that is illegal, harmful, or violates any third-party rights. Depending on the severity of the content, Shopwit reserves the rights to flag such content, warn or remove you from the platform for such behavior. You have the right to report users that indulge in such behavior too. You can also choose to exit any group chat that you dislike or find offensive. To learn more visit our privacy policy:
         </AppText>
         <TouchableHighlight
@@ -50,7 +55,7 @@ function BarcodePolicyScreen({ navigation }) {
             borderRadius: 5,
           }}
         >
-          <AppText style={{ color: theme?.amberGlow, textDecorationLine: 'underline' }}>
+          <AppText style={{ textDecorationLine: 'underline' }} color={theme?.midnight}>
             Privacy Policy
           </AppText>
         </TouchableHighlight>
@@ -60,14 +65,14 @@ function BarcodePolicyScreen({ navigation }) {
             underlayColor="rgba(250,0,0,0.7)"
             onPress={disallowPolicy}
           >
-            <AppText>Disagree</AppText>
+            <AppText color={theme?.white}>Disagree</AppText>
           </TouchableHighlight>
           <TouchableHighlight
             style={[styles.button, { backgroundColor: theme?.amberGlow }]}
             onPress={allowPolicy}
             underlayColor="rgba(0,250,0,0.6)"
           >
-            <AppText>Agree</AppText>
+            <AppText color={theme?.white}>Agree</AppText>
           </TouchableHighlight>
         </View>
       </View>
@@ -87,9 +92,11 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     borderRadius: 5,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   screen: {
-    padding: 10,
     justifyContent: 'center',
   },
   text: {
@@ -102,6 +109,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
+    gap: 10,
+    paddingVertical: 20,
   },
 });
 

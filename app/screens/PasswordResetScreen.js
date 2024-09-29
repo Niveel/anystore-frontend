@@ -82,11 +82,13 @@ const PasswordResetScreen = ({navigation}) => {
                 textContentType="password"
                 icon={isOldSecure ? "eye" : "eye-off"}
                 placeholder="Enter old password" 
-                placeholderTextColor={theme?.misty}
+                placeholderTextColor={theme?.mistyLight}
                 label="Old Password"
                 secureTextEntry={isOldSecure} 
                 onPress={() => setIsOldSecure(!isOldSecure)}
-                selectionColor={theme?.amberGlow}
+                selectionColor={theme?.horizon}
+                height={50}
+                color={theme?.misty}
             />
             <AppFormField 
                 name="newPassword1"
@@ -95,11 +97,13 @@ const PasswordResetScreen = ({navigation}) => {
                 textContentType="password"
                 icon={isNewSecure ? "eye" : "eye-off"}
                 placeholder="Enter new password" 
-                placeholderTextColor={theme?.misty}
+                placeholderTextColor={theme?.mistyLight}
                 label="new password"
                 secureTextEntry={isNewSecure}
                 onPress={() => setIsNewSecure(!isNewSecure)} 
-                selectionColor={theme?.amberGlow}
+                selectionColor={theme?.horizon}
+                height={50}
+                color={theme?.misty}
             />
             <AppFormField 
                 name="newPassword2"
@@ -108,13 +112,19 @@ const PasswordResetScreen = ({navigation}) => {
                 textContentType="password"
                 icon={isNewConfirmSecure ? "eye" : "eye-off"} 
                 placeholder="Confirm new password" 
-                placeholderTextColor={theme?.misty}
+                placeholderTextColor={theme?.mistyLight}
                 label="Confirm new password"
                 secureTextEntry={isNewConfirmSecure}
                 onPress={() => setIsNewConfirmSecure(!isNewConfirmSecure)} 
-                selectionColor={theme?.amberGlow}
+                selectionColor={theme?.horizon}
+                height={50}
+                color={theme?.misty}
             />
-          <SubmitButton title="Change Password" width="90%" />
+          <SubmitButton 
+            title="Change Password" 
+            width="70%"
+            textColor={theme?.white} 
+          />
         </AppForm>
       </View>
         </KeyboardAvoidingView>
@@ -128,6 +138,7 @@ const styles = StyleSheet.create({
     gap: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 30,
   },
 
 })

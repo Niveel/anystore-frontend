@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState, useMemo } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, FlatList } from 'react-native';
 import axios from 'axios';
 import { Audio } from 'expo-av';
 
@@ -7,10 +7,14 @@ import Screen from '../components/Screen';
 import AppButton from '../components/AppButton';
 import SearchInput from '../components/SearchInput';
 import AppText from '../components/AppText'; 
-import CustomModal from '../components/CustomModal';
 import chatGroupApi from '../api/chatGroup';
 import useAuth from '../auth/useAuth';
 import { useTheme } from '../utils/ThemeContext';
+import CustomHeader from '../components/CustomHeader';
+import PopupModal from '../components/modals/PopupModal';
+import Icon from '../components/Icon';
+import GroupCard from '../components/GroupCard';
+import routes from '../navigation/routes';
 
 const open_sound = '../assets/sounds/open_sound.mp3';
 
@@ -106,156 +110,179 @@ function FriendlyScreen({navigation}) {
     navigation.navigate('Chatroom', {groupName: name.trim(), groupId: id, setGroups: setGroups, isCreatedGroup: isCreatedGroup});
   }
 
-  const sortedGroupsCreated = groups?.createdGroups?.sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt));
-  const sortedGroupsJoined = groups?.joinedGroups?.sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt));
+  const sortedGroupsCreated = useMemo(() => {
+    return groups?.createdGroups?.sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt));
+  }, [groups?.createdGroups]);
+
+  const sortedGroupsJoined = useMemo(() => {
+    return groups?.joinedGroups?.sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt));
+  }, [groups?.joinedGroups]);
 
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
-      <View style={[styles.heading, {backgroundColor: theme?.horizon,}]}>
-        <Text style={[styles.headingText, {color: theme?.amberGlow,}]}>GROUPS</Text>
-        <TouchableOpacity style={[styles.button, {backgroundColor: theme?.amberGlow,}]} onPress={() => {
-          setModalVisible(true);
-          PlayOpenSound();
-          }}>
-          <AppText style={styles.buttonText} color={theme?.midnight}>Create group</AppText>
-        </TouchableOpacity>
-      </View>
-          {/* tab */}
-          <View style={styles.tab}>
-            <TouchableOpacity 
-              onPress={()=>setTabOption("Created")}
-              style={{
-                backgroundColor: tabOption === "Created" ? theme?.amberGlow : theme?.mistyLight,
-                padding: 10,
-                borderRadius: 5,
-              }}
-              accessible={true}
-              accessibilityLabel="Groups created tab"
+      <CustomHeader title='crit' showIcons />
+      {/* header for crit */}
+      <View style={{backgroundColor: "transparent"}}>
+        <View style={{paddingHorizontal: 10}}>
+          <View style={[styles.heading, {backgroundColor: theme?.horizon,}]}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(routes.HOME)}
             >
-              <AppText color={tabOption === "Created" ? theme?.midnight : theme?.text}>Groups Created</AppText>
+              <Icon name="arrow-left-circle-outline" size={35} color={theme?.white} />
             </TouchableOpacity>
-            <TouchableOpacity 
-              onPress={()=>setTabOption("Joined")}
-              style={{
-                backgroundColor: tabOption === "Joined" ? theme?.amberGlow : theme?.mistyLight,
-                padding: 10,
-                borderRadius: 5,
-              }}
-              accessible={true}
-              accessibilityLabel="Groups joined tab"
-            >
-              <AppText style={{color: tabOption === "Joined" ? theme?.midnight : theme?.amberGlowLight}}>Groups Joined</AppText>
+            <Text style={[styles.headingText, {color: theme?.white,}]}>Manage Groups</Text>
+            <TouchableOpacity style={[styles.button, {backgroundColor: theme?.white,}]} onPress={() => {
+              setModalVisible(true);
+              PlayOpenSound();
+              }}>
+              <Icon name="plus" size={30} color={theme?.horizon} />
             </TouchableOpacity>
           </View>
-          {/* end of tab */}
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        <View style={styles.body}>
-          {tabOption === "Created" && (
-            <View style={styles.createdGroups}>
-              {
-              // if there are no created groups
-              groups?.createdGroups?.length === 0 && (
+        </View>
+            {/* tab */}
+            <View style={styles.tab}>
+              <TouchableOpacity 
+                onPress={()=>setTabOption("Created")}
+                style={{
+                  backgroundColor: tabOption === "Created" ? theme?.misty : theme?.mistyLight,
+                  padding: 10,
+                  borderRadius: 45,
+                  paddingHorizontal: 20,
+                }}
+                accessible={true}
+                accessibilityLabel="Groups created tab"
+              >
+                <AppText 
+                  color={tabOption === "Created" ? theme?.midnight : theme?.text}
+                  style={{fontSize: 12}}
+                >Groups Created</AppText>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={()=>setTabOption("Joined")}
+                style={{
+                  backgroundColor: tabOption === "Joined" ? theme?.misty : theme?.mistyLight,
+                  padding: 10,
+                  borderRadius: 45,
+                  paddingHorizontal: 20,
+                }}
+                accessible={true}
+                accessibilityLabel="Groups joined tab"
+              >
+                <AppText 
+                  color={tabOption === "Joined" ? theme?.white : theme?.misty}
+                  style={{fontSize: 12}}
+                >Groups Joined</AppText>
+              </TouchableOpacity>
+            </View>
+            {/* end of tab */}
+      </View>
+      {/* end of header for crit */}
+      <View style={styles.body}>
+        {tabOption === "Created" && (
+          <View style={styles.createdGroups}>
+            {
+            // if there are no created groups
+            groups?.createdGroups?.length === 0 && (
+              <View style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+                <AppText>You have not created any group yet.</AppText>
+              </View>
+            )
+          }
+          <FlatList 
+            data={sortedGroupsCreated}
+            keyExtractor={(item) => item?._id}
+            showsVerticalScrollIndicator={false}
+            renderItem={({item}) => (
+              <GroupCard 
+                groupName={item.groupName}
+                groupId={item._id}
+                date={formatDate(item.createdAt)}
+                onPress={()=>{
+                  openChat(item.groupName, item._id, true)
+                  PlayOpenSound();
+                }}
+              />
+            )}
+          />
+          </View>
+      )}
+
+        {tabOption === "Joined" && (
+          <View style={styles.joinedGroups}>
+            {
+              // if there are no joined groups
+              groups?.joinedGroups?.length === 0 && (
                 <View style={{
                   flex: 1,
                   justifyContent: "center",
                   alignItems: "center",
                 }}>
-                  <AppText style={{ color: theme?.white }}>You have not created any group yet.</AppText>
+                  <AppText style={{ color: theme?.white }}>You have not joined any group yet.</AppText>
                 </View>
               )
             }
-            {
-              groups?.createdGroups?.map((group) => (
-                <TouchableOpacity 
-                  key={group._id} 
-                  style={[styles.groupCard, {backgroundColor: theme?.mistyLight,}]} 
+            <FlatList 
+              data={sortedGroupsJoined}
+              keyExtractor={(item) => item?._id}
+              showsVerticalScrollIndicator={false}
+              renderItem={({item}) => (
+                <GroupCard 
+                  groupName={item.groupName}
+                  groupId={item._id}
+                  date={formatDate(item.createdAt)}
                   onPress={()=>{
-                    openChat(group.groupName, group._id, true)
+                    openChat(item.groupName, item._id, false)
                     PlayOpenSound();
                   }}
-                  accessible={true}
-                  accessibilityLabel={`Open ${group.groupName} chatroom`}
-                >
-                  <AppText style={styles.name} numberOfLines={1}>{group.groupName}</AppText>
-                  <AppText style={[styles.date, {color: theme?.amberGlow,}]}>{formatDate(group.createdAt)}</AppText>
-                </TouchableOpacity>
-              ))
-            }
+                />
+              )}
+            />
           </View>
         )}
 
-          {tabOption === "Joined" && (
-            <View style={styles.joinedGroups}>
-              {
-                // if there are no joined groups
-                groups?.joinedGroups?.length === 0 && (
-                  <View style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}>
-                    <AppText style={{ color: theme?.white }}>You have not joined any group yet.</AppText>
-                  </View>
-                )
-              }
-              {
-                groups?.joinedGroups?.map((group) => (
-                  <TouchableOpacity 
-                    key={group?._id} 
-                    style={[styles.groupCard, {backgroundColor: theme?.mistyLight,}]} 
-                    onPress={()=>{
-                      openChat(group?.groupName, group?._id, false)
-                      PlayOpenSound();
-                    }}
-                    accessible={true}
-                    accessibilityLabel={`Open ${group?.groupName} chatroom`}
-                  >
-                    <AppText style={styles.name} numberOfLines={1}>{group.groupName}</AppText>
-                    <AppText style={[styles.date, {color: theme?.amberGlow,}]}>{formatDate(group.createdAt)}</AppText>
-                  </TouchableOpacity>
-                ))
-              }
-            </View>
-          )}
+      </View>
 
-        </View>
-      </ScrollView>
-      <CustomModal
-        visible={modalVisible}
-        onPress={() => setModalVisible(false)}
-        onRequestClose={() => setModalVisible(false)}
+      {/* create group modal */}
+      <PopupModal 
+        visible={modalVisible} 
+        closeModal={() => setModalVisible(false)}
       >
-        <SearchInput
-          placeholder="Enter group name"
-          placeholderTextColor={theme?.amberGlow}
-          value={groupName}
-          maxLength={25}
-          onChangeText={(text) => setGroupName(text)}
-          style={[styles.input, {color: theme?.amberGlow,}]}
-        />
-        <AppButton
+        <View style={{paddingVertical: 20}}>
+          <SearchInput
+            placeholder="Enter group name"
+            placeholderTextColor={theme?.mistyLight}
+            value={groupName}
+            maxLength={25}
+            onChangeText={(text) => setGroupName(text)}
+            style={[styles.input, {color: theme?.amberGlow,}]}
+            inputStyle={{paddingHorizontal: 15}}
+          />
+          <AppButton
             title="Create"
-            color={theme?.amberGlowLight}
+            color={theme?.horizon}
             style={{
-                marginTop: 20,
-                alignSelf: "center"
+                marginTop: 50,
+                alignSelf: "center",
+                borderRadius: 50,
             }}
             width='50%'
             onPress={handleCreateGroup}
+            textColor={theme?.white}
         />
-      </CustomModal>
+        </View>
+      </PopupModal>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    fontSize: 15,
-    fontWeight: 'bold',
+    padding: 5,
+    borderRadius: 50,
   },
   body: {
     width: '100%',
@@ -263,28 +290,13 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   createdGroups: {
-    minHeight: "50%",
-    paddingBottom: 155,
+    paddingBottom: 115,
   },
   head: {
     marginBottom: 20,
   },
   joinedGroups: {
-    paddingBottom: 190,
-  },
-  date: {
-    fontSize: 12,
-  },
-  groupCard: {
-    padding: 10,
-    height: 100,
-    justifyContent: "space-between",
-    marginVertical: 5,
-    borderRadius: 5,
-  },
-  name: {
-    textTransform: 'capitalize',
-    fontSize: 20,
+    paddingBottom: 115,
   },
   heading: {
     marginVertical: 10,
@@ -295,24 +307,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headingText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   input: {
-    borderRadius: 5,
-    height: 50,
-    paddingHorizontal: 15,
+    // borderRadius: 5,
+    height: 60,
+    // paddingHorizontal: 25,
   },
   screen: {
-    padding: 10,
-  },
-  scrollView: {
-    minHeight: '100%',
+    paddingTop: 0,
   },
   tab: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
+    marginBottom: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    gap: 10,
   },
 });
 

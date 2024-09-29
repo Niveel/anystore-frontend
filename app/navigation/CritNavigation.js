@@ -56,7 +56,7 @@ const CritNavigation = () => {
                 name='Chatroom' 
                 component={ChatroomScreen}
                 options={{
-                    headerShown: false
+                    headerShown: false,
                 }}
             />
         </Stack.Navigator>

@@ -1,34 +1,63 @@
-import React from 'react';
-import { View, StyleSheet, FlatList, TouchableHighlight, Alert } from 'react-native';
+import React, {useMemo} from 'react';
+import { View, StyleSheet, FlatList, TouchableHighlight, Alert, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import CustomModal from '../CustomModal';
 import AppText from '../AppText';
 import { useTheme } from '../../utils/ThemeContext';
+import PopupModal from '../modals/PopupModal';
 
-const ViewMembersModal = ({visible, groupName, isCreatedGroup, groupMembers, userId, removeMember, numOfUsersOnline, ...otherProps}) => {
+const ViewMembersModal = ({visible, groupName, isCreatedGroup, groupMembers, userId, removeMember, numOfUsersOnline,closeModal, ...otherProps}) => {
 
     const {theme} = useTheme();
 
+    const memoisedList = useMemo(() => {
+      return groupMembers.sort((a, b) => a.username.localeCompare(b.username));
+    }, [groupMembers]);
+
   return (
-    <CustomModal visible={visible} {...otherProps} >
-          <View style={[styles.memberBox, {backgroundColor: theme?.midnight,}]}>
-            <AppText style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10, textAlign: "center"}} color={theme?.amberGlow}>Members in {groupName}</AppText>
-            {!isCreatedGroup && <AppText style={{fontSize: 15, textAlign: "center", marginBottom: 10}}>Group creator is hidden</AppText>}
-            <AppText style={{fontSize: 12, textAlign: "right", marginBottom: 10}} color={theme?.text}>{numOfUsersOnline} {numOfUsersOnline == 1 ? "User" : "Users"} online</AppText>
+    <PopupModal 
+      visible={visible}
+      closeModal={closeModal}
+      {...otherProps}
+    >
+      <View style={[styles.memberBox, {backgroundColor: theme?.midnight,}]}>
+            <AppText style={{
+              fontSize: 20, 
+              fontWeight: 'bold', 
+              marginBottom: 10, 
+              textAlign: "center"
+
+            }} color={theme?.misty}>Members in {groupName}</AppText>
+            {!isCreatedGroup && <AppText style={{
+              fontSize: 12, 
+              textAlign: "center", 
+              marginBottom: 10
+
+            }}>Group creator is hidden</AppText>}
+            <AppText style={{
+              fontSize: 12, 
+              textAlign: "right", 
+              marginBottom: 10
+            }} color={theme?.text}>{numOfUsersOnline} {numOfUsersOnline == 1 ? "User" : "Users"} online</AppText>
               <FlatList
-                data={groupMembers}
+                data={memoisedList}
                 keyExtractor={member => member?.id?.toString()}
+                showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => (
-                  <View style={[styles.memberList, {backgroundColor: theme?.horizon,}]}>
+                  <TouchableOpacity 
+                    style={[styles.memberList, {
+                      backgroundColor: theme?.horizon,
+                    }]}
+                    activeOpacity={0.9}
+                  >
                     <AppText style={{fontSize: 16}} color={theme?.white}>{item.username}</AppText>
                     {item.id === userId && <View>
-                      <MaterialCommunityIcons name="account" size={24} color={theme?.amberGlow} />
+                      <MaterialCommunityIcons name="account" size={24} color={theme?.midnight} />
                       <AppText style={{fontSize: 12}} color={theme?.white}>You</AppText>
                     </View>}
                     {isCreatedGroup && item.id !== userId && <TouchableHighlight
                       style={{
-                        backgroundColor: theme?.mistyLight,
+                        backgroundColor: theme?.misty,
                         padding: 5,
                         borderRadius: 5,
                       }}
@@ -53,11 +82,11 @@ const ViewMembersModal = ({visible, groupName, isCreatedGroup, groupMembers, use
                     >
                       <MaterialCommunityIcons name="account-remove" size={24} color={theme?.amberGlow} />
                     </TouchableHighlight>}
-                  </View>
+                  </TouchableOpacity>
                 )}
               />
-          </View>
-        </CustomModal>
+      </View>
+    </PopupModal>
   );
 }
 

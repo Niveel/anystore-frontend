@@ -30,7 +30,7 @@ const ReplyMessage = ({clearReply, message, username}) => {
         style={[
             styles.container,
             animatedStyle,
-            {backgroundColor: theme?.midnight, borderTopColor: theme?.amberGlow,}
+            {backgroundColor: theme?.horizon, borderTopColor: theme?.misty,}
         ]}
         accessible={true}
         accessibilityLabel="Reply message"
@@ -38,16 +38,16 @@ const ReplyMessage = ({clearReply, message, username}) => {
         <View style={styles.replyMessage}>
             <View style={styles.replyMessageHeader}>
                 <View style={styles.replyMessageHeaderLeft}>
-                    <MaterialCommunityIcons name='reply' size={20} color={theme?.amberGlow} />
-                    <AppText style={styles.replyMessageSender} color={theme?.misty}>{username}</AppText>
+                    <MaterialCommunityIcons name='reply' size={20} color={theme?.midnight} />
+                    <AppText style={styles.replyMessageSender} color={theme?.white}>{username}</AppText>
                 </View>
                 <TouchableOpacity 
                     onPress={clearReply} 
-                    style={[styles.close, {borderColor: theme?.amberGlow}]}
+                    style={[styles.close, {borderColor: theme?.white}]}
                     accessible={true}
                     accessibilityLabel="Close reply"
                 >
-                    <MaterialCommunityIcons name='close' size={10} color={theme?.amberGlow} />
+                    <MaterialCommunityIcons name='close' size={12} color={theme?.white} />
                 </TouchableOpacity>
             </View>
             <AppText style={styles.replyMessageContent} color={theme?.amberGlow} numberOfLines={2}>{message}</AppText>

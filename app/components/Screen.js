@@ -4,13 +4,14 @@ import { View, SafeAreaView, StyleSheet, StatusBar } from 'react-native'
 
 import { useTheme } from '../utils/ThemeContext'
 
-const Screen = ({children, style}) => {
+const Screen = ({children, statusColor, style}) => {
   const { theme } = useTheme()
+  statusColor = statusColor || theme?.misty
 
   return (
     <SafeAreaView style={[styles.screen, style]}>
-        <StatusBar backgroundColor={theme?.misty} />
-        <View style={{ flex: 1 }}>
+        <StatusBar backgroundColor={statusColor} />
+        <View style={{ flex: 1, backgroundColor: theme?.midnight }}>
             {children}
         </View>
     </SafeAreaView>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 import Icon from '../Icon';
 import { useTheme } from '../../utils/ThemeContext';
@@ -13,21 +13,23 @@ const PopupModal = ({visible, children, closeModal}) => {
       visible={visible}
       onRequestClose={closeModal}
     >
-      <View style={[styles.container, {backgroundColor: theme?.midnightLight}]}>
-        <View style={[styles.head, {backgroundColor: theme?.horizon}]}>
-            <TouchableOpacity
-                style={[styles.closeButton, {borderColor: theme?.white}]}
-                onPress={closeModal}
-            >
-                <Icon
-                    name="close"
-                    size={30}
-                    color={theme?.white}
-                />
-            </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={[styles.container, {backgroundColor: theme?.midnightLight}]}>
+          <View style={[styles.head, {backgroundColor: theme?.horizon}]}>
+              <TouchableOpacity
+                  style={[styles.closeButton, {borderColor: theme?.white}]}
+                  onPress={closeModal}
+              >
+                  <Icon
+                      name="close"
+                      size={30}
+                      color={theme?.white}
+                  />
+              </TouchableOpacity>
+          </View>
+          {children}
         </View>
-        {children}
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }

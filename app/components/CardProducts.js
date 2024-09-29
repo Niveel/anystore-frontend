@@ -1,26 +1,14 @@
 import { FlatList, ActivityIndicator, View, Text, AccessibilityInfo, Animated, Dimensions } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import ProductCard from './ProductCard';
-import routes from '../navigation/routes';
-import { addToCart } from '../hooks/utils';
-import useAuth from '../auth/useAuth';
 
 const { width } = Dimensions.get("window");
 
 const CardProducts = ({ productData, onEndReached, hasMore, onScroll }) => {
-  const navigation = useNavigation();
-  const [cartItemAdded, setCartItemAdded] = useState([]);
   const [loadingAnnouncement, setLoadingAnnouncement] = useState('');
 
-  const { user } = useAuth();
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-
-  useEffect(() => {
-    fetchCartItems();
-  }, []);
 
   // accessibility announcement
   useEffect(() => {
@@ -32,32 +20,6 @@ const CardProducts = ({ productData, onEndReached, hasMore, onScroll }) => {
       AccessibilityInfo.announceForAccessibility(loadingAnnouncement);
     }
   }, [hasMore]);
-
-  const handleProductPress = (item) => {
-    navigation.navigate(routes.PRODUCT_DETAILS, item);
-    navigation.setOptions({
-      headerTitle: item?.shop_name,
-    });
-  };
-
-  const fetchCartItems = async () => {
-    try {
-      const existingCartItems = await AsyncStorage.getItem('cartItems');
-      const parsedExistingCartItems = JSON.parse(existingCartItems) || [];
-      setCartItemAdded(parsedExistingCartItems);
-    } catch (error) {
-      console.error('Error fetching cart items:', error);
-    }
-  };
-
-  const handleAddToCart = async (product) => {
-    if (!user) {
-      navigation.navigate("Auth", { screen: 'Login' })
-      return;
-    } else {
-      addToCart(product);
-    }
-  };
 
   const priceRegex = (price) => {
     return price.replace(/\$/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -81,14 +43,13 @@ const CardProducts = ({ productData, onEndReached, hasMore, onScroll }) => {
           desc={item?.description ? item?.description : item?.title}
           companyName={item?.shop_name}
           rating={item?.rating}
-          addToCart
-          addToCartOnPress={() => handleAddToCart(item)}
-          onPress={() => handleProductPress(item)}
+          addToCartVisible
+          item={item}
         />
       )}
       onEndReached={onEndReached}
       onEndReachedThreshold={0.5}
-      numColumns={width > 300 ? 3: 2}
+      numColumns={width > 250 ? 2: 1}
       contentContainerStyle={{
         paddingRight: 5, 
         justifyContent: 'center',

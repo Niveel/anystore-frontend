@@ -51,6 +51,23 @@ Notifications.setNotificationHandler({
         const { theme } = useTheme();
         const { user } = useAuth();
 
+        // animating header on scroll
+        const headerHeight = 168.5
+        const scrollY = new Animated.Value(0);
+        const diffClamp = Animated.diffClamp(scrollY, 0, headerHeight);
+        // interpolating the header
+        const translateY = diffClamp.interpolate({
+            inputRange: [0, headerHeight],
+            outputRange: [0, -headerHeight],
+            extrapolate: 'clamp',
+        });
+        // interpolating the paddingTop of the main container
+        const paddingTop = diffClamp.interpolate({
+            inputRange: [0, headerHeight],
+            outputRange: [headerHeight, 0], 
+            extrapolate: 'clamp',
+        });
+
         // generate random id
         const generateRandomId = () => {
             return Math.floor(Math.random() * 1000000)
@@ -141,6 +158,12 @@ Notifications.setNotificationHandler({
                 setPage(1);
                 setHasMore(true);
                 fetchProducts(1);
+                // reset the header to full height
+                Animated.timing(scrollY, {
+                    toValue: 0,
+                    duration: 0,
+                    useNativeDriver: false,
+                }).start();
                 return true;
             }
             return false;
@@ -237,27 +260,10 @@ Notifications.setNotificationHandler({
         }
         }
 
-        // animating header on scroll
-        const headerHeight = 168.5
-        const scrollY = new Animated.Value(0);
-        const diffClamp = Animated.diffClamp(scrollY, 0, headerHeight);
-        // interpolating the header
-        const translateY = diffClamp.interpolate({
-            inputRange: [0, headerHeight],
-            outputRange: [0, -headerHeight],
-            extrapolate: 'clamp',
-        });
-        // interpolating the paddingTop of the main container
-        const paddingTop = diffClamp.interpolate({
-            inputRange: [0, headerHeight],
-            outputRange: [headerHeight, 0], 
-            extrapolate: 'clamp',
-        });
         // console.log("products are", products)
 
         return (
             <>
-                <TutorialModal />
                 <Screen style={{ backgroundColor: theme?.midnight }}>
                     <Animated.View 
                         style={styles.main}>

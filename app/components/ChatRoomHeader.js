@@ -1,17 +1,20 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import AppText from './AppText';
 import MsgLongPressOptions from './MsgLongPressOptions';
 import { useTheme } from '../utils/ThemeContext';
+import userImg from '../assets/user.jpg';
+
+const {width} = Dimensions.get('window');
 
 const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, morePress, selectedMessages, deleteMsg, reportMsg, deselectMsgs, flagMsg, unFlagMsg, isFlagged, numberOfUsersOnline=0 }) => {
 
     const {theme} = useTheme();
 
   return (
-    <View style={[styles.header, {backgroundColor: theme?.horizon,}]}>
+    <View style={[styles.header, {backgroundColor: theme?.misty,}]}>
         <View style={styles.box}>
             <TouchableOpacity 
                 onPress={() => navigation.navigate('CritScreen')} 
@@ -19,10 +22,13 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
                 accessible={true}
                 accessibilityLabel="Back"
             >
-                <MaterialCommunityIcons name="arrow-left" size={30} color={theme?.punch} />
+                <MaterialCommunityIcons name="arrow-left" size={25} color={theme?.punch} />
             </TouchableOpacity>
+            <View>
+                <Image source={userImg} style={{width: 40, height: 40, borderRadius: 20,}} />
+            </View>
             <View style={styles.infoBox}>
-                <AppText style={styles.groupName} numberOfLines={1}>{groupName}</AppText>
+                <AppText style={styles.groupName} color={theme?.white} numberOfLines={1}>{groupName}</AppText>
                 <View style={{
                     flexDirection: 'row',
                     gap: 10,
@@ -30,7 +36,6 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
                     justifyContent: 'flex-start',
                     width: "55%",
                 }}>
-                    <AppText style={{fontSize: 12}}>Chatroom</AppText>
                     <AppText style={{
                         fontSize: 10,
 
@@ -38,49 +43,50 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
                 </View>
             </View>
         </View>
-        <View style={[styles.moreList, {
-            justifyContent: isCreatedGroup ? 'space-between' : 'flex-end',
-            paddingRight: isCreatedGroup ? 10 : 20,
-            }]}
+        <View style={[styles.moreList]}
         >
         {isCreatedGroup && 
         <TouchableOpacity 
             onPress={addMember} 
-            style={[styles.moreBtn, {backgroundColor: theme?.midnight,}]} 
+            style={[styles.moreBtn]} 
             activeOpacity={0.8}
             accessible={true}
             accessibilityLabel="Add member"
         >
-            <MaterialCommunityIcons name="account-plus" size={25} color={theme?.amberGlow} />
+            <MaterialCommunityIcons name="account-plus" size={25} color={theme?.white} />
         </TouchableOpacity>}
         <TouchableOpacity 
             onPress={morePress} 
-            style={[styles.moreBtn, {backgroundColor: theme?.midnight,}]} 
+            style={[styles.moreBtn]} 
             activeOpacity={0.8}
             accessible={true}
             accessibilityLabel="More options"
         >
-            <MaterialCommunityIcons name="dots-vertical" size={25} color={theme?.amberGlow} />
+            <MaterialCommunityIcons name="dots-vertical" size={25} color={theme?.white} />
         </TouchableOpacity>
         </View>
 
           {/* longPressing messages options */}
-        {selectedMessages.length > 0 && <MsgLongPressOptions
-        style={{
-            position: 'absolute',
-            width: "100%",
-            height: "100%",
-            backgroundColor: theme?.midnight,
-            zIndex: 20,
-        }}
-        messages={selectedMessages}
-        deleteMsg={() => deleteMsg(selectedMessages)}
-        reportMsg={reportMsg}
-        deselectMsgs={deselectMsgs}
-        flagMsg={() => flagMsg(selectedMessages)}
-        unFlagMsg={() => unFlagMsg(selectedMessages)}
-        isFlagged={isFlagged}
-        />}
+        {selectedMessages.length > 0 && 
+            <MsgLongPressOptions
+                style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    width: width,
+                    height: "100%",
+                    backgroundColor: theme?.misty,
+                    height: "125%",
+                    zIndex: 20,
+                }}
+                messages={selectedMessages}
+                deleteMsg={() => deleteMsg(selectedMessages)}
+                reportMsg={reportMsg}
+                deselectMsgs={deselectMsgs}
+                flagMsg={() => flagMsg(selectedMessages)}
+                unFlagMsg={() => unFlagMsg(selectedMessages)}
+                isFlagged={isFlagged}
+            />}
           {/* end of longPressing messages options */}
     </View>
   );
@@ -93,16 +99,20 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         gap: 10,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        paddingHorizontal: 20,
     },
     box: {
         flexDirection: 'row',
-        gap: 10,
+        gap: 5,
         alignItems: 'center',
-        width: "70%",
+        width: "63%",
     },
     backBtn: {
         padding: 5,
         borderRadius: 20,
+        flexShrink: 0,
     },
     infoBox: {
         flexDirection: 'column',
@@ -114,14 +124,14 @@ const styles = StyleSheet.create({
     },
     moreList: {
         flexDirection: 'row',
-        gap: 10,
+        gap: 8,
         alignItems: 'center',
-        width: "30%",
+        justifyContent: 'flex-end',
     },
     moreBtn: {
         paddingVertical: 5,
-        paddingHorizontal: 10,
         borderRadius: 5,
+        paddingHorizontal: 5,
     },
 });
 

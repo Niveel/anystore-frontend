@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Text, Keyboard, TouchableWithoutFeedback, ScrollView } from 'react-native'
+import { View, StyleSheet, Image, Text, Keyboard, TouchableWithoutFeedback, ScrollView, Dimensions } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import React, { useState, } from 'react'
 import * as Yup from 'yup'
@@ -12,11 +12,14 @@ import { AppForm, AppFormField, SubmitButton, ErrorMessage } from '../components
 import authApi from '../api/auth'
 import useAuth from '../auth/useAuth'
 import { useTheme } from '../utils/ThemeContext'
+import AppButton from '../components/AppButton'
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().required().email().label("Email"),
     password: Yup.string().required("Please insert password").min(8).label("Password").matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, "Must contain at least one uppercase, one lowercase, one number and one symbol"),
 })
+
+const { width } = Dimensions.get("window")
 
 const LoginScreen = () => {
     const { logIn } = useAuth()
@@ -46,7 +49,21 @@ const LoginScreen = () => {
     }
 
     return (
-        <Screen style={{backgroundColor: theme?.midnight,}}>
+        <Screen>
+            {/* bottom circles */}
+            <View style={[styles.bottomCircle, {
+                    backgroundColor: theme?.horizon,
+                    bottom: -20,
+                    left: 0,
+                }]}
+            />
+            <View style={[styles.bottomCircle, {
+                    backgroundColor: theme?.horizon,
+                    bottom: 20,
+                    left: -40,
+                }]}
+            />
+            {/* end of bottom circles */}
             <ScrollView
                 style={{
                     minHeight: "100%",
@@ -57,20 +74,19 @@ const LoginScreen = () => {
                 }}
             >
                 <View style={styles.headerContainer}>
-                    <Image source={require("../assets/login.png")} style={styles.image} blurRadius={1.5} />
-                    <Text style={[styles.heading, {color: theme?.white,}]}>Shopwit</Text>
-                    <Text style={[styles.subHeading, {color: theme?.white,}]}>Your one stop app for your shopping needs.</Text>
+                    <Text style={[styles.subHeading, {color: theme?.black,}]}>Welcome back</Text>
+                    <Image source={require("../assets/login.png")} style={styles.image} />
                     <TouchableOpacity 
                         onPress={() => navigation.goBack()} 
                         style={[styles.backBtn, {backgroundColor: theme?.horizon,}]}
                         accessible={true}
                         accessibilityLabel="Go Back"
                     >
-                        <MaterialCommunityIcons name="arrow-left" size={30} color={theme?.punch} />
+                        <MaterialCommunityIcons name="arrow-left" size={30} color={theme?.white} />
                     </TouchableOpacity>
                 </View>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={[styles.loginContainer, {backgroundColor: theme?.horizon,}]}>
+                    <View style={styles.loginContainer}>
                         <ActivityIndicator animating={loading} size="large" />
                         <AppForm
                             initialValues={{ email: "", password: "" }}
@@ -85,14 +101,16 @@ const LoginScreen = () => {
                                 keyboardType="email-address" 
                                 textContentType="emailAddress"
                                 icon="email"
-                                placeholder="Email"
-                                placeholderTextColor={theme?.amberGlow}
+                                placeholder="po@gitnu.id"
+                                placeholderTextColor={theme?.mistyLight}
                                 label="email"
+                                style={{ color: theme?.misty }}
+                                color={theme?.misty}
                             />
                             <AppFormField
                                 name="password"
-                                placeholder="Password"
-                                placeholderTextColor={theme?.amberGlow}
+                                placeholder="*******"
+                                placeholderTextColor={theme?.mistyLight}
                                 icon={isSecure ? "eye" : "eye-off"}
                                 label="password"
                                 autoCapitalize="none"
@@ -101,29 +119,42 @@ const LoginScreen = () => {
                                 textContentType="password"
                                 onPress={() => setIsSecure(!isSecure)}
                                 visibilityLabel={isSecure ? "show password" : "hide password"}
+                                color={theme?.misty}
                             />
                             <SubmitButton 
                                 title="Login" 
-                                width="70%" 
+                                width="50%" 
                                 disabled={loading}
-                                color={theme?.amberGlow}
-                                height={40}
+                                color={theme?.horizon}
+                                height={45}
+                                textColor={theme?.white}
                             />
                         </AppForm>
                         <View style={styles.actionWrapper}>
-                            <View style={{ alignItems: "center", gap: 5 }}>
-                                <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Don't have an account?
-                                </Text>
-                                <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)} style={[styles.signup, {backgroundColor: theme?.midnight,}]}>
-                                    <Text style={[styles.text, {color: theme?.text}]}> Sign up</Text>
+                            <View style={styles.otherCta}>
+                                <TouchableOpacity 
+                                    onPress={() => navigation.navigate(routes.FORGOT_PASSWORD)}
+                                >
+                                    <Text style={[styles.forgot, {color: theme?.punch}]}>Forgot password?</Text>
                                 </TouchableOpacity>
-                            </View>
-                            <View style={{ alignItems: "center", gap: 5 }}>
-                                <Text style={{ color: theme?.white, alignSelf: "center", marginTop: 10 }}>Forgot password?
+                                <Text style={{ color: theme?.horizon, alignSelf: "center", marginTop: 5, fontWeight: "bold" }}>Don't have an account?
                                 </Text>
-                                <TouchableOpacity onPress={() => navigation.navigate(routes.FORGOT_PASSWORD)} style={[styles.reset, {backgroundColor: theme?.misty,}]}>
-                                    <Text style={[styles.text, { color: theme?.midnight, fontWeight: "bold" }]}>Reset</Text>
-                                </TouchableOpacity>
+                                <AppButton
+                                    title="Sign up"
+                                    onPress={() => navigation.navigate(routes.REGISTER)}
+                                    color={theme?.midnight}
+                                    style={{
+                                        width: "50%",
+                                        height: 45,
+                                        borderWidth: 1,
+                                        borderRadius: 5,
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        marginTop: 10,
+                                        borderColor: theme?.horizon,
+                                    }}
+                                    textColor={theme?.horizon}
+                                />
                             </View>
                         </View>
                     </View>
@@ -147,28 +178,25 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     subHeading: {
-        fontSize: 14,
+        fontSize: 18,
         marginTop: 5,
+        fontWeight: "bold",
         textAlign: "center",
+        marginBottom: 10,
     },
     headerContainer: {
-        width: "100%",
-        height: "30%",
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
     },
     image: {
-        height: 100,
-        width: 140,
+        height: width / 1.6,
+        width: width / 1.5,
         borderRadius: 10,
         alignSelf: "center",
     },
     loginContainer: {
-        width: "100%",
-        height: "70%",
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        padding: 5,
+        flex: 1.2,
     },
     text: {
         fontSize: 14,
@@ -177,13 +205,7 @@ const styles = StyleSheet.create({
         textTransform: "capitalize",
     },
     actionWrapper: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 5,
-        padding: 10,
-        height: 150,
-        gap: 30,
+        height: 200,
     }
     ,
     signup: {
@@ -192,12 +214,25 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 10,
     },
-    reset: {
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        marginTop: 10,
+    otherCta: {
+        width: "100%",
+        height: "100%",
+        padding: 10,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    forgot: {
+        textDecorationColor: "blue",
+        textDecorationLine: "underline",
+    },
+    bottomCircle: {
+        width: 80,
+        height: 80,
+        opacity: 0.5,
+        position: "absolute",
+        borderRadius: 45,
     }
+
 
 })
 
