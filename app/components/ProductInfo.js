@@ -1,5 +1,5 @@
 import React, {useState, useRef} from 'react';
-import { View, StyleSheet , TouchableOpacity, Image, ToastAndroid, Alert, Platform, Share} from 'react-native';
+import { View, StyleSheet , TouchableOpacity, Image, ToastAndroid, Alert, Platform, Share,} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import * as Linking from 'expo-linking';
@@ -277,6 +277,7 @@ const ProductInfo = ({
               </TouchableOpacity>
             </View>
             {/* end of social media shares */}
+            
           </View>
         </AppBottomSheet>
         {/* end of bottom sheet */}

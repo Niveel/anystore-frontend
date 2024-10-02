@@ -17,6 +17,8 @@ import useAuth from "../auth/useAuth";
 import { addToCart } from "../hooks/utils";
 
 const { width, height } = Dimensions.get("window");
+const customWidth = width > 250 ? width / 2.16: width / 2.2
+const customHeight = height > 650 ? height / 3.5 : height / 4.5
 
 const ProductCard = ({
   name,
@@ -26,9 +28,10 @@ const ProductCard = ({
   companyName,
   onPress,
   addToCartVisible,
-  addToCartOnPress,
   rating,
   item,
+  width=customWidth,
+  height=customHeight,
   ...otherPops
 }) => {
   const [cartItemAdded, setCartItemAdded] = useState([]);
@@ -74,7 +77,7 @@ const ProductCard = ({
   return (
     <TouchableOpacity
       activeOpacity={0.9}
-      style={styles.card}
+      style={[styles.card, {width: width, height: height}]}
       onPress={()=> handleProductPress(item)}
       {...otherPops}
       accessible={true}
@@ -116,8 +119,6 @@ const ProductCard = ({
 
 const styles = StyleSheet.create({
   card: {
-    width: width > 250 ? width / 2.16: width / 2.2,
-    height: height > 650 ? height / 3.5 : height / 4.5,
     margin: 5,
     justifyContent: "center",
     alignItems: "center",
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "contain",
-    borderRadius: 7,
+    borderRadius: 10,
   },
   imgBox: {
     width: "100%",

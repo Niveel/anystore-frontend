@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Dimensions, Image, FlatList, Text, } from 'react-native';
 import { Camera } from 'expo-camera';
 
 import { useTheme } from '../utils/ThemeContext';
@@ -7,6 +7,9 @@ import AppText from '../components/AppText';
 import Icon from '../components/Icon';
 import cameraBg from '../assets/camera_bg.jpeg';
 import AppBottomSheet from '../components/AppBottomSheet';
+import {products} from '../dummyData';
+import ProductCard from '../components/ProductCard';
+import CircleLoader from '../components/loaders/CircleLoader';
 
 const { width, height } = Dimensions.get("window");
 
@@ -17,6 +20,7 @@ const CameraSearchScreen = ({navigation}) => {
     const [photoTaken, setPhotoTaken] = useState(false); 
     const [imageUri, setImageUri] = useState(null); 
     const bottomSheetRef = useRef(null);
+    const [photoShootLoading, setPhotoShootLoading] = useState(false);
 
     useEffect(() => {
         // Request camera permission
@@ -31,16 +35,18 @@ const CameraSearchScreen = ({navigation}) => {
     // Capture image when button is pressed
     const takePicture = async () => {
         if (cameraRef) {
+            setPhotoShootLoading(true);
             try {
                 const photo = await cameraRef.takePictureAsync({ base64: true });
-                console.log("Photo taken: ", photo.uri);
+                // console.log("Photo taken: ", photo.uri);
                 setImageUri(photo.uri); 
                 setPhotoTaken(true); 
                 bottomSheetRef.current.open();
-                console.log("bottom sheet ref", bottomSheetRef.current);
                 // sendImageToBackend(photo.base64); 
             } catch (error) {
                 console.log("Error taking picture: ", error);
+            } finally {
+                setPhotoShootLoading(false);
             }
         }
     };
@@ -64,6 +70,26 @@ const CameraSearchScreen = ({navigation}) => {
             console.error("Error sending image to backend: ", error);
         }
     };
+
+    const closeBottomSheet = () => {
+        setPhotoTaken(false);
+        setImageUri(null);
+    };
+
+    // render item for the bottom sheet (products)
+    const renderItem = ({item}) => (
+        <ProductCard
+            item={item}
+            name={item.title}
+            image={item.images}
+            price={item.price}
+            rating={item.rating}
+            companyName={item.shop_name}
+            addToCartVisible
+            width={width / 2.5}
+            height={height / 5}
+        />
+    )
 
     if (hasPermission === null) {
         return <AppText>Requesting camera permission...</AppText>;
@@ -90,7 +116,7 @@ const CameraSearchScreen = ({navigation}) => {
             />
         </TouchableOpacity>
         {/* info container */}
-        <View style={[styles.infoContainer, {
+        {!photoTaken && <View style={[styles.infoContainer, {
             backgroundColor: theme.misty,
         }]}>
             <View style={{justifyContent: "center", alignItems: "center"}}>
@@ -131,7 +157,7 @@ const CameraSearchScreen = ({navigation}) => {
                     >for similar products</AppText>
                 </View>
             </View>
-        </View>
+        </View>}
         {/* end of info container */}
         {/* camera container */}
         <View style={styles.cameraContainer}>
@@ -143,7 +169,7 @@ const CameraSearchScreen = ({navigation}) => {
                 }}
             />
             {/* take picture button */}
-            <TouchableOpacity
+            {!photoTaken && <TouchableOpacity
                 style={[styles.captureButton, {
                     backgroundColor: theme.mistyLight,
                 }]}
@@ -154,53 +180,49 @@ const CameraSearchScreen = ({navigation}) => {
                     size={50}
                     color={theme.white}
                 />
-            </TouchableOpacity>
+            </TouchableOpacity>}
             {/* end of take picture button */}
-            {photoTaken && (
-                <>
-                {/* <AppBottomSheet ref={bottomSheetRef}>
-                    <View style={styles.bottomSheetInner}>
-                        <Image
-                            source={{uri: imageUri}}
-                            style={{
-                                width: 200,
-                                aspectRatio: 1 / 1,
-                            }}
-                        />
-                    </View>
-                </AppBottomSheet> */}
-                <View style={[styles.resultsWrapper, {
-                    backgroundColor: theme.midnight,
-                }]}>
-                    <TouchableOpacity
-                        style={[styles.closeBtn, {
-                            backgroundColor: theme.horizon,
-                        }]}
-                        onPress={() => {
-                            setPhotoTaken(false);
-                            setImageUri(null);
-                        }}
-                    >
-                        <Icon
-                            name="close"
-                            size={30}
-                            color={theme.white}
-                            style={styles.icon}
-                        />
-                    </TouchableOpacity>
-                    <Image
-                        source={{uri: imageUri}}
-                        style={{
-                            width: 200,
-                            aspectRatio: 1 / 1.5,
-                            borderRadius: 30,
-                        }}
-                    />
-                </View>
-                </>
-            )}
+            {/* when photo shoot is loading */}
+            {photoShootLoading && 
+            <View style={[styles.photoShootLoader, {
+                backgroundColor: theme?.mistyLight,
+            }]}>
+                <CircleLoader size={50} color={theme.horizon} />
+            </View>}
         </View>
         {/* end of camera container */}
+        <AppBottomSheet 
+            ref={bottomSheetRef}
+            onClose={closeBottomSheet}
+            data={products}
+            renderItem={renderItem}
+            contentContainerStyle={[styles.productsContainer,{
+                backgroundColor: theme?.mistyLight,
+            }]}
+        >
+                <View style={[styles.bottomSheetInner, {
+                    backgroundColor: theme?.midnight,
+                }]}>
+                    {/* image preview */}
+                    <View style={styles.imagePreview}>
+                        <Image
+                            source={{uri: imageUri}}
+                            style={styles.imageTaken}
+                        />
+                        <View style={[styles.previewInfoBox, {
+                            backgroundColor: theme.misty,
+                        }]}>
+                            <Text style={[styles.previewText, {
+                                color: theme?.midnight,
+                            }]}>We found these products</Text>
+                            <Text style={[styles.previewText, {
+                                color: theme?.midnight,
+                            }]}>based on the photo you just took.</Text>
+                        </View>
+                    </View>
+                    {/* end of image preview */}
+                </View>
+        </AppBottomSheet>
     </View>
   );
 }
@@ -211,8 +233,8 @@ const styles = StyleSheet.create({
   },
     infoContainer: {
         flex: 1,
-        borderBottomLeftRadius: 50,
-        borderBottomRightRadius: 50,
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
         zIndex: 1,
         justifyContent: "center",
         alignItems: "center",
@@ -278,18 +300,52 @@ const styles = StyleSheet.create({
         zIndex: 1,
         opacity: 0.8
     },
-    bottomSheetInner: {
-        backgroundColor: "green",
-        zIndex: 3,
-        flex: 1,
-    },
-    resultsWrapper: {
-        height: "100%",
-        width: "100%",
+    photoShootLoader: {
+        position: "absolute",
+        bottom: 22,
+        width: width / 2 - 40,
+        left: width / 4 + 20,
+        height: 85,
+        borderRadius: 20,
+        zIndex: 2,
         justifyContent: "center",
         alignItems: "center",
-        zIndex: 3,
+    },
+    imagePreview: {
+        width: "100%",
+        padding: 10,
+        flexDirection: "row",
+        gap: 10,
+    },
+    imageTaken: {
+        width: 120,
+        aspectRatio: 1,
+        borderRadius: 20,
+        // resizeMode: "cover",
+    },
+    previewInfoBox: {
+        flex: 1,
+        padding: 10,
+        borderRadius: 20,
+        gap: 5,
+        justifyContent: "flex-end",
+    },
+    previewText: {
+        fontSize: 12,
+        fontWeight: "900",
+    },
+    productsContainer: {
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100%",
+        // flex: 1,
+    },
+    bottomSheetInner: {
+        borderBottomLeftRadius: 50,
+        borderBottomRightRadius: 50,
+        padding: 20,
     }
+    
 });
 
 export default CameraSearchScreen;

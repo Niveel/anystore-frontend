@@ -71,6 +71,62 @@ export const products = [
       condition: "New",
       type: "tv",
     },
+    {
+      id: 6,
+      title: "Wooden Dining Table",
+      images: [
+        "https://w7.pngwing.com/pngs/323/773/png-transparent-sneakers-basketball-shoe-sportswear-nike-shoe-outdoor-shoe-running-sneakers-thumbnail.png",
+      ],
+      description: "Handcrafted wooden dining table with a classic design.",
+      price: "300",
+      shop_name: "Furniture World",
+      rating: "4.4",
+      category: "Furniture",
+      condition: "Used",
+      type: "table",
+    },
+    {
+      id: 7,
+      title: "Digital Camera",
+      images: [
+        "https://w7.pngwing.com/pngs/323/773/png-transparent-sneakers-basketball-shoe-sportswear-nike-shoe-outdoor-shoe-running-sneakers-thumbnail.png",
+      ],
+      description: "Professional-grade camera with high-resolution image sensors.",
+      price: "750",
+      shop_name: "Photography Pro",
+      rating: "4.9",
+      category: "Electronics",
+      condition: "New",
+      type: "camera",
+    },
+    {
+      id: 8,
+      title: "Leather Sofa",
+      images: [
+        "https://w7.pngwing.com/pngs/323/773/png-transparent-sneakers-basketball-shoe-sportswear-nike-shoe-outdoor-shoe-running-sneakers-thumbnail.png",
+      ],
+      description: "Luxurious leather sofa with recliner and cup holders.",
+      price: "1200",
+      shop_name: "Furniture World",
+      rating: "4.7",
+      category: "Furniture",
+      condition: "New",
+      type: "sofa",
+    },
+    {
+      id: 9,
+      title: "Air Fryer",
+      images: [
+        "https://w7.pngwing.com/pngs/323/773/png-transparent-sneakers-basketball-shoe-sportswear-nike-shoe-outdoor-shoe-running-sneakers-thumbnail.png",
+      ],
+      description: "Oil-free air fryer for healthy and crispy fried food.",
+      price: "80",
+      shop_name: "Home Appliances",
+      rating: "4.5",
+      category: "Appliances",
+      condition: "New",
+      type: "appliance",
+    },
 ];
 
 export const categories = [

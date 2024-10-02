@@ -1,11 +1,11 @@
 import React, {useMemo, useRef, useImperativeHandle, forwardRef} from 'react';
 import { View, StyleSheet } from 'react-native';
-import BottomSheet from '@gorhom/bottom-sheet'
+import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet'
 
 import { useTheme } from '../utils/ThemeContext';
 
-const AppBottomSheet = forwardRef(({children}, ref) => {
-  const snapPoints = useMemo(() => ['60%', '90%'], []);
+const AppBottomSheet = forwardRef(({children, onClose, data,renderItem, contentContainerStyle, ...otherProps}, ref) => {
+  const snapPoints = useMemo(() => ['60%', '90%', '100%'], []);
   const bottomSheetRef = useRef(null);
   const { theme } = useTheme();
 
@@ -23,7 +23,28 @@ const AppBottomSheet = forwardRef(({children}, ref) => {
         enablePanDownToClose={true}
         enableHandlePanningGesture={true}
         handleIndicatorStyle={{backgroundColor: theme?.horizon}}
-      >{children}</BottomSheet>
+        backgroundStyle={{backgroundColor: theme?.midnight}}
+        onClose={onClose}
+        accessible={true}
+        focusable={true}
+        onMagicTap={onClose}
+        style={{
+          flex: 1,
+        }}
+        {...otherProps}
+      >
+        {children}
+        {data && 
+        <BottomSheetFlatList
+          data={data}
+          renderItem={renderItem} 
+          contentContainerStyle={contentContainerStyle} 
+          keyExtractor={(item, index) => index.toString()} 
+          nestedScrollEnabled={true} 
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+        />}
+      </BottomSheet>
   );
 })
 
