@@ -11,24 +11,18 @@ import routes from '../navigation/routes'
 import { useTheme } from '../utils/ThemeContext'
 import CustomHeader from '../components/CustomHeader'
 import AppText from '../components/AppText'
+import DescriptionModal from '../components/modals/DescriptionModal'
 
 const AccountSettingsScreen = ({navigation}) => {
   const {user, logOut} = useAuth()
   const [imageUri, setImageUri] = useState()
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false)
 
   const {theme} = useTheme()
 
-  const logoutAlert = () => {
-    Alert.alert(
-        "Log Out",
-        "Are you sure you want to log out?",
-        [
-            { text: "No" },
-            { text: "Yes", onPress: () => logOut() },
-        ],
-        { cancelable: true }
-    )
-} 
+  const handleLogout = () => {
+    setLogoutModalVisible(true)
+  }
 
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnightLight,}]}>
@@ -92,12 +86,30 @@ const AccountSettingsScreen = ({navigation}) => {
             title="Log Out" 
             width='60%'
             color={theme?.horizon} 
-            onPress={logoutAlert} 
+            onPress={handleLogout} 
             textColor={theme?.white}
             style={{marginTop:"auto", marginBottom: 30}}
           />
         </View>
       </View>
+      {/* modal for logout */}
+      <DescriptionModal
+        visible={logoutModalVisible}
+        header='Log Out'
+        closeModal={() => setLogoutModalVisible(false)}
+      >
+        <View style={styles.modalInner}>
+          <AppText>Are you sure you want to log out?</AppText>
+          <AppButton 
+            title="Yes" 
+            width='40%'
+            color={theme?.horizon} 
+            onPress={logOut} 
+            textColor={theme?.white}
+            style={{marginTop: 20}}
+          />
+        </View>
+      </DescriptionModal>
     </Screen>
   )
 }
@@ -141,6 +153,12 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     width: "95%",
   },
+  modalInner: {
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 20,
+  }
 })
 
 export default AccountSettingsScreen

@@ -19,6 +19,8 @@ const PopupModal = ({visible, children, closeModal}) => {
               <TouchableOpacity
                   style={[styles.closeButton, {borderColor: theme?.white}]}
                   onPress={closeModal}
+                  accessible={true}
+                  accessibilityLabel="Close"
               >
                   <Icon
                       name="close"

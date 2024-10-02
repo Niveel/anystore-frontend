@@ -9,7 +9,7 @@
     "scheme": "shopwit",
     "splash": {
       "image": "./app/assets/custom_splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#011F4B"
     },
     "assetBundlePatterns": [

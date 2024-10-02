@@ -27,6 +27,8 @@ const DescriptionModal = ({visible, children, header="heading", closeModal, ...o
                     <TouchableOpacity
                         style={[styles.closeButton, {borderColor: theme?.white}]}
                         onPress={closeModal}
+                        accessible={true}
+                        accessibilityLabel="Close"
                     >
                         <Icon 
                             name="close" 
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
     },
     modal: {
         backgroundColor: 'white',
-        height: height - 300,
+        height: height - 400,
         width: '100%',
     },
 });

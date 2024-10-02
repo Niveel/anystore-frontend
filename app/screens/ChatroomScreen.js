@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect, useCallback} from 'react';
-import { StyleSheet, TouchableWithoutFeedback, KeyboardAvoidingView, Alert, Keyboard, BackHandler, ToastAndroid, Platform, Dimensions, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, KeyboardAvoidingView, Alert, Keyboard, BackHandler, ToastAndroid, Platform, Dimensions, FlatList, TouchableOpacity, View } from 'react-native';
 import axios from 'axios';
 import {io} from 'socket.io-client';
 import { Audio } from 'expo-av';
@@ -24,6 +24,9 @@ import MessageProductBubble from '../components/MessageProductBubble';
 import ChatRoomHeader from '../components/ChatRoomHeader';
 import ChatRoomMenu from '../components/ChatRoomMenu';
 import Icon from '../components/Icon';
+import DescriptionModal from '../components/modals/DescriptionModal';
+import AppText from '../components/AppText';
+import AppButton from '../components/AppButton';
 
 const receive_sound = '../assets/sounds/receive_sound.wav';
 const send_sound = '../assets/sounds/send_sound.mp3';
@@ -57,6 +60,8 @@ function ChatroomScreen({route, navigation}) {
   const [replyMessage, setReplyMessage] = useState(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [groupImage, setGroupImage] = useState(null);
+  const [showDeleteGroupModal, setShowDeleteGroupModal] = useState(false);
+  const [showExitGroupModal, setShowExitGroupModal] = useState(false);
   
   const scrollViewRef = useRef(null)
   const socketRef = useRef(null);
@@ -274,6 +279,7 @@ function ChatroomScreen({route, navigation}) {
             createdGroups: prevGroups.createdGroups.filter(group => group?._id !== groupId),
             joinedGroups: prevGroups.joinedGroups.filter(group => group?._id !== groupId)
           }));
+          setShowExitGroupModal(false);
           navigation.navigate('CritScreen')
         }
 
@@ -309,25 +315,6 @@ function ChatroomScreen({route, navigation}) {
 
     }
 
-    const handleExitGroup = () => {
-      setMenuVisible(false);
-      
-      Alert.alert(
-        'Leaving Group',
-        'Are you sure you want to exit this group? You will not be able to rejoin unless invited back.',
-        [
-          {
-            text: 'No',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel'
-          },
-          { text: 'YES', onPress: () => exitGroup() }
-        ],
-        { cancelable: true }
-      );
-
-    }
-
     const deleteGroup = async () => {
       try {
         const response = await axios.post(`https://www.ishopwit.com/api/delete-group`, { groupId: groupId }) 
@@ -339,34 +326,13 @@ function ChatroomScreen({route, navigation}) {
             createdGroups: prevGroups.createdGroups.filter(group => group._id !== groupId),
             joinedGroups: prevGroups.joinedGroups.filter(group => group._id !== groupId)
           }));
+          setShowDeleteGroupModal(false);
           navigation.navigate('CritScreen')
         }
 
       } catch (error) {
         console.error('Error deleting group:', error);
       }
-    }
-
-    const handleDeleteGroup = () => {
-      setMenuVisible(false);
-      
-      Alert.alert(
-        'Delete Group',
-        'Are you sure you want to delete this group?',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel'
-          },
-          { text: 'OK', onPress: () => {
-              deleteGroup()
-            } 
-          }
-        ],
-        { cancelable: true }
-      );
-
     }
 
     const handleSendMsg = async (roomId, message, senderId) => {
@@ -715,14 +681,14 @@ function ChatroomScreen({route, navigation}) {
           px={menuPosition.x} 
           viewMembers={handleViewMembers} 
           isCreatedGroup={isCreatedGroup} 
-          exitGroup={handleExitGroup} 
-          deleteGroup={handleDeleteGroup} 
+          exitGroup={()=> setShowExitGroupModal(true)} 
+          deleteGroup={() => setShowDeleteGroupModal(true)} 
           blockUser={handleBlockUser}
           setGroupImage={handleSetGroupImage}
         />
       )}
       {/* end of menu */}
-
+      {/* main messaging code */}
       <TouchableWithoutFeedback 
         onPress={() => {
         setMenuVisible(false)
@@ -846,6 +812,7 @@ function ChatroomScreen({route, navigation}) {
           {/* End of chat input */}
     </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
+      {/* end of main messaging code */}
         
         {/* modals */}
                 {/* view members modal */}
@@ -876,26 +843,75 @@ function ChatroomScreen({route, navigation}) {
               {/* report message modal */}
       <ReportMsgModal
         visible={reportMsgModalVisible}
-        onPress={() => setReportMsgModalVisible(false)}
-        onRequestClose={() => setReportMsgModalVisible(false)}
         msgString={selectedMessages.length > 1 ? "these messages" : "this message"}
-        cancelPress={() => {
+        reportPress={() => handleReportMessages(selectedMessages)}
+        closeModal={() => {
           setReportMsgModalVisible(false);
           setSelectedMessages([]);
         }}
-        reportPress={() => handleReportMessages(selectedMessages)}
       />
               {/* end of report message modal */}
               {/* tone flag reason */}
       <ToneFlagModal 
         visible={showToneFlaggedReasonModal}
-        onPress={() => setShowToneFlaggedReasonModal(false)}
-        onRequestClose={() => setShowToneFlaggedReasonModal(false)}
         message={toneFlaggedReason?.content}
         sentimentColor={toneFlaggedReason?.sentiment === "negative" ? theme?.punch : theme?.amberGlow}
         flagReason={toneFlaggedReason?.sentiment}
+        closeModal={() => setShowToneFlaggedReasonModal(false)}
       />
               {/* end of flag reason modal */}
+        {/* delete group modal */}
+        <DescriptionModal
+          visible={showDeleteGroupModal}
+          closeModal={() => setShowDeleteGroupModal(false)}
+          header='Delete Group'
+        >
+          <AppText>Are you sure you want to delete this group?</AppText>
+          <View style={styles.buttonWrapper}>
+            <AppButton 
+              title='Yes' 
+              onPress={deleteGroup} 
+              color={theme?.punch}
+              textColor={theme?.white}
+              width='45%'
+            />
+            <AppButton 
+              title='Cancel' 
+              onPress={() => setShowDeleteGroupModal(false)} 
+              color={theme?.horizon}
+              textColor={theme?.white}
+              width='45%'
+            />
+
+          </View>
+        </DescriptionModal>
+        {/* end of delete group modal */}
+        {/* exit group modal */}
+        <DescriptionModal
+          visible={showExitGroupModal}
+          closeModal={() => setShowExitGroupModal(false)}
+          header='Exit Group'
+        >
+          <AppText style={{fontSize: 20, marginBottom: 10}}>Are you sure you want to exit this group?</AppText>
+          <AppText style={{fontSize: 14}}>You will not be able to join back unless added back.</AppText>
+          <View style={styles.buttonWrapper}>
+            <AppButton
+              title='Yes'
+              onPress={exitGroup}
+              color={theme?.punch}
+              textColor={theme?.white}
+              width='45%'
+            />
+            <AppButton
+              title='Cancel'
+              onPress={() => setShowExitGroupModal(false)}
+              color={theme?.horizon}
+              textColor={theme?.white}
+              width='45%'
+            />
+          </View>
+        </DescriptionModal>
+        {/* end of exit group modal */}
 
         {/* end of modals */}
     </Screen>
@@ -917,7 +933,13 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
   }
+  
 });
 
 export default ChatroomScreen;
