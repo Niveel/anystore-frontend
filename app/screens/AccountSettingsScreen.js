@@ -1,4 +1,4 @@
-import { View, StyleSheet, Alert, ScrollView} from 'react-native'
+import { View, StyleSheet, ScrollView} from 'react-native'
 import React, {useState} from 'react'
 
 // CUSTOM IMPORTS

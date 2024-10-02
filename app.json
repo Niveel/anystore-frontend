@@ -27,8 +27,7 @@
       "buildNumber": "8",
       "associatedDomains": [
         "applinks:shopwit.com"
-      ],
-      "scheme": "shopwit"
+      ]
     },
     "android": {
       "versionCode": 4,

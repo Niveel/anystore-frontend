@@ -61,12 +61,13 @@ Notifications.setNotificationHandler({
             outputRange: [0, -headerHeight],
             extrapolate: 'clamp',
         });
-        // interpolating the paddingTop of the main container
-        const paddingTop = diffClamp.interpolate({
+        // interpolating the translateY of the main container
+        const bodyTranslateY = diffClamp.interpolate({
             inputRange: [0, headerHeight],
-            outputRange: [headerHeight, 0], 
+            outputRange: [headerHeight, 0],
             extrapolate: 'clamp',
         });
+        
 
         // generate random id
         const generateRandomId = () => {
@@ -115,10 +116,6 @@ Notifications.setNotificationHandler({
                 setHasMore(false);
             }
         };
-
-        const goToSearchByImageScreen = async () => {
-            const redirectUrl = Linking.makeUrl('/camera-search');
-        }
 
         const priceRegex = (price) => {
             return parseFloat(price.replace(/[^0-9.-]+/g, ""));
@@ -293,7 +290,7 @@ Notifications.setNotificationHandler({
                             />
                         </Animated.View>
                         {/* main body */}
-                        <Animated.View style={{flex: 1, paddingTop}}>
+                        <Animated.View style={{flex: 1, marginTop: bodyTranslateY }}>
                             {!hasSearched ? 
                                 (<AdHero/>) :
                             ( 
@@ -370,12 +367,8 @@ Notifications.setNotificationHandler({
             gap: 20,
         },
         main: {
-            // width: '100%',
-            // minHeight: "100%",
             flex: 1,
             paddingBottom: 0,
-            backgroundColor: "redorange",
-            // flexShrink: 0,
         },
         navbar: {
             width: '100%',

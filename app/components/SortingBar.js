@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '../utils/ThemeContext';
 import AppText from './AppText';
 
@@ -35,15 +35,15 @@ const SortingBar = ({ onSortOptionSelected }) => {
         onRequestClose={() => setShowMenu(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContainer, {backgroundColor: theme?.midnight}]}>
+          <View style={[styles.modalContainer, {backgroundColor: theme?.misty}]}>
             <TouchableOpacity
-              style={[styles.optionButton, {backgroundColor: theme?.horizon, marginBottom: 8}]}
+              style={[styles.optionButton, {backgroundColor: theme?.amberGlow, marginBottom: 8}]}
               onPress={() => {
                 setPriceModalVisible(true);
                 setShowMenu(false);
               }}
             >
-              <AppText style={styles.optionText}>Price</AppText>
+              <AppText style={styles.optionText} color={theme?.white}>Price</AppText>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -53,7 +53,7 @@ const SortingBar = ({ onSortOptionSelected }) => {
                 setShowMenu(false);
               }}
             >
-              <AppText style={styles.optionText}>Rating</AppText>
+              <AppText style={styles.optionText} color={theme?.white}>Rating</AppText>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => setShowMenu(false)} style={styles.cancelButton}>
@@ -71,12 +71,17 @@ const SortingBar = ({ onSortOptionSelected }) => {
         onRequestClose={() => setPriceModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContainer, {backgroundColor: theme?.midnight}]}>
-            <TouchableOpacity onPress={() => handlePriceSortSelect('highest')} style={styles.optionButton}>
-              <Text style={[styles.optionText, {color: theme?.text}]}>Highest Price First</Text>
+          <View style={[styles.modalContainer, {backgroundColor: theme?.misty}]}>
+            <TouchableOpacity onPress={() => handlePriceSortSelect('highest')} style={[styles.optionButton, {
+              backgroundColor: theme?.amberGlow,
+              marginBottom: 10,
+            }]}>
+              <Text style={[styles.optionText, {color: theme?.white}]}>Highest Price First</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handlePriceSortSelect('lowest')} style={styles.optionButton}>
-              <Text style={[styles.optionText, {color: theme?.text}]}>Lowest Price First</Text>
+            <TouchableOpacity onPress={() => handlePriceSortSelect('lowest')} style={[styles.optionButton, {
+              backgroundColor: theme?.horizon,
+            }]}>
+              <Text style={[styles.optionText, {color: theme?.white}]}>Lowest Price First</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setPriceModalVisible(false)} style={styles.cancelButton}>
               <Text style={[styles.cancelText, {color: theme?.punch}]}>Cancel</Text>
@@ -149,7 +154,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   cancelButton: {
-    marginTop: 16,
+    marginTop: 30,
     width: '100%',
     textAlign: 'center',
     justifyContent: 'center',

@@ -96,15 +96,15 @@ const FilterBar = ({ onFilterApply }) => {
         onRequestClose={() => setPriceModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContainer, { backgroundColor: theme?.midnight }]}>
-            <AppText style={[styles.optionText, { color: theme?.text }]}>Select Price Range</AppText>
+          <View style={[styles.modalContainer, { backgroundColor: theme?.misty }]}>
+            <AppText style={[styles.optionText]} color={theme?.white}>Select Price Range</AppText>
 
             {/* Price Range Sliders */}
             <View style={styles.sliderContainer}>
                 <View style={styles.priceInputWrapper}>
-                    <Text style={{ color: theme?.text }}>Min: ${formatPrice(minPrice)}</Text>
+                    <Text style={{ color: theme?.white }}>Min: ${formatPrice(minPrice)}</Text>
                     <TextInput 
-                        style={[styles.textInput, {backgroundColor: theme?.misty, color: theme?.midnight, fontWeight: 'bold'}]}
+                        style={[styles.textInput, {backgroundColor: theme?.mistyLight, color: theme?.midnight, fontWeight: 'bold'}]}
                         selectionColor={theme?.punch}
                         keyboardType="numeric"
                         maxLength={3}
@@ -126,9 +126,9 @@ const FilterBar = ({ onFilterApply }) => {
                 />
 
                 <View style={styles.priceInputWrapper}>
-                    <Text style={{ color: theme?.text }}>Max: ${formatPrice(maxPrice)}</Text>
+                    <Text style={{ color: theme?.white }}>Max: ${formatPrice(maxPrice)}</Text>
                     <TextInput 
-                        style={[styles.textInput, {backgroundColor: theme?.misty, color: theme?.midnight, fontWeight: 'bold'}]}
+                        style={[styles.textInput, {backgroundColor: theme?.mistyLight, color: theme?.midnight, fontWeight: 'bold'}]}
                         selectionColor={theme?.punch}
                         keyboardType="numeric"
                         maxLength={5}
@@ -158,7 +158,7 @@ const FilterBar = ({ onFilterApply }) => {
 
             {/* Cancel Button */}
             <TouchableOpacity onPress={() => setPriceModalVisible(false)} style={[styles.cancelButton, { backgroundColor: theme?.horizon }]}>
-              <Text style={[styles.cancelText, { color: theme?.punch }]}>Cancel</Text>
+              <Text style={[styles.cancelText, { color: theme?.white }]}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>

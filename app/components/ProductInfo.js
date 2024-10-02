@@ -58,7 +58,7 @@ const ProductInfo = ({
     }
 
     const generateProductLink = (productId) => {
-      const productLink = Linking.createURL(`/app/product/${productId}`);
+      const productLink = Linking.createURL(`app/product/${productId}`);
       return productLink;
     }
 
@@ -69,7 +69,7 @@ const ProductInfo = ({
       showLinkCopied();
     }
 
-    const shareToExternal = async (productId) => {
+    const shareToExternal = async () => {
       
       try {
         const result = await Share.share({
@@ -94,6 +94,10 @@ const ProductInfo = ({
       }
     }
 
+    const renderPrice = (str)=> {
+      return value = !isNaN(str) ? formatNumber(str) : str.replace('$', '');
+    }
+
   return (
       <View style={[styles.container, {backgroundColor: theme?.misty}]}>
         {/* modal for description */}
@@ -102,9 +106,7 @@ const ProductInfo = ({
           closeModal={() => setShowDetailsModal(false)}
           header='Product Description'
         >
-          <AppText style={{fontSize: 20, textAlign: 'center'}}>Product Description</AppText>
-
-          <AppText style={{fontSize: 16, marginVertical: 10}}>
+          <AppText style={{fontSize: 16, marginBottom: 10}}>
             {description} blah blah black sheep blah blah black sheep 
             blah blah black sheep blah blah black sheep blah blah black sheep
             blah blah black sheep blah blah black sheep blah blah black sheep
@@ -168,7 +170,7 @@ const ProductInfo = ({
               >
                 {rating}
               </View>
-              <AppText color={theme?.white} style={styles.price}>${formatNumber(Number(price))}</AppText>
+              <AppText color={theme?.white} style={styles.price}>${renderPrice(price)}</AppText>
             </View>
             {/* end of rating and price */}
             {/* share and cafa */}

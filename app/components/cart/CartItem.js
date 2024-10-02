@@ -13,6 +13,11 @@ const CartItem = ({image, name, desc, price, companyName, onPress, rating, delPr
 
   const {theme} = useTheme();
 
+  // remove $ from a string
+  const removeDollar = (str) => {
+    return str.replace('$', '');
+  }
+
   const deleteConfirmation = () => {
     Alert.alert(
       "Delete Item",
@@ -60,7 +65,7 @@ const CartItem = ({image, name, desc, price, companyName, onPress, rating, delPr
             {/* lower part */}
             <View style={styles.lowWrapper}>
               <AppText style={{fontSize: 12}} color={theme?.white}>Rating: {rating}</AppText>
-              <AppText style={{fontSize: 18}} color={theme?.amberGlow}>${formatNumber(Number(price))}</AppText>
+              <AppText style={{fontSize: 18}} color={theme?.amberGlow}>${removeDollar(price)}</AppText>
             </View>
           </View>
         </TouchableOpacity>

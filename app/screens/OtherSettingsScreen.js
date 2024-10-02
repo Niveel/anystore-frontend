@@ -16,7 +16,13 @@ const OtherSettingsScreen = () => {
 
   return (
     <Screen style={{paddingTop: 0}}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingTop: 10,
+          paddingBottom: 90,
+        }}
+      >
         {/* section */}
         <View style={[styles.section, {backgroundColor: theme.misty}]}>
           <View style={styles.box}>

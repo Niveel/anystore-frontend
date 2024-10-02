@@ -153,8 +153,8 @@ const AccountDetailsSettingsScreen = ({navigation}) => {
         >
             <View style={styles.modalInner}>
                 <View>
-                    <AppText style={styles.bigText}>Delete Account permanently?</AppText>
-                    <AppText style={styles.smallText}>Are you sure you want Account permanently?</AppText>
+                    <AppText style={styles.bigText}>Delete your account permanently?</AppText>
+                    <AppText style={styles.smallText}>Are you sure your want account permanently?</AppText>
                 </View>
                 <Icon
                     name="cancel"
@@ -164,12 +164,12 @@ const AccountDetailsSettingsScreen = ({navigation}) => {
                 />
                 <View>
                     <AppButton
-                        title="Delete forever"
+                        title="Delete permanently"
                         onPress={performDeleteAccount}
                         color={theme?.horizon}
                         accessibilityLabel="Double tap to delete account"
                         textColor={theme?.white}
-                        width="55%"
+                        width="65%"
                         style={{alignSelf: "center", marginBottom: 10}}
                     />
                     <AppText style={styles.smallText} color={theme?.punch}>This action cannot be undone.</AppText>
@@ -200,7 +200,6 @@ const styles = StyleSheet.create({
     smallText: {
         fontSize: 14,
         textAlign: "center",
-        textTransform: "capitalize",
     },
     modalInner: {
         flex: 1,

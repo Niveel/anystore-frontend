@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, FlatList, Keyboard, ActivityIndicator, Platform, ToastAndroid } from 'react-native';
+import { View, StyleSheet, FlatList, Keyboard, ActivityIndicator, Platform, ToastAndroid, Dimensions } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -12,6 +12,8 @@ import ListItem from './ListItem';
 import { useTheme } from '../utils/ThemeContext';
 import SortingBar from './SortingBar';
 import FilterBar from './FilterBar';
+
+const { width } = Dimensions.get('window');
 
 function StoreList() {
     const [storeProducts, setStoreProducts] = useState([])
@@ -139,14 +141,15 @@ function StoreList() {
         <View style={styles.header}>
             <SearchInput 
               placeholder="Search within this Store"  
-              placeholderTextColor={theme?.misty}
+              placeholderTextColor={theme?.mistyLight}
               searchPress={handleSearch}
               autoCapitalize="none"
               autoCorrect={false}
+              iconColor={theme?.misty}
               onChangeText={text => setSearchText(text)}
             />
         </View>
-        <ActivityIndicator animating={loading} size="large" color={theme?.punch} />
+        {loading && <ActivityIndicator animating={loading} size="large" color={theme?.punch} />}
         {storeProducts?.length > 0 && (
           <View style={{
             width: '100%',
@@ -157,6 +160,8 @@ function StoreList() {
             gap: 12,
             paddingHorizontal: 15,
             paddingVertical: 30,
+            backgroundColor: theme?.horizon,
+            marginTop: 10,
         }}>
             <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
             <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
@@ -166,17 +171,24 @@ function StoreList() {
           style={{ flex: 1,}}
           data={filteredProducts.length > 0 ? filteredProducts : storeProducts}
           keyExtractor={(storeProduct) => storeProduct?.id?.toString() || generateRandomId().toString()}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingBottom: 10,
+            paddingTop: 10,
+          }}
           renderItem={({item}) => (
               <ProductCard 
                 desc={item?.description}
                 name={item?.title}
                 price={item?.price}
+                item={item}
                 image={item?.images || ["https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"]}
                 companyName={item?.shop_name}
-                addToCart 
-                addToCartOnPress={() => handleAddToCart(item)}
+                addToCartVisible
                 onPress={() => handleProductPress(item)}
                 rating={item?.rating}
+                width={width / 2.2}
               />
           )}
         />
@@ -218,7 +230,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 5,
     paddingTop: 0,
-    paddingBottom: 10,
+    paddingBottom: 50,
     marginTop: 0,
     height: "100%",
   },

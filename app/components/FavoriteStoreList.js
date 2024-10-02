@@ -86,6 +86,7 @@ const FavoriteStoreList = () => {
                     data={favStore}
                     keyExtractor={item => item.toString()}
                     contentContainerStyle={{padding: 10, gap: 10}}
+                    showsVerticalScrollIndicator={false}
                     renderItem={({item}) => (
                         <FavoriteCard 
                             shopName={item}

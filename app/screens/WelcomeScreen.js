@@ -13,11 +13,10 @@ const WelcomeScreen = ({ navigation }) => {
     const { theme } = useTheme()
 
     return (
-        < ImageBackground style={styles.background} source={bg} blurRadius={2}>
+        < ImageBackground style={styles.background} source={bg} blurRadius={1}>
             {/* back button */}
             <TouchableOpacity
                 onPress={() =>{
-                    console.log("Back button pressed")
                      navigation.navigate(routes.HOME)
                     }}
                 style={[styles.backBtn, {backgroundColor: theme?.horizon}]}
@@ -26,14 +25,14 @@ const WelcomeScreen = ({ navigation }) => {
             </TouchableOpacity>
             <View style={styles.wrapper}>
                 <View style={styles.headerContainer}>
-                    <Text style={[styles.header, {color: theme?.amberGlow,}]}>Shopwit</Text>
+                    <Text style={[styles.header, {color: theme?.midnight,}]}>Shopwit</Text>
                     <Text style={[styles.bigText, {
                         color: theme?.white,
                     }]}>Discover and shop </Text>
                     <Text style={[styles.bigText, {
                         color: theme?.white,
                     }]}>for your needs!</Text>
-                    <Text style={[styles.smallText, {color: theme?.white}]}>Shopwit is a very good app blah blah Shopwit is a very good app blah blah</Text>
+                    <Text style={[styles.smallText, {color: theme?.white}]}>Shopwit is an e-commerce search engine that makes it easy for users to search products across thousands of e-commerce websites, track price changes and collaborate with friends and family using Crit, a messaging feature.</Text>
                 </View>
                 <View style={styles.buttonBox}>
                     <AppButton 
@@ -84,9 +83,9 @@ const styles = StyleSheet.create({
         flex: 2,
     },
     header: {
-        fontSize: 24,
-        fontWeight: '900',
-        textTransform: 'uppercase',
+        fontSize: 34,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
     bigText: {
         fontSize: 32,
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
     wrapper: {
         width: "100%",
         padding: 10,
-        height: '45%',
+        height: '55%',
         paddingBottom: 20,
     },
     smallText: {

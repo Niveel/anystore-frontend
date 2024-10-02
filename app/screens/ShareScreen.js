@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, StyleSheet, Keyboard, TouchableWithoutFeedback, TouchableOpacity, FlatList, ActivityIndicator, Alert, BackHandler, Dimensions, Text } from 'react-native';
+import { View, StyleSheet, Keyboard, TouchableWithoutFeedback, FlatList, ActivityIndicator, Alert, BackHandler, Dimensions, Text } from 'react-native';
 import axios from 'axios';
 
 import Screen from '../components/Screen';
@@ -157,7 +157,7 @@ const ShareScreen = ({navigation, route}) => {
               color={sharedSuccessful ? theme?.horizon : theme?.punch}
             />
             <Text style={styles.feedbackBigText}>{sharedSuccessful ? `Products shared successfully`: `There was an issue sharing the product. Please try again.`}</Text>
-            <AppText style={styles.feedbackSmallText}>The product to shared has been sent to the group(s) you selected successfully.</AppText>
+            <AppText style={styles.feedbackSmallText}>The product selected has been successfully shared with the target group(s).</AppText>
             <AppButton
               title="OK"
               color={theme?.horizon}

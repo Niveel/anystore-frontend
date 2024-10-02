@@ -45,12 +45,13 @@ const ProductCard = ({shopName, onPress, removeFavorite}) => {
                     <AppText style={styles.name} color={theme?.horizon} numberOfLines={1}>{shopName}</AppText>
                     <AppButton 
                         title="Visit store" 
-                        onPress={removeAlert} 
+                        onPress={onPress} 
                         color={theme?.horizon} 
                         height={35}
                         width='75%'
                         textStyle={{fontSize: 14}}
                         textColor={theme?.white}
+                        underlayColor={theme?.amberGlow}
                     />
                 </View>
                 <View style={{flex: 1}}/>
