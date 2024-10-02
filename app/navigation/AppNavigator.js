@@ -1,6 +1,7 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import {getFocusedRouteNameFromRoute} from '@react-navigation/native'
 
 import AccountNavigator from './AccountNavigator'
 import ProductNavigator from './ProductNavigator'
@@ -8,13 +9,32 @@ import RadarNavigation from './RadarNavigation'
 import CritNavigation from './CritNavigation'
 import AuthNavigation from './AuthNavigation'
 import { useTheme } from '../utils/ThemeContext'
+import routes from './routes'
 import useAuth from '../auth/useAuth'
 
 const Tab = createBottomTabNavigator()
 
+const getRouteName = (route) => {
+  const routeName = getFocusedRouteNameFromRoute(route)
+  if(routeName?.includes("Welcome") || routeName?.includes("Login") || routeName?.includes("SignUp") || routeName?.includes("CafaAiScreen") || routeName?.includes("ProductDetails") || routeName?.includes("ShareScreen") || routeName?.includes(routes.CAMERA_SEARCH_SCREEN)) {
+    return "none"
+  }
+}
+
 const AppNavigator = () => {
   const {theme} = useTheme() 
   const {user} = useAuth()
+
+  const tabBarStyle = {
+    height: 50,
+    position: "absolute",
+    bottom: 12,
+    left: 14,
+    right: 14,
+    borderRadius: 18,
+    overflow: "hidden",
+    elevation: 5,
+  }
 
   return (
    <Tab.Navigator
@@ -52,24 +72,19 @@ const AppNavigator = () => {
           tabBarLabelStyle: {
               fontSize: 10,
           },
-          tabBarStyle: {
-              height: 50,
-              position: "absolute",
-              bottom: 12,
-              left: 14,
-              right: 14,
-              borderRadius: 18,
-              overflow: "hidden",
-              elevation: 5,
-          },
+          tabBarStyle: tabBarStyle,
       })}
    >
         <Tab.Screen  
             name='Home' 
             component={ProductNavigator} 
-            options={{
+            options={({route}) => ({
+              tabBarStyle: [
+                tabBarStyle, 
+                {display: getRouteName(route)}
+              ],
               headerShown: false,
-            }}
+            })}
         />
         <Tab.Screen 
             name='Radar' 
@@ -91,12 +106,13 @@ const AppNavigator = () => {
         <Tab.Screen 
             name='Account' 
             component={user ? AccountNavigator : AuthNavigation} 
-            options={{
+            options={({route}) => ({
+              tabBarStyle: [
+                tabBarStyle, 
+                {display: getRouteName(route)}
+              ],
               headerShown: false,
-              tabBarStyle: {
-                display: 'none',
-              }
-            }}
+            })}
         />
     </Tab.Navigator>
   )

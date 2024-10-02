@@ -7,6 +7,7 @@ import { ErrorMessage } from '../components/forms';
 import usersApi from '../api/users';
 import AppText from '../components/AppText';
 import { useTheme } from '../utils/ThemeContext';
+import CustomHeader from '../components/CustomHeader';
 
 function PasswordResetVerifyScreen({navigation, route}) {
     const [codes, setCodes] = useState(['', '', '', '']);
@@ -66,22 +67,24 @@ function PasswordResetVerifyScreen({navigation, route}) {
     }
 
   return (
-    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
-      <ActivityIndicator animating={loading} size="large" color={theme?.amberGlow} />
+    <Screen style={[styles.screen]}>
+      <CustomHeader title="Verify Code" />
+      {loading && <ActivityIndicator animating={loading} size="large" color={theme?.amberGlow} />}
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View>
+        <View style={{flex: 1}}>
           <ErrorMessage error={error} visible={hasError} />
-          <View style={{height: "100%"}}>
-            <AppText style={{marginVertical: 20, textAlign: "center"}} color={theme?.amberGlow}>Enter the 4-digit code sent to your email</AppText>
+          <View style={styles.box}>
+            <AppText style={{marginVertical: 10, textAlign: "center"}}>Enter the 4-digit code sent to your email</AppText>
             <View style={styles.codeContainer}>
               {codes.map((code, index) => (
                 <TextInput
                   key={index}
                   ref={codeInputs[index]}
                   style={[styles.codeInput, {
-                    borderColor: theme?.white,
-                    color: theme?.white,
+                    borderColor: theme?.horizon,
+                    color: theme?.misty,
                   }]}
+                  selectionColor={theme?.horizon}
                   maxLength={1}
                   value={code}
                   onChangeText={value => handleCodeChange(index, value)}
@@ -90,12 +93,11 @@ function PasswordResetVerifyScreen({navigation, route}) {
             </View>
             <AppButton
               title="Submit Code"
-              width='100'
+              width='60%'
               onPress={handleResetPassword}
               disabled={disableButton}
-              style={
-                disableButton ? {backgroundColor: theme?.misty} : {backgroundColor: theme?.amberGlow}
-              }
+              color={disableButton ? theme?.misty : theme?.mistyLight}
+              textColor={theme?.white}
             />
           </View>
         </View>
@@ -106,7 +108,6 @@ function PasswordResetVerifyScreen({navigation, route}) {
 
 const styles = StyleSheet.create({
     screen: {
-        padding: 10,
         paddingTop: 0,
       },
       codeContainer: {
@@ -125,6 +126,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         textAlign: 'center',
       },
+      box: {
+        flex: 1,
+        padding: 10,
+        alignItems: 'center',
+      }
 });
 
 export default PasswordResetVerifyScreen;

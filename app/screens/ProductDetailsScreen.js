@@ -193,6 +193,10 @@ function ProductDetails({route, navigation}) {
     }
 
     const handleShare = product => {
+        if(!user) {
+            navigation.navigate("Auth", { screen: 'Login' })
+            return
+        }
         navigation.navigate(routes.SHARE_SCREEN, product) 
     }
 
@@ -232,6 +236,7 @@ function ProductDetails({route, navigation}) {
                 handleAddToFavStores={()=> handleAddToFavStores(product.shop_name)}
                 handleAddToRadar={()=> handleAddToRadar(product.id)}
                 handleBuyNow={()=> openBuyNowLink(productData?.link || product?.link)}
+                handleShare={()=> handleShare(product)}
                 productImg={product?.images[0] || "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"}
                 store={product.shop_name}
                 category={product.category || "N/A"}

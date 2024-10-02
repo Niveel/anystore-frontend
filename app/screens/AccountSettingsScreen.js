@@ -32,7 +32,7 @@ const AccountSettingsScreen = ({navigation}) => {
 
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnightLight,}]}>
-      <CustomHeader title='Account'/>
+      <CustomHeader title='Account' showIcons/>
       <View style={styles.itemsContainer}>
         {/* account details */}
         <View style={styles.accountDetails}>
@@ -64,16 +64,6 @@ const AccountSettingsScreen = ({navigation}) => {
         {/* List container */}
         <View style={styles.listContainer}>
           <ScrollView contentContainerStyle={{flexGrow: 1, gap: 15}}>
-            <List
-              icon='heart-outline'
-              title="Favorite Stores" 
-              onPress={() => navigation.navigate(routes.FAVORITES)}
-            />
-            <List
-              icon='cart-outline'
-              title="My Cart" 
-              onPress={() => navigation.navigate(routes.CART)}
-            />
             <List
               icon='bell-outline'
               title="Notifications" 
@@ -131,6 +121,7 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 10,
   },
   infoBox: {
     width: "100%",

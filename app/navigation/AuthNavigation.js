@@ -15,55 +15,36 @@ const Stack = createStackNavigator()
 const AuthNavigation = () => {
     const {theme} = useTheme()
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+        screenOptions={{headerShown: false}}
+    >
         <Stack.Screen 
             name='Welcome' 
             component={WelcomeScreen} 
-            options={{headerShown: false}}
         />
         <Stack.Screen 
             name='Login' 
             component={LoginScreen}
-            options={{headerShown: false}}
         />
         <Stack.Screen 
             name='SignUp' 
             component={SignUpScreen}
-            options={{headerShown: false}}
         />
         <Stack.Screen 
             name='SignupVerify' 
             component={SignupVerifyScreen}
-            options={{
-                headerStyle: {backgroundColor: theme?.horizon},
-                headerTintColor: theme?.amberGlow,
-                title: 'Email verification'
-            }}
         />
         <Stack.Screen 
             name='ForgotPassword' 
             component={ForgotPasswordScreen}
-            options={{
-                headerStyle: {backgroundColor: theme?.horizon},
-                headerTintColor: theme?.amberGlow,
-                title: 'Password Reset'
-            }}
         />
         <Stack.Screen 
             name='PasswordResetVerify' 
             component={PasswordResetVerifyScreen}
-            options={{
-                headerStyle: {backgroundColor: theme?.horizon},
-                headerTintColor: theme?.amberGlow,
-                title: 'Password Reset Verification'
-            }}
         />
         <Stack.Screen 
             name='NewPassword' 
             component={NewPasswordScreen}
-            options={{
-                headerShown: false
-            }}
         />
     </Stack.Navigator>
   )

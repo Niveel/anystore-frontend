@@ -26,7 +26,7 @@ const MessageProductBubble = ({msgPress, justifyContent, index, msgId, selectedM
             msgId && selectedMessageIds.includes(msgId) && {backgroundColor: theme?.mistyLight, borderWidth: 1, borderColor: theme?.amberGlow, borderRadius: 5, padding: 2}
         ]}
         onPress={msgPress}
-        underlayColor="rgba(0, 0, 0, 0.05)"
+        underlayColor={theme?.light}
         {...otherProps}
     >
         <TouchableOpacity
@@ -34,7 +34,7 @@ const MessageProductBubble = ({msgPress, justifyContent, index, msgId, selectedM
                 {
                 backgroundColor: msgIsInFlaggedMessages 
                     ? theme?.punch 
-                    : (isCurrentUser ? theme?.amberGlow : theme?.horizon),
+                    : (isCurrentUser ? theme?.misty : theme?.horizon),
                 padding: 10,
                 borderRadius: 5,
                 maxWidth: '80%',
@@ -82,7 +82,7 @@ const MessageProductBubble = ({msgPress, justifyContent, index, msgId, selectedM
                     fontWeight: 'bold',
                     marginHorizontal: 5,
                 }}
-                color={isCurrentUser ? theme?.horizon : theme?.misty}
+                color={isCurrentUser ? theme?.midnight : theme?.misty}
                 >
                 {formatTime(msgTime)}
                 </AppText>

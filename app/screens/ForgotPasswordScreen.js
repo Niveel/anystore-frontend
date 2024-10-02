@@ -1,15 +1,20 @@
 import React, {useState} from 'react';
-import { View, StyleSheet,ActivityIndicator, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, StyleSheet,ActivityIndicator, TouchableWithoutFeedback, Keyboard, Dimensions } from 'react-native';
 import * as Yup from 'yup';
 
 import Screen from '../components/Screen';
 import passwordResetApi from '../api/passwordReset'
 import { AppForm, AppFormField, SubmitButton, ErrorMessage } from '../components/forms';
 import { useTheme } from '../utils/ThemeContext';
+import CustomHeader from '../components/CustomHeader';
+import AppText from '../components/AppText';
+import BackBtnBar from '../components/BackBtnBar';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required("Please enter a valid email").email().label("Email"), 
 })
+
+const {height} = Dimensions.get("window");
 
 function ForgotPasswordScreen({navigation}) {
   const [error, setError] = useState("");
@@ -18,7 +23,7 @@ function ForgotPasswordScreen({navigation}) {
 
   const { theme } = useTheme();
 
-  const handleEmailReset = async ({ email }) => {
+  const handlePasswordReset = async ({ email }) => {
     try {
       setLoading(true);
       const result = await passwordResetApi.generateResetCode(email);
@@ -40,14 +45,20 @@ function ForgotPasswordScreen({navigation}) {
   }
 
   return (
-    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
+    <Screen style={styles.screen}>
+      <CustomHeader title="Forgot Password" />
+      <BackBtnBar />
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.container}>
+          <AppText style={styles.sendLink}>Enter your email to receive a password reset link</AppText>
           <ActivityIndicator animating={loading} size="large" color={theme?.amberGlow} />
-          <View style={[styles.box, {backgroundColor: theme?.midnight, borderColor: theme?.amberGlow,}]}>
+          <View style={[styles.box, {
+            backgroundColor: theme?.midnight, 
+            borderColor: theme?.horizon,
+          }]}>
             <AppForm
                   initialValues={{email: ""}}
-                  onSubmit={handleEmailReset}
+                  onSubmit={handlePasswordReset}
                   validationSchema={validationSchema}
               >
                 <ErrorMessage error={error} visible={hasError} />
@@ -58,14 +69,16 @@ function ForgotPasswordScreen({navigation}) {
                     icon="email"
                     keyboardType="email-address"
                     placeholder="Enter your email"
-                    placeholderTextColor={theme?.misty}
+                    placeholderTextColor={theme?.mistyLight}
                     textContentType="emailAddress"
+                    color={theme?.misty}
+                    selectionColor={theme?.horizon}
                 />
                 <SubmitButton 
                     title="Submit" 
-                    width="90%"
-                    color={theme?.amberGlow}
-                    textColor={theme?.midnight}
+                    width="50%"
+                    color={theme?.horizon}
+                    textColor={theme?.white}
                 />
             </AppForm>
           </View>
@@ -81,22 +94,24 @@ const styles = StyleSheet.create({
     gap: 20,
     alignItems: 'center',
     borderRadius: 10,
-    borderWidth: 1,
+    borderWidth: 2,
     padding: 5,
     width: "100%",
-    height: 400,
+    height: height / 3,
   },
   container: {
     height: "100%",
     width: "100%",
-    padding: 20,
+    padding: 10,
   },
   screen: {
     paddingTop: 0,
   },
   sendLink: {
     alignSelf: "center",
-    marginTop: 10,
+    fontSize: 16,
+    // textAlign: "center",
+    // marginTop: 10,
   },
 });
 

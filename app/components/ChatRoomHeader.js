@@ -6,10 +6,11 @@ import AppText from './AppText';
 import MsgLongPressOptions from './MsgLongPressOptions';
 import { useTheme } from '../utils/ThemeContext';
 import userImg from '../assets/user.jpg';
+import Icon from './Icon';
 
 const {width} = Dimensions.get('window');
 
-const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, morePress, selectedMessages, deleteMsg, reportMsg, deselectMsgs, flagMsg, unFlagMsg, isFlagged, numberOfUsersOnline=0 }) => {
+const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, morePress, selectedMessages, deleteMsg, reportMsg, deselectMsgs, flagMsg, unFlagMsg, isFlagged, numberOfUsersOnline=1, groupImg }) => {
 
     const {theme} = useTheme();
 
@@ -25,7 +26,12 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
                 <MaterialCommunityIcons name="arrow-left" size={25} color={theme?.punch} />
             </TouchableOpacity>
             <View>
-                <Image source={userImg} style={{width: 40, height: 40, borderRadius: 20,}} />
+                <View style={[styles.imgBox, {backgroundColor: theme?.horizon}]}>
+                    {groupImg ? 
+                    <Image source={{uri: groupImg}} style={{width: 40, height: 40, borderRadius: 20,}} /> : <Icon name="camera" size={25} color={theme?.white} />
+                    }
+                    
+                </View>
             </View>
             <View style={styles.infoBox}>
                 <AppText style={styles.groupName} color={theme?.white} numberOfLines={1}>{groupName}</AppText>
@@ -133,6 +139,13 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 5,
     },
+    imgBox: {
+        width: 40, 
+        height: 40, 
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 });
 
 export default ChatRoomHeader;

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Shopwit",
     "slug": "Shopwit",
-    "version": "1.0.9",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./app/assets/a_icon.png",
     "userInterfaceStyle": "light",
@@ -62,7 +62,15 @@
     },
     "owner": "storebuffet",
     "plugins": [
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Shopwit to access your camera",
+          "microphonePermission": "Allow Shopwit to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
     ],
     "runtimeVersion": {
       "policy": "appVersion"

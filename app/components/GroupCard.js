@@ -1,12 +1,50 @@
-import React from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 import AppText from './AppText';
 import { useTheme } from '../utils/ThemeContext';
 import userImg from '../assets/user.jpg';
+import fetchMessages from '../api/fetchMessages';
 
 const GroupCard = ({groupName, groupId, onPress, date, ...otherProps}) => {
+    const [messages, setMessages] = useState([]);
+    const [lastMessageToShow, setLastMessageToShow] = useState("");
     const {theme} = useTheme();
+
+    useEffect(() => {
+        const fetch = async () => {
+            try {
+                const response = await fetchMessages.fetchMessages(groupId);
+                setMessages(response.data);
+            } catch (error) {
+                console.log("Error fetching messages in group card", error);
+            }
+        }
+        fetch();
+    }, [messages]);
+
+    const lastMessage = useMemo(() => {
+        if (messages && messages.length > 0) {
+            const lastMsg = messages[messages.length - 1].content;
+
+            try {
+                const parsedMessage = JSON.parse(lastMsg);
+
+                if (parsedMessage && parsedMessage.images) {
+                    return parsedMessage.images[0];
+                }
+            } catch (e) {
+                return lastMsg;
+            }
+        }
+        return "No messages yet";
+    }, [messages]); 
+
+    useEffect(() => { 
+        setLastMessageToShow(lastMessage);
+    }, [messages]);
+
+    
   return (
     <TouchableOpacity  
         style={[styles.groupCard, {backgroundColor: theme?.midnightLight,}]} 
@@ -21,7 +59,11 @@ const GroupCard = ({groupName, groupId, onPress, date, ...otherProps}) => {
         </View>
         <View style={styles.info}>
             <AppText style={styles.name} numberOfLines={1}>{groupName}</AppText>
-            <AppText style={styles.text} numberOfLines={2}>{groupName} blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah </AppText>
+            {
+                lastMessageToShow.includes("https://") ? 
+                <Image source={{uri: lastMessageToShow}} style={styles.lastMsgImg} /> :
+                <AppText style={styles.text} numberOfLines={2}>{lastMessageToShow}</AppText>
+            }
             <AppText style={styles.date} color={theme?.amberGlowLight}>{date}</AppText>
         </View>
     </TouchableOpacity>
@@ -68,6 +110,12 @@ const styles = StyleSheet.create({
         fontSize: 11,
         letterSpacing: .02,
     },
+    lastMsgImg: {
+        width: 38, 
+        height: 40, 
+        borderRadius: 5,
+        resizeMode: 'contain',
+    }
 });
 
 export default GroupCard;

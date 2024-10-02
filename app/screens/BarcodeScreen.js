@@ -1,13 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, Linking, Alert, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, Linking, Alert, Dimensions} from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import Screen from '../components/Screen';
 import CustomModal from '../components/CustomModal';
 import { useTheme } from '../utils/ThemeContext';
+import CustomHeader from '../components/CustomHeader';
+
+const { height } = Dimensions.get("window");
 
 function BarcodeScreen({navigation}) {
     const [hasPermission, setHasPermission] = useState(null);
@@ -61,34 +63,14 @@ function BarcodeScreen({navigation}) {
 
     return (
         <Screen style={{backgroundColor: theme?.midnight,}}>
-          <View style={{
-            backgroundColor: theme?.horizon,
-            padding: 5,
-            width: "100%",
-            gap: 20,
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}>
-            <TouchableOpacity 
-              onPress={goHome}
-              accessible={true}
-              accessibilityLabel="Go Back"
-            >
-              <MaterialCommunityIcons name="arrow-left" size={30} color={theme?.amberGlow} />
-            </TouchableOpacity>
-            <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 10,
-            }}>
-              <MaterialCommunityIcons name="barcode-scan" size={30} color={theme?.amberGlow} style={{alignSelf: 'center'}} />
-              <AppText style={{color: theme?.white, fontSize: 18, textAlign: "center", marginVertical: 10}}>Barcode Scanner</AppText>
-            </View>
-          </View>
+          <CustomHeader title={'Barcode Scanner'} />
           <View style={styles.container}>
               <BarCodeScanner
-              onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-              style={{width: "100%", height: "100%"}}
+                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                style={{
+                  width: "100%", 
+                  height: "100%",
+                }}
               />
               {!scanned && <AppText style={{color: theme?.white, textAlign: "center", fontSize: 14, marginVertical: 10}}>Point your camera at the BAR/QR Code</AppText>}
               {scanned && <AppButton title={'Tap to Scan Again'} style={{
@@ -119,9 +101,9 @@ function BarcodeScreen({navigation}) {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 400,
+    height: height / 1.6,
     alignSelf: 'center',
-    padding: 10,
+    paddingVertical: 10,
   },
 });
 

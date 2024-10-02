@@ -4,7 +4,7 @@ import { View, StyleSheet, TouchableHighlight } from 'react-native';
 import { useTheme } from '../utils/ThemeContext';
 import AppText from './AppText';
 
-const ChatRoomMenu = ({py, px, viewMembers, isCreatedGroup, exitGroup, deleteGroup, blockUser }) => {
+const ChatRoomMenu = ({py, px, viewMembers, isCreatedGroup, exitGroup, deleteGroup, blockUser, setGroupImage }) => {
 
   const { theme } = useTheme();
 
@@ -17,6 +17,7 @@ const ChatRoomMenu = ({py, px, viewMembers, isCreatedGroup, exitGroup, deleteGro
           >
             <AppText style={styles.menuItemText} color={theme?.misty}>View Members</AppText>
           </TouchableHighlight>
+          {/* joined groups menu */}
           {!isCreatedGroup && <TouchableHighlight 
             style={styles.menuItem} 
             onPress={exitGroup}
@@ -25,6 +26,7 @@ const ChatRoomMenu = ({py, px, viewMembers, isCreatedGroup, exitGroup, deleteGro
             <AppText style={styles.menuItemText} color={theme?.misty}>Exit Group</AppText>
           </TouchableHighlight>}
 
+          {/* created group menu */}
           {isCreatedGroup &&  <TouchableHighlight 
             style={styles.menuItem} 
             onPress={deleteGroup}
@@ -32,7 +34,17 @@ const ChatRoomMenu = ({py, px, viewMembers, isCreatedGroup, exitGroup, deleteGro
           >
             <AppText style={styles.menuItemText} color={theme?.misty}>Delete Group</AppText>
           </TouchableHighlight>}
+
+          {/* created group menu */}
+          {isCreatedGroup &&  <TouchableHighlight 
+            style={styles.menuItem} 
+            onPress={setGroupImage}
+            underlayColor={theme?.blackLight}
+          >
+            <AppText style={styles.menuItemText} color={theme?.misty}>Set Group Image</AppText>
+          </TouchableHighlight>}
           
+          {/* joined groups menu */}
           {!isCreatedGroup && <TouchableHighlight 
             style={styles.menuItem} 
             onPress={blockUser}

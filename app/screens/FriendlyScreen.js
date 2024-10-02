@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, FlatList, } from 'react-native';
 import axios from 'axios';
 import { Audio } from 'expo-av';
 
@@ -77,7 +77,6 @@ function FriendlyScreen({navigation}) {
     return new Date(date).toLocaleDateString(undefined, options);
   }
   
-
   const handleCreateGroup = () => {
     setModalVisible(false);
     setGroupName('');
@@ -260,6 +259,7 @@ function FriendlyScreen({navigation}) {
             onChangeText={(text) => setGroupName(text)}
             style={[styles.input, {color: theme?.amberGlow,}]}
             inputStyle={{paddingHorizontal: 15}}
+            onSubmitEditing={handleCreateGroup}
           />
           <AppButton
             title="Create"

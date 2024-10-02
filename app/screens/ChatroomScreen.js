@@ -1,8 +1,9 @@
 import React, {useState, useRef, useEffect, useCallback} from 'react';
-import { View, StyleSheet, ScrollView, TouchableWithoutFeedback, KeyboardAvoidingView, Alert, Keyboard, BackHandler, ToastAndroid, Platform, Dimensions, FlatList } from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, KeyboardAvoidingView, Alert, Keyboard, BackHandler, ToastAndroid, Platform, Dimensions, FlatList, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import {io} from 'socket.io-client';
 import { Audio } from 'expo-av';
+import * as ImagePicker from 'expo-image-picker';
 
 // custom imports
 import Screen from '../components/Screen';
@@ -22,6 +23,7 @@ import MessageBubble from '../components/MessageBubble';
 import MessageProductBubble from '../components/MessageProductBubble';
 import ChatRoomHeader from '../components/ChatRoomHeader';
 import ChatRoomMenu from '../components/ChatRoomMenu';
+import Icon from '../components/Icon';
 
 const receive_sound = '../assets/sounds/receive_sound.wav';
 const send_sound = '../assets/sounds/send_sound.mp3';
@@ -53,6 +55,8 @@ function ChatroomScreen({route, navigation}) {
   const [showToneFlaggedReasonModal, setShowToneFlaggedReasonModal] = useState(false);
   const [numOfUsersOnline, setNumOfUsersOnline] = useState(0);
   const [replyMessage, setReplyMessage] = useState(null);
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+  const [groupImage, setGroupImage] = useState(null);
   
   const scrollViewRef = useRef(null)
   const socketRef = useRef(null);
@@ -581,12 +585,33 @@ function ChatroomScreen({route, navigation}) {
     }, []);
 
      // Scroll to the bottom when messages change
+     const ITEM_HEIGHT = 50;
      const scrollToEnd = () => {
-      if (scrollViewRef.current) {
-        scrollViewRef.current.scrollToEnd({ animated: true });
+      if (scrollViewRef.current && messages.length > 0) {
+        scrollViewRef.current.scrollToOffset({
+          offset: messages.length * ITEM_HEIGHT, 
+          animated: true,
+        });
       }
     }
 
+    // scroll button when user scrolls up past screenHeight
+    const handleScroll = (event) => {
+      const { contentOffset, layoutMeasurement } = event.nativeEvent;
+      const isAtTop = contentOffset.y < layoutMeasurement.height;
+  
+      // Show the button if the user scrolls up past the height of the screen
+      setShowScrollToBottom(isAtTop);
+    };
+
+    const scrollToBottom = () => {
+      scrollViewRef.current.scrollToOffset({ 
+        animated: true, 
+        offset: messages.length * ITEM_HEIGHT,  
+      });
+    };
+
+    // scroll to the end of the messages
      useEffect(() => {
       scrollToEnd()
     }, [messages]);
@@ -634,6 +659,33 @@ function ChatroomScreen({route, navigation}) {
       }
     }, [longPressMsgState]); 
  
+    // set group image
+    const handleSetGroupImage = async () => {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  
+      if (permissionResult.granted === false) {
+        alert("Permission to access camera roll is required!");
+        return;
+      }
+  
+      // Launch the image picker
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+  
+      if (result.canceled) {
+        console.log('User cancelled image picker');
+        alert('You have not selected an image');
+      } else {
+        const selectedImageUri = result.assets[0].uri;
+  
+        setGroupImage(selectedImageUri); 
+        setMenuVisible(false)
+      }
+    };
     // console.log("messages are:", messages)
     // console.log("selected messages are:", selectedMessages)
   return (
@@ -653,6 +705,7 @@ function ChatroomScreen({route, navigation}) {
         unFlagMsg={handleUnFlagMsg}
         isFlagged={selectedMessages.every(msg => flaggedMessages.includes(msg?._id))}
         numberOfUsersOnline={numOfUsersOnline}
+        groupImg={groupImage}
       />
       {/* end of header */}
       {/* menu */}
@@ -665,6 +718,7 @@ function ChatroomScreen({route, navigation}) {
           exitGroup={handleExitGroup} 
           deleteGroup={handleDeleteGroup} 
           blockUser={handleBlockUser}
+          setGroupImage={handleSetGroupImage}
         />
       )}
       {/* end of menu */}
@@ -678,17 +732,28 @@ function ChatroomScreen({route, navigation}) {
         <KeyboardAvoidingView
           style={{ 
             flex: 1,
-            paddingBottom: 5,
+            paddingBottom: 2,
           }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={keyboardVerticalOffset}
         >
+          {showScrollToBottom && (
+            <TouchableOpacity 
+              style={[styles.scrollDownBtn, { backgroundColor: theme?.horizon }]} 
+              onPress={scrollToBottom}
+              activeOpacity={0.7}
+            >
+              <Icon name="arrow-down" size={24} color="white" />
+            </TouchableOpacity>
+          )}
           {/* messages list */}
         <FlatList 
           ref={scrollViewRef} 
           data={messages}  
           keyExtractor={(msg, index) => msg?._id || index.toString()} 
           showsVerticalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
           renderItem={({ item: msg, index }) => {
 
             const isCurrentUser = msg?.sender?._id === user?._id || msg?.sender === user?._id;
@@ -841,6 +906,18 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     padding: 5,
   },
+  scrollDownBtn: {
+    position: 'absolute',
+    bottom: 120,
+    right: 5,
+    padding: 5,
+    borderRadius: 30,
+    zIndex: 10,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
 
 export default ChatroomScreen;

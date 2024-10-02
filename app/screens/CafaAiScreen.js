@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef} from 'react';
-import { View, Text, TextInput, FlatList, TouchableWithoutFeedback, TouchableOpacity, KeyboardAvoidingView, Keyboard, StyleSheet, ActivityIndicator, Platform, useWindowDimensions } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableWithoutFeedback, TouchableOpacity, KeyboardAvoidingView, Keyboard, StyleSheet, ActivityIndicator, Platform, useWindowDimensions, Image } from 'react-native';
 import axios from 'axios';
 
 import Screen from '../components/Screen';
 import { useTheme } from '../utils/ThemeContext';
+import Icon from '../components/Icon';
 
 const CafaAiScreen = ({ route }) => {
   const [messages, setMessages] = useState([
@@ -14,6 +15,7 @@ const CafaAiScreen = ({ route }) => {
   const { theme } = useTheme();
 
   const productTitle = route?.params?.product.title;
+  const productImage = route?.params?.product.images[0];
 
   const scrollViewRef = useRef();
   const { height } = useWindowDimensions();
@@ -59,7 +61,7 @@ const CafaAiScreen = ({ route }) => {
   const renderItem = ({ item }) => (
     <View style={[styles.messageBubble, item.sender === 'bot' ? [styles.botBubble, { backgroundColor: theme?.misty }] : [styles.userBubble, { backgroundColor: theme?.horizon }]]}>
       <Text
-        style={item.sender === 'bot' ? { color: theme?.midnight } : { color: theme?.amberGlow }}
+        style={item.sender === 'bot' ? { color: theme?.midnight } : { color: theme?.white }}
       >{item.text}</Text>
     </View>
   );
@@ -70,14 +72,22 @@ const CafaAiScreen = ({ route }) => {
         <KeyboardAvoidingView 
           style={{ 
             backgroundColor: theme?.midnight, 
-            padding: 10, 
-            paddingRight: 5,  
+            paddingHorizontal: 10, 
+            paddingTop: 5,
             paddingBottom: Platform.OS === 'ios' ? 40 : 15,
             height: '100%'
           }}
           behavior={Platform.OS === 'ios' ? 'padding': "height"}
           keyboardVerticalOffset={keyboardVerticalOffset}
         >
+          <View style={[styles.productPreviewBOx, {backgroundColor: theme?.horizon}]}>
+            <View style={styles.imageBox}>
+              <Image source={{ uri: productImage }} style={styles.image} />
+            </View>
+            <View style={styles.details}>
+              <Text style={{ color: theme?.white, fontSize: 20, fontWeight: "bold" }} numberOfLines={2}>{productTitle}</Text>
+            </View>
+          </View>
           <FlatList
             data={messages}
             keyExtractor={(item) => item.id.toString()}
@@ -85,6 +95,7 @@ const CafaAiScreen = ({ route }) => {
             contentContainerStyle={styles.messagesContainer} 
             ref={scrollViewRef}
             // automaticallyAdjustKeyboardInsets
+            showsVerticalScrollIndicator={false}
           />
           {loading && (
             <View style={styles.loadingContainer}>
@@ -94,22 +105,22 @@ const CafaAiScreen = ({ route }) => {
           )}
           <View style={[styles.inputContainer, { backgroundColor: theme?.horizon }]}>
             <TextInput
-              style={[styles.textInput, { backgroundColor: theme?.horizon, color: theme?.text, borderColor: theme?.white }]}
+              style={[styles.textInput, { backgroundColor: theme?.midnight, color: theme?.text, borderColor: theme?.white }]}
               value={input}
               onChangeText={setInput}
               placeholder="Ask Cafa about this product"
-              placeholderTextColor={theme?.text}
+              placeholderTextColor={theme?.mistyLight}
               onSubmitEditing={handleSend}
               multiline
               selectionColor={theme?.text}
             />
             <TouchableOpacity
-              style={[styles.sendBtn, { backgroundColor: theme?.amberGlow }]}
+              style={[styles.sendBtn, { backgroundColor: theme?.midnight }]}
               onPress={handleSend}
               accessible={true}
               accessibilityLabel="Send message"
             >
-              <Text style={{ color: theme?.midnight }}>Send</Text>
+              <Icon name="send" size={25} color={theme?.horizon} />
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
@@ -124,7 +135,7 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   messagesContainer: {
-    padding: 10,
+    // padding: 10,
   },
   messageBubble: {
     padding: 10,
@@ -142,7 +153,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 5,
-    borderRadius: 10,
+    borderRadius: 30,
     marginRight: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -151,17 +162,20 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   sendBtn: {
-    padding: 10,
-    borderRadius: 5,
+    padding: 5,
+    borderRadius: 55,
     alignItems: 'center',
     justifyContent: 'center',
+    width: 50,
+    height: 50,
   },
   textInput: {
     flex: 1,
     padding: 10,
     borderWidth: 1,
-    borderRadius: 20,
+    borderRadius: 25,
     marginRight: 10,
+    maxHeight: 80,
   },
   loadingContainer: {
     flexDirection: 'row',
@@ -169,6 +183,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 20,
   },
+  productPreviewBOx: {
+    height: 70,
+    borderRadius: 10,
+    flexDirection: 'row',
+  },
+  imageBox: {
+   flex: 1,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  details: {
+    flex: 2.5,
+    borderRadius: 10,
+    padding: 5,
+  },
+  image: {
+    width: 60, 
+    height: 60, 
+    resizeMode: "contain",
+    borderRadius: 10,
+  }
 });
 
 export default CafaAiScreen;

@@ -107,14 +107,19 @@ const CategoriesScreen = ({route}) => {
                 <FlatList
                     data={filteredProducts}
                     keyExtractor={item => item.id.toString()}
-                    numColumns={width > 300 ? 3 : 2}
-                    contentContainerStyle={{paddingVertical: 20, paddingHorizontal: 10}}
+                    numColumns={width > 250 ? 2 : 1}
+                    contentContainerStyle={{
+                        paddingVertical: 20, 
+                        paddingLeft: 5
+                    }}
                     renderItem={({item}) => (
                         <ProductCard 
                             name={item.title}
                             price={item.price}
                             image={item.images}
                             companyName={item.shop_name}
+                            desc={item.description}
+                            item={item}
                             rating={item.rating}
                             addToCartVisible
                             onPress={() => console.log("Product pressed")}

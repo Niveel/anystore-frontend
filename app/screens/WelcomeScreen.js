@@ -6,12 +6,24 @@ import routes from '../navigation/routes'
 import { useTheme } from '../utils/ThemeContext'
 import bg from '../assets/onboard_bg.jpeg'
 import AppText from '../components/AppText'
+import { TouchableOpacity } from 'react-native'
+import Icon from '../components/Icon'
 
 const WelcomeScreen = ({ navigation }) => {
     const { theme } = useTheme()
 
     return (
         < ImageBackground style={styles.background} source={bg} blurRadius={2}>
+            {/* back button */}
+            <TouchableOpacity
+                onPress={() =>{
+                    console.log("Back button pressed")
+                     navigation.navigate(routes.HOME)
+                    }}
+                style={[styles.backBtn, {backgroundColor: theme?.horizon}]}
+            >
+                <Icon name="arrow-left" size={35} color={theme?.white} />
+            </TouchableOpacity>
             <View style={styles.wrapper}>
                 <View style={styles.headerContainer}>
                     <Text style={[styles.header, {color: theme?.amberGlow,}]}>Shopwit</Text>
@@ -91,6 +103,15 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '600',
         marginTop: 10,
+    },
+    backBtn: {
+        position: 'absolute',
+        top: 10,
+        left: 10,
+        padding: 5,
+        borderRadius: 50,
+        zIndex: 1,
+        elevation: 2,
     }
 })
 export default WelcomeScreen

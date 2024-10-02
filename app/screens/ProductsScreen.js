@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import { View, StyleSheet, Platform, Linking, Alert , BackHandler, Animated, TouchableWithoutFeedback, Button } from 'react-native'
+import { View, StyleSheet, Platform, Linking, Alert , BackHandler, Animated, TouchableWithoutFeedback } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Keyboard, ToastAndroid } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
@@ -23,9 +23,9 @@ import FilterBar from '../components/FilterBar'
 import useAuth from '../auth/useAuth'
 import authStorage from '../auth/storage'
 import registerDeviceToken from '../api/registerDeviceToken'
-import TutorialModal from '../components/modals/TutorialModal'
 import HomeHeader from '../components/HomeHeader'
 import { TouchableOpacity } from 'react-native'
+import routes from '../navigation/routes'
 
 // notifications
 Notifications.setNotificationHandler({
@@ -115,6 +115,10 @@ Notifications.setNotificationHandler({
                 setHasMore(false);
             }
         };
+
+        const goToSearchByImageScreen = async () => {
+            const redirectUrl = Linking.makeUrl('/camera-search');
+        }
 
         const priceRegex = (price) => {
             return parseFloat(price.replace(/[^0-9.-]+/g, ""));
@@ -283,6 +287,7 @@ Notifications.setNotificationHandler({
                             <HomeHeader 
                                 setSearchText={setSearchText}
                                 handleSearch={handleSearch}
+                                handleSearchByImage={()=> navigation.navigate(routes.CAMERA_SEARCH_SCREEN)}
                                 showIcons
                                 title="Home"
                             />

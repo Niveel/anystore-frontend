@@ -5,6 +5,7 @@ import Screen from '../components/Screen';
 import RadarList from '../components/RadarList';
 import { useTheme } from '../utils/ThemeContext';
 import CustomHeader from '../components/CustomHeader';
+import CritTabLoader from '../components/loaders/CritTabLoader';
 
 function RadarScreen(props) {
   const { theme } = useTheme();

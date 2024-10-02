@@ -28,6 +28,7 @@ const ProductInfo = ({
     handleAddToRadar,
     handleBuyNow,
     productImg,
+    handleShare,
   }) => {
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [showProductInfoModal, setShowProductInfoModal] = useState(false);
@@ -249,6 +250,7 @@ const ProductInfo = ({
               height={38}
               textColor={theme?.white}
               title='Crit'
+              onPress={handleShare}
             />
             {/* share link generator */}
             <View style={styles.shareLinkWrapper}>
@@ -292,6 +294,7 @@ const styles = StyleSheet.create({
   inner: {
     flex: 1,
     padding: 10,
+    justifyContent: 'space-between',
   },
   desc: {
     padding: 5,

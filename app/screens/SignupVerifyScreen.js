@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native'
+import { View, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, ActivityIndicator, } from 'react-native';
 
 import Screen from '../components/Screen';
 import AppButton from '../components/AppButton';
@@ -10,8 +9,10 @@ import authApi from '../api/auth';
 import useAuth from '../auth/useAuth';
 import AppText from '../components/AppText';
 import { useTheme } from '../utils/ThemeContext';
+import CustomHeader from '../components/CustomHeader';
+import BackBtnBar from '../components/BackBtnBar';
 
-function SignupVerifyScreen({ route }) {
+function SignupVerifyScreen({ route, navigation }) {
   const [codes, setCodes] = useState(['', '', '', '']);
   const [error, setError] = useState("");
   const [hasError, setHasError] = useState(false);
@@ -20,7 +21,6 @@ function SignupVerifyScreen({ route }) {
   const userInfo = route.params.userInfo;
   const auth = useAuth();
   const {theme} = useTheme();
-  const navigation = useNavigation();
 
   const codeInputs = Array(4).fill(0).map((_, i) => useRef(null));
 
@@ -79,22 +79,28 @@ function SignupVerifyScreen({ route }) {
   };
   
   return (
-    <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
-      <ActivityIndicator animating={loading} size="large" color={theme?.amberGlow} />
+    <Screen style={{}}>
+      <CustomHeader title="Verify Email" />
+      <BackBtnBar />
+      {loading && <ActivityIndicator animating={loading} size="large" color={theme?.amberGlow} />}
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <>
+        <View style={styles.container}>
           <ErrorMessage error={error} visible={hasError} />
-          <View>
-            <AppText style={{marginVertical: 20, fontSize: 15, textAlign: "center"}} color={theme?.amberGlow}>Enter the 4-digit code sent to your email {userInfo.email}</AppText>
+          <View style={styles.box}>
+            <AppText style={{
+              fontSize: 15, 
+              textAlign: "center"
+            }}>Enter the 4-digit code sent to your email {userInfo.email}</AppText>
             <View style={styles.codeContainer}>
               {codes.map((code, index) => (
                 <TextInput
                   key={index}
                   ref={codeInputs[index]}
                   style={[styles.codeInput, {
-                    borderColor: theme?.white,
-                    color: theme?.white,
+                    borderColor: theme?.horizon,
+                    color: theme?.misty,
                   }]}
+                  selectionColor={theme?.horizon}
                   maxLength={1}
                   value={code}
                   onChangeText={value => handleCodeChange(index, value)}
@@ -103,22 +109,19 @@ function SignupVerifyScreen({ route }) {
             </View>
             <AppButton
               title="Submit Code"
-              color={theme?.amberGlowLight}
-              width='100'
+              color={theme?.horizon}
+              width='60%'
               onPress={handleSignup}
+              textColor={theme?.white}
             />
           </View>
-        </>
+        </View>
       </TouchableWithoutFeedback>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   codeContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -135,6 +138,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     textAlign: 'center',
   },
+  box: {
+    borderWidth: 2,
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  container: {
+    flex: 1,
+    padding: 10,
+  }, 
 });
 
 export default SignupVerifyScreen;

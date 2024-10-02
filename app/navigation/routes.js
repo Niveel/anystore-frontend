@@ -20,4 +20,5 @@ export default Object.freeze({
     CATEGORIES_SCREEN: 'CategoriesScreen',
     HOME: 'Product',
     EMAIL_RESET: 'EmailReset',
+    CAMERA_SEARCH_SCREEN: 'CameraSearchScreen',
 })

@@ -8,8 +8,8 @@ import BarcodePolicyScreen from '../screens/BarcodePolicyScreen'
 import ShareTitleScreen from '../screens/ShareTitleScreen'
 import ProductInfoScreen from '../screens/ProductInfoScreen'
 import CafaAiScreen from '../screens/CafaAiScreen'
-import ImagesScreen from '../screens/ImagesScreen'
 import CategoriesScreen from '../screens/CategoriesScreen'
+import CameraSearchScreen from '../screens/CameraSearchScreen'
 import { useTheme } from '../utils/ThemeContext'
 import routes from './routes'
 
@@ -34,7 +34,6 @@ const ProductNavigator = () => {
             headerTintColor: theme?.white,
         }}
     >
-
         <Stack.Screen 
             name='Product' 
             component={FavAndCartNavigator}
@@ -51,7 +50,7 @@ const ProductNavigator = () => {
             name='ShareScreen' 
             component={ShareScreen}
             options={{
-                headerTitle: "Share",
+                headerTitle: "Share To Groups",
             }}
         />
         <Stack.Screen
@@ -88,6 +87,11 @@ const ProductNavigator = () => {
         <Stack.Screen 
             name={routes.CATEGORIES_SCREEN} 
             component={CategoriesScreen}
+            options={{headerShown: false}}
+        />
+        <Stack.Screen 
+            name={routes.CAMERA_SEARCH_SCREEN} 
+            component={CameraSearchScreen}
             options={{headerShown: false}}
         />
     </Stack.Navigator>
