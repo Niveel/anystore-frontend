@@ -23,7 +23,7 @@ const CategoryList = (props) => {
             }]}
             onPress={() => navigation.navigate(routes.CATEGORIES_SCREEN, {category: item})}
         >
-            <Image source={item.image} style={{width: 40, height: 40}} />
+            <Image source={item.image} style={{width: 40, height: 40, borderRadius: 8}} />
             <AppText style={{fontSize: 8, textAlign: "center"}} numberOfLines={1}>{item.name}</AppText>
         </TouchableOpacity>
     )

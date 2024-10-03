@@ -65,6 +65,8 @@ const ImageSlider = ({ imagesData }) => {
     }
   }, [imagesData]);  
 
+  const darkModeBgColor = theme?.amberGlow === "#e2521d" ? theme?.white : theme?.black
+
   return (
     <View style={styles.container}>
       {/* Scrollable list of small images (thumbnails) */}
@@ -126,7 +128,7 @@ const ImageSlider = ({ imagesData }) => {
 
       {isModalVisible && 
         <View style={[styles.fullscreenBox, {
-          backgroundColor: theme?.black,
+          backgroundColor: darkModeBgColor,
         }]}>
           <TouchableOpacity onPress={closeModal} style={[styles.closeBtn, {
             backgroundColor: theme?.mistyLight,

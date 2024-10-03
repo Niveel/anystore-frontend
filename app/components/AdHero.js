@@ -19,6 +19,7 @@ const AdHero = (props) => {
         <FlatList
           data={sections}
           keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <View>{item.component}</View>}
           contentContainerStyle={{paddingBottom: 60}}
         />
@@ -30,7 +31,7 @@ const AdHero = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingLeft: 1.5,
+    paddingLeft: 5,
   }
 });
 

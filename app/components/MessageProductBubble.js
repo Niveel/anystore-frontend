@@ -13,6 +13,8 @@ const MessageProductBubble = ({msgPress, justifyContent, index, msgId, selectedM
         return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
     };
 
+    const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
+
   return (
     <TouchableHighlight
         key={msgId || index}
@@ -66,7 +68,7 @@ const MessageProductBubble = ({msgPress, justifyContent, index, msgId, selectedM
                 textTransform: "capitalize" 
                 }} 
                 numberOfLines={1}
-                color={theme?.white}
+                color={darkModeTextColor}
             >{productTitle}</AppText>
             {/* time and name */}
             <View style={{
@@ -75,17 +77,18 @@ const MessageProductBubble = ({msgPress, justifyContent, index, msgId, selectedM
                 alignItems: 'center',
             }}>
                 <AppText 
-                style={{fontSize: 8, fontWeight: 'bold'}} color={theme?.white}>{isCurrentUser ? "You" : msgSenderUsername}</AppText>
+                    style={{fontSize: 8, fontWeight: 'bold'}} 
+                    color={theme?.white}
+                    numberOfLines={1}
+                >{isCurrentUser ? "You" : msgSenderUsername}</AppText>
                 <AppText
-                style={{
-                    fontSize: 8,
-                    fontWeight: 'bold',
-                    marginHorizontal: 5,
-                }}
-                color={isCurrentUser ? theme?.midnight : theme?.misty}
-                >
-                {formatTime(msgTime)}
-                </AppText>
+                    style={{
+                        fontSize: 8,
+                        fontWeight: 'bold',
+                        marginHorizontal: 5,
+                    }}
+                    color={isCurrentUser ? theme?.midnight : darkModeTextColor}
+                >{formatTime(msgTime)}</AppText>
             </View>
             {/* end of time and name */}
         </TouchableOpacity>

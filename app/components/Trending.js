@@ -20,19 +20,20 @@ const Trending = (props) => {
       <FlatList
         data={products}
         keyExtractor={(product) => product.id.toString()}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <ProductCard
             name={item.title}
             desc={item.desc}
             price={priceRegex(item.price)}
-            companyName={item.companyName}
+            companyName={item.shop_name}
             image={item.images}
             rating={item.rating}
             addToCartVisible
             item={item}
           />
         )}
-        numColumns={width > 300 ? 3: 2}
+        numColumns={width > 250 ? 2: 1}
         contentContainerStyle={{
           padding: 5, 
           justifyContent: 'center',
@@ -43,7 +44,9 @@ const Trending = (props) => {
 }
 
 const styles = StyleSheet.create({
-  container: {}
+  container: {
+    paddingBottom: 10,
+  }
 });
 
 export default Trending;

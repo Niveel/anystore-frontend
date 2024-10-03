@@ -35,6 +35,8 @@ const AppInfoModal = ({visible=false, onClose}) => {
         }
     };
 
+    const darkModeBgColor = theme?.amberGlow === "#e2521d" ? theme?.midnight : theme?.misty
+    const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
 
   return (
     <Modal 
@@ -42,13 +44,13 @@ const AppInfoModal = ({visible=false, onClose}) => {
         animationType="slide"
         onRequestClose={onClose}
     >
-        <View style={[styles.container, {backgroundColor: theme?.misty}]}>
+        <View style={[styles.container, {backgroundColor: darkModeBgColor}]}>
             <View style={styles.skipBox}>
                 <TouchableOpacity 
                     onPress={onClose} 
                     style={[styles.skip, {backgroundColor: theme.punch}]}
                 >
-                    <AppText color={theme?.white}>Skip</AppText>
+                    <AppText color={darkModeTextColor}>Skip</AppText>
                 </TouchableOpacity>
             </View>
             <View style={[styles.innerBox, {backgroundColor: theme?.horizon}]}>
@@ -68,14 +70,14 @@ const AppInfoModal = ({visible=false, onClose}) => {
                 {/* end of tutorial carousel */}
             </View>
             {/* controls */}
-                <View style={[styles.controlBox, {backgroundColor: theme?.misty}]}>
+                <View style={[styles.controlBox, {backgroundColor: darkModeBgColor}]}>
                     {currentIndex > 0 &&
                         <AppButton 
                         title="Prev" 
                         onPress={goToPrev} 
                         style={[styles.ctrlBtn]}
                         width='35%'
-                        textColor={theme?.white}
+                        textColor={darkModeTextColor}
                         color={theme?.amberGlow}
                     />}
                     <AppButton 
@@ -83,7 +85,7 @@ const AppInfoModal = ({visible=false, onClose}) => {
                         onPress={goToNext} 
                         style={[styles.ctrlBtn, {backgroundColor: theme?.horizon}]}
                         width='35%'
-                        textColor={theme?.white}
+                        textColor={darkModeTextColor}
                     />
                 </View>
             {/* end of controls */}

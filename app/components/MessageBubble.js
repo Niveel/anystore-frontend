@@ -12,10 +12,7 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
 
     const {theme} = useTheme();
     const isMyNextMessage = true
-
     const bubbleRef = useRef(null);
-
-    // console.log("the tree message is", message)
 
     useEffect(() => {
     if (bubbleRef.current) {
@@ -80,6 +77,9 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
     const onSwipeableOpenAction = () => {
         setReplyOnSwipeOpen()
     }
+
+    const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
+    const darkModeBgColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
 
   return (
     <GestureHandlerRootView>
@@ -166,7 +166,7 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                         fontWeight: 'bold',
                         paddingBottom: 5,
                         }}
-                        color={isCurrentUser ? theme?.midnight : theme?.white}
+                        color={isCurrentUser ? theme?.midnight : darkModeTextColor}
                     >{msgContent}</AppText>
                     {/* time and name */}
                     <View style={{
@@ -175,17 +175,17 @@ const MessageBubble = ({msgPress, justifyContent, index, msgId, selectedMessageI
                         alignItems: 'center',
                     }}>
                         <AppText 
-                        style={{fontSize: 7, fontWeight: 'bold'}} color={theme?.white} numberOfLines={1}>{isCurrentUser ? "You" : msgSenderUsername}</AppText>
+                            style={{fontSize: 7, fontWeight: 'bold'}} 
+                            color={darkModeTextColor} 
+                            numberOfLines={1}>{isCurrentUser ? "You" : msgSenderUsername}</AppText>
                         <AppText
-                        style={{
-                            fontSize: 6,
-                            fontWeight: 'bold',
-                            marginHorizontal: 5,
-                        }}
-                        color={isCurrentUser ? theme?.midnight : theme?.white}
-                        >
-                        {formatTime(msgTime)}
-                        </AppText>
+                            style={{
+                                fontSize: 6,
+                                fontWeight: 'bold',
+                                marginHorizontal: 5,
+                            }}
+                            color={isCurrentUser ? theme?.midnight : darkModeTextColor}
+                        >{formatTime(msgTime)}</AppText>
                     </View>
                     {/* end of time and name */}
                 </DoubleTapTouchableOpacity>

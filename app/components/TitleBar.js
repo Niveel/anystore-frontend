@@ -4,14 +4,17 @@ import { View, StyleSheet, useWindowDimensions } from 'react-native';
 import AppText from './AppText';
 import { useTheme } from '../utils/ThemeContext';
 
+
 const TitleBar = ({title="heading"}) => {
-    const { theme } = useTheme();
-    const { width } = useWindowDimensions();
+  const { theme } = useTheme();
+  const { width } = useWindowDimensions();
+
+  const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
   return (
     <View style={[styles.container, {backgroundColor: theme?.misty}]}>
         <AppText 
             style={{fontSize: width > 300 ? 20 : 18, fontWeight: 'bold',}}
-            color={theme?.white}
+            color={darkModeTextColor}
         >{title}</AppText>
     </View>
   );
@@ -26,6 +29,7 @@ const styles = StyleSheet.create({
     minWidth: '55%',
     alignSelf: 'center',
     borderRadius: 30,
+    marginVertical: 10,
   }
 });
 

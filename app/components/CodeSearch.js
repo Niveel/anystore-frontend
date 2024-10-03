@@ -14,13 +14,15 @@ const CodeSearch = () => {
     navigation.navigate('BarcodeScreen');
   };
 
+  const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
+
   return (
     <TouchableHighlight
       style={[styles.searchBar, {backgroundColor: theme?.horizon,}]}
       onPress={handleCodeSearch}
       underlayColor={theme.lighter}
     >
-      <AppText style={styles.text} color={theme?.white}>Search by Barcode / QR Code</AppText>
+      <AppText style={styles.text} color={darkModeTextColor}>Search by Barcode / QR Code</AppText>
     </TouchableHighlight>
   );
 };

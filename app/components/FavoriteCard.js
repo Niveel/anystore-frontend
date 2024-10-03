@@ -29,7 +29,9 @@ const ProductCard = ({shopName, onPress, removeFavorite}) => {
             accessible={true}
             accessibilityLabel="Double tap to enter store."
         >
-            <View style={styles.cardWrapper}>
+            <View style={[styles.cardWrapper, {
+                borderColor: theme?.amberGlow === "#e2521d" ? theme?.horizon : ""
+            }]}>
                 <TouchableOpacity
                     style={styles.remove}
                     onPress={removeAlert}
@@ -38,7 +40,11 @@ const ProductCard = ({shopName, onPress, removeFavorite}) => {
                 >
                     <MaterialCommunityIcons name="minus-circle" size={30} color={theme?.punch} />
                 </TouchableOpacity>
-                <View style={[styles.image, {backgroundColor: theme?.blackLight}]}>
+                <View style={[styles.image, {
+                    backgroundColor: theme?.blackLight,
+                    borderColor: theme?.amberGlow === "#e2521d" ? theme?.horizon : "",
+                    borderLeftWidth: 0,
+                }]}>
                    <MaterialCommunityIcons name="store" size={80} color={theme?.horizon} />
                 </View>
                 <View style={styles.storeCta}>

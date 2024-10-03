@@ -98,6 +98,9 @@ const ProductInfo = ({
       return value = !isNaN(str) ? formatNumber(str) : str.replace('$', '');
     }
 
+    const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
+    const darkModeBgColor = theme?.amberGlow === "#e2521d" ? theme?.amberGlow : theme?.horizon
+
   return (
       <View style={[styles.container, {backgroundColor: theme?.misty}]}>
         {/* modal for description */}
@@ -170,25 +173,26 @@ const ProductInfo = ({
               >
                 {rating}
               </View>
-              <AppText color={theme?.white} style={styles.price}>${renderPrice(price)}</AppText>
+              <AppText color={darkModeTextColor} style={styles.price}>${renderPrice(price)}</AppText>
             </View>
             {/* end of rating and price */}
             {/* share and cafa */}
             <View style={styles.shareCafa}>
               <TouchableOpacity 
-                style={[styles.share, {backgroundColor: theme?.horizon}]}
+                style={[styles.share, {backgroundColor: darkModeBgColor}]}
                 onPress={openBottomSheet}
                 accessible={true}
                 accessibilityLabel='Share product'
               >
-                <MaterialCommunityIcons name="share-variant" size={22} color={theme?.white} />
+                <MaterialCommunityIcons name="share-variant" size={22} color={darkModeTextColor} />
               </TouchableOpacity>
               <AppButton 
                 width='50%'
-                textColor={theme?.white}
+                textColor={darkModeTextColor}
                 title='Ask CAFA'
                 height={38}
                 onPress={askCafa}
+                color={darkModeBgColor}
               />
             </View>
             {/* end of share and cafa */}
@@ -205,10 +209,11 @@ const ProductInfo = ({
           <AppButton
             height={38}
             style={{marginVertical: 5}}
-            textColor={theme?.white}
+            textColor={darkModeTextColor}
             title='Add to favorite stores'
             textStyle={{fontSize: 14}}
             onPress={handleAddToFavStores}
+            color={darkModeBgColor}
           />
           {/* cart and radar */}
           <View style={styles.cartRadar}>

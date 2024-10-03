@@ -32,7 +32,7 @@ function BarcodePolicyScreen({ navigation }) {
   };  
 
   const openPrivacyPolicy = () => {
-    WebBrowser.openBrowserAsync('https://www.niveel.com/privacy/');
+    // WebBrowser.openBrowserAsync('https://www.niveel.com/privacy/');
 
   };
 

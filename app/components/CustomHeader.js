@@ -27,6 +27,7 @@ const CustomHeader = ({showIcons, title="header",}) => {
     const handleNotification = () => {
         console.log('Notification route')
     }
+    const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
 
   return (
     <View 
@@ -38,7 +39,7 @@ const CustomHeader = ({showIcons, title="header",}) => {
             <Image source={logo} style={styles.logo} />
         </TouchableOpacity>
 
-        <AppText style={styles.text} color={theme.white}>{title}</AppText>
+        <AppText style={styles.text} color={darkModeTextColor}>{title}</AppText>
 
         {showIcons && 
             <View style={styles.buttonsWrapper}>

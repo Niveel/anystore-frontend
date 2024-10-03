@@ -35,6 +35,8 @@ const AppNavigator = () => {
     borderRadius: 18,
     overflow: "hidden",
     elevation: 5,
+    backgroundColor: theme?.white,
+    borderTopWidth: 0,
   }
 
   return (

@@ -6,20 +6,23 @@ import { useTheme } from '../../utils/ThemeContext';
 
 const FavStoreInfo = (props) => {
   const { theme } = useTheme();
+  const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
+  const darkModeBgColor = theme?.amberGlow === "#e2521d" ? theme?.midnight : theme?.misty
+
   return (
-    <ScrollView style={[styles.container, {backgroundColor: theme?.midnight}]}>
+    <ScrollView style={[styles.container, {backgroundColor: darkModeBgColor}]}>
       <View style={{paddingBottom: 80}}>
         <AppText style={styles.head} color={theme?.amberGlow}>Favorite Store Feature</AppText>
-        <AppText style={styles.details} color={theme?.horizon}>With Shopwit, you have the power to save your favorite stores for quick access and personalized shopping experience. Sign up/register for free to use Favorite.</AppText>
+        <AppText style={styles.details} color={darkModeTextColor}>With Shopwit, you have the power to save your favorite stores for quick access and personalized shopping experience. Sign up/register for free to use Favorite.</AppText>
 
         <AppText style={styles.head} color={theme?.amberGlow}>Save Your Favorite Stores</AppText>
-        <AppText style={styles.details} color={theme?.horizon}>When you come across a store that consistently offers the products you love or unbeatable deals, you can save it to your Favorite Stores list. This allows you to keep all your preferred stores in one place, so you can easily search for products within those stores whenever you like.</AppText>
+        <AppText style={styles.details} color={darkModeTextColor}>When you come across a store that consistently offers the products you love or unbeatable deals, you can save it to your Favorite Stores list. This allows you to keep all your preferred stores in one place, so you can easily search for products within those stores whenever you like.</AppText>
 
         <AppText style={styles.head} color={theme?.amberGlow}>Search Within Favorite Stores</AppText>
-        <AppText style={styles.details} color={theme?.horizon}>Once you've added stores to your favorites, you can search directly within those stores for specific products. This feature helps you save time by narrowing your search to just your trusted stores.</AppText>
+        <AppText style={styles.details} color={darkModeTextColor}>Once you've added stores to your favorites, you can search directly within those stores for specific products. This feature helps you save time by narrowing your search to just your trusted stores.</AppText>
 
         <AppText style={styles.head} color={theme?.amberGlow}>Add to Cart</AppText>
-        <AppText style={styles.details} color={theme?.horizon}>Purchases that you are not ready to buy right away can be saved to cart. This gives shoppers enough time to rethink their purchases. To remove a product from your cart, just swipe it to the left then press the trash/delete container. Sign up/register for free to add to Cart.</AppText>
+        <AppText style={styles.details} color={darkModeTextColor}>Purchases that you are not ready to buy right away can be saved to cart. This gives shoppers enough time to rethink their purchases. To remove a product from your cart, just swipe it to the left then press the trash/delete container. Sign up/register for free to add to Cart.</AppText>
       </View>
     </ScrollView>
   );
