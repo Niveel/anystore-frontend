@@ -34,11 +34,14 @@ const CartItem = ({image, name, desc, price, companyName, onPress, rating, delPr
     );
   }
 
+  const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.amberGlow
+  const darkModeBgColor = theme?.amberGlow === "#e2521d" ? theme?.horizon : theme?.misty
+
   return (
     <GestureHandlerRootView>
       <Swipeable renderRightActions={()=> <CartDeleteAction onPress={delPress}/>}>
         <TouchableOpacity
-          style={[styles.card, {backgroundColor: theme?.misty}]}
+          style={[styles.card, {backgroundColor: darkModeBgColor}]}
           activeOpacity={0.9}
           onPress={onPress}
           {...otherPops}
@@ -50,8 +53,8 @@ const CartItem = ({image, name, desc, price, companyName, onPress, rating, delPr
             {/* top part */}
             <View style={styles.topWrapper}>
               <View style={styles.nameStore}>
-                <AppText style={styles.name} numberOfLines={2} color={theme?.white}>{name} blah blah blah blah blah blah blah blah</AppText>
-                <AppText style={{fontSize: 12}} color={theme?.white}>Store: <AppText style={{fontSize: 12}} color={theme?.amberGlow}>{companyName}</AppText></AppText>
+                <AppText style={styles.name} numberOfLines={2} color={darkModeTextColor}>{name}</AppText>
+                <AppText style={{fontSize: 12}} color={darkModeTextColor}>Store: <AppText style={{fontSize: 12}} color={theme?.amberGlow}>{companyName}</AppText></AppText>
               </View>
               <View style={styles.deleteBox}>
                 <TouchableOpacity 

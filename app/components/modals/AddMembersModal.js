@@ -5,6 +5,7 @@ import AppText from '../AppText';
 import { useTheme } from '../../utils/ThemeContext';
 import SearchInput from '../SearchInput';
 import PopupModal from './PopupModal';
+import UserCard from '../UserCard';
 
 
 const AddMembersModal = ({visible, groupName, searchQuery, onChangeQueryText, searchResults, addedMembers, disabled, addMemberToGroup,closeModal}) => {
@@ -35,28 +36,20 @@ const AddMembersModal = ({visible, groupName, searchQuery, onChangeQueryText, se
               <FlatList
                 data={memoisedSearchResults}
                 keyExtractor={result => result?.id?.toString()}
+                contentContainerStyle={{
+                  paddingBottom: 70,
+                }}
                 renderItem={({ item }) => (
-                  <TouchableOpacity 
-                    style={{
-                      backgroundColor: addedMembers.includes(item.id) ? theme?.blackLight : theme?.horizon,
-                      padding: 10,
-                      borderRadius: 5,
-                      marginBottom: 10,
-                    }}
+                  <UserCard
                     disabled={disabled}
+                    bgColor={addedMembers.includes(item.id) ? theme?.blackLight : theme?.horizon}
                     onPress={() => {addMemberToGroup(item?.id, item?.username)}}
+                    textColor={addedMembers.includes(item.id) ? theme?.misty : theme?.midnight}
                     accessible={true}
                     accessibilityLabel={addedMembers.includes(item.id) ? `${item?.username} already added to group` : `Add ${item?.username} to ${groupName}`}
                     accessibilityHint='Double tap to add this user to the group.'
-                  >
-                    <AppText 
-                      style={{ 
-                        fontSize: 16, 
-                        fontWeight: "bold"
-                      }}
-                      color={addedMembers.includes(item.id) ? theme?.misty : theme?.midnight}
-                    >{item?.username}</AppText>
-                  </TouchableOpacity>
+                    userName={item?.username}
+                  />
                 )}
               />
             </View>

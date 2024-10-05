@@ -7,8 +7,8 @@ import axios from 'axios'
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import * as expoLinking from 'expo-linking';
-import * as WebBrowser from 'expo-web-browser';
+// import * as expoLinking from 'expo-linking';
+// import * as WebBrowser from 'expo-web-browser';
 // import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // AsyncStorage.clear()
@@ -68,7 +68,6 @@ Notifications.setNotificationHandler({
             extrapolate: 'clamp',
         });
         
-
         // generate random id
         const generateRandomId = () => {
             return Math.floor(Math.random() * 1000000)

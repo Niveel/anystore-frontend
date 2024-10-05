@@ -20,6 +20,9 @@ const SortingBar = ({ onSortOptionSelected }) => {
     setRatingModalVisible(false);
   };
 
+  const darkModeBgColor = theme?.amberGlow === "#e2521d" ? theme?.midnight : theme?.misty
+  const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
+
   return (
     <View style={styles.container}>
       {/* Main Sort button */}
@@ -35,7 +38,7 @@ const SortingBar = ({ onSortOptionSelected }) => {
         onRequestClose={() => setShowMenu(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContainer, {backgroundColor: theme?.misty}]}>
+          <View style={[styles.modalContainer, {backgroundColor: darkModeBgColor}]}>
             <TouchableOpacity
               style={[styles.optionButton, {backgroundColor: theme?.amberGlow, marginBottom: 8}]}
               onPress={() => {
@@ -43,7 +46,7 @@ const SortingBar = ({ onSortOptionSelected }) => {
                 setShowMenu(false);
               }}
             >
-              <AppText style={styles.optionText} color={theme?.white}>Price</AppText>
+              <AppText style={styles.optionText} color={darkModeTextColor}>Price</AppText>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -53,7 +56,7 @@ const SortingBar = ({ onSortOptionSelected }) => {
                 setShowMenu(false);
               }}
             >
-              <AppText style={styles.optionText} color={theme?.white}>Rating</AppText>
+              <AppText style={styles.optionText} color={darkModeTextColor}>Rating</AppText>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => setShowMenu(false)} style={styles.cancelButton}>
@@ -71,17 +74,17 @@ const SortingBar = ({ onSortOptionSelected }) => {
         onRequestClose={() => setPriceModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContainer, {backgroundColor: theme?.misty}]}>
+          <View style={[styles.modalContainer, {backgroundColor: darkModeBgColor}]}>
             <TouchableOpacity onPress={() => handlePriceSortSelect('highest')} style={[styles.optionButton, {
               backgroundColor: theme?.amberGlow,
               marginBottom: 10,
             }]}>
-              <Text style={[styles.optionText, {color: theme?.white}]}>Highest Price First</Text>
+              <Text style={[styles.optionText, {color: darkModeTextColor}]}>Highest Price First</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handlePriceSortSelect('lowest')} style={[styles.optionButton, {
               backgroundColor: theme?.horizon,
             }]}>
-              <Text style={[styles.optionText, {color: theme?.white}]}>Lowest Price First</Text>
+              <Text style={[styles.optionText, {color: darkModeTextColor}]}>Lowest Price First</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setPriceModalVisible(false)} style={styles.cancelButton}>
               <Text style={[styles.cancelText, {color: theme?.punch}]}>Cancel</Text>
@@ -98,12 +101,17 @@ const SortingBar = ({ onSortOptionSelected }) => {
         onRequestClose={() => setRatingModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContainer, {backgroundColor: theme?.midnight}]}>
-            <TouchableOpacity onPress={() => handleRatingSortSelect('highest_rating')} style={styles.optionButton}>
-              <Text style={[styles.optionText, {color: theme?.text}]}>Highest Rating First</Text>
+          <View style={[styles.modalContainer, {backgroundColor: darkModeBgColor}]}>
+            <TouchableOpacity onPress={() => handleRatingSortSelect('highest_rating')} style={[styles.optionButton, {
+              backgroundColor: theme?.amberGlow,
+              marginBottom: 10,
+            }]}>
+              <Text style={[styles.optionText, {color: darkModeTextColor}]}>Highest Rating First</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleRatingSortSelect('lowest_rating')} style={styles.optionButton}>
-              <Text style={[styles.optionText, {color: theme?.text}]}>Lowest Rating First</Text>
+            <TouchableOpacity onPress={() => handleRatingSortSelect('lowest_rating')} style={[styles.optionButton, {
+              backgroundColor: theme?.horizon,
+            }]}>
+              <Text style={[styles.optionText, {color: darkModeTextColor}]}>Lowest Rating First</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setRatingModalVisible(false)} style={styles.cancelButton}>
               <Text style={[styles.cancelText, {color: theme?.punch}]}>Cancel</Text>

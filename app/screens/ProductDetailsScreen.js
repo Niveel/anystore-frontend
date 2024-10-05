@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, Alert, Linking, ScrollView } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import axios from 'axios';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import * as WebBrowser from 'expo-web-browser';
 
 import Screen from '../components/Screen';
 import routes from '../navigation/routes';
@@ -11,13 +12,12 @@ import useAuth from '../auth/useAuth';
 import ImageSlider from '../components/ImageSlider';
 import ProductInfo from '../components/ProductInfo';
 
-// REMEMBER THE PRODUCT TITLE IS RENAMED TO NAME FOR TESTING OOOOOOO HMMMMM
-
 function ProductDetails({route, navigation}) {
     const [cartItemAdded, setCartItemAdded] = useState([]);
     const [favStoreAdded, setFavStoreAdded] = useState([]);
     const [radarItemAdded, setRadarItemAdded] = useState([]);
     const [productData, setProductData] = useState([]);
+    const [isImageLoading, setIsImageLoading] = useState(true);
     const product = route.params;
 
     const { theme } = useTheme();
@@ -40,6 +40,8 @@ function ProductDetails({route, navigation}) {
             fetchProductDetails();
         } catch (error) {
             console.error('Error fetching product details:', error)
+        } finally {
+            setIsImageLoading(false);
         }
     }, []);
 
@@ -128,7 +130,7 @@ function ProductDetails({route, navigation}) {
             Alert.alert("Link not available")
             return;
         }
-        Linking.openURL(link);
+        WebBrowser.openBrowserAsync(link);
     }
 
     const handleAddToRadar = async (productID) => {
@@ -224,7 +226,10 @@ function ProductDetails({route, navigation}) {
             style={{flex: 1}}
             contentContainerStyle={{flexGrow: 1}}
         >
-            <ImageSlider imagesData={formattedImages} />
+            <ImageSlider 
+                imagesData={formattedImages} 
+                isImageLoading={isImageLoading}
+            />
 
             <ProductInfo 
                 title={product?.title}

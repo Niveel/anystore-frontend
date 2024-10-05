@@ -9,7 +9,7 @@ const themes = {
         black: '#000',
         blackLight: 'rgba(0,0,0,.2)',  
         midnight: '#f1f8ff', // background color
-        midnightLight: 'rgba(127, 154, 189,.6)', // text color
+        midnightLight: 'rgba(127, 154, 189,.2)', // text color
         horizon: '#008081', // bg color
         misty: '#001F3F', // bg color
         mistyLight: 'rgba(106, 147, 186,.3)', // bg color
@@ -55,7 +55,7 @@ const themes = {
         light: 'rgba(255,255,255,0.2)',
         lighter: 'rgba(255,255,255,0.1)',
         black: '#fff', 
-        blackLight: 'rgba(255,255,255,.1)',
+        blackLight: 'rgba(255,255,255,.2)',
         midnight: '#000', // background color
         midnightLight: 'rgba(216, 216, 2166, .2)', // text color
         horizon: '#6d7df8', // bg color
@@ -70,14 +70,14 @@ const themes = {
         white: '#fff',
         light: 'rgba(255,255,255,0.2)',
         lighter: 'rgba(255,255,255,0.1)',
-        black: '#000',
+        black: '#ceccc8',
         blackLight: 'rgba(0,0,0,.1)',
-        midnight: '#1f4f5c', // background color
-        midnightLight: 'rgba(31, 79, 92, .4)', // text color
-        horizon: '#2a6e79', // bg color
-        misty: '#62bfcf', // bg color
+        midnight: '#1b4c5a', // background color
+        midnightLight: 'rgba(31, 79, 92, .2)', // text color
+        horizon: '#38aec0', // bg color
+        misty: '#55aab9', // bg color
         mistyLight: 'rgba(76, 141, 154, .6)', // bg color
-        amberGlow: '#2adfd3', //border color
+        amberGlow: '#38f1e5', //border color
         amberGlowLight: 'rgba(144, 198, 194, .8)', //border color
         punch: '#e67a14', // accent color
         text: '#fff',
@@ -86,28 +86,28 @@ const themes = {
         white: '#fff',
         light: 'rgba(224, 210, 210, 0.5)',
         lighter: 'rgba(255,255,255,0.1)',
-        black: '#000',
+        black: '#fff',
         blackLight: 'rgba(0,0,0,.1)',
         midnight: '#4b4f68', // background color
-        midnightLight: 'rgba(31, 79, 92, .4)', // text color
+        midnightLight: 'rgba(31, 79, 92, .2)', // text color
         horizon: '#119186', // bg color
-        misty: '#27c29b', // bg color
+        misty: '#21a584', // bg color
         mistyLight: 'rgba(54, 238, 224,.6)', // bg color
-        amberGlow: '#2bcc8e', //border color
+        amberGlow: '#25e69c', //border color
         amberGlowLight: 'rgba(63, 206, 151,.8)', //border color
         punch: '#F652A0', // accent color
-        text: '#2c2a2a',
+        text: '#fff',
     },
     christmas: {
         white: '#fff',
         light: 'rgba(224, 210, 210, 0.2)',
         lighter: 'rgba(255,255,255,0.1)',
-        black: '#000',
+        black: '#d4d0d0',
         blackLight: 'rgba(0,0,0,.1)',
         midnight: '#7e121d', // background color
-        midnightLight: 'rgba(126, 18, 29,.4)', // text color
-        horizon: '#bd3634', // bg color
-        misty: '#ceac5c', // bg color
+        midnightLight: 'rgba(126, 18, 29,.2)', // text color
+        horizon: '#f5625f', // bg color
+        misty: '#b48518', // bg color
         mistyLight: 'rgba(206, 172, 92,.6)', // bg color
         amberGlow: '#eccd41', //border color
         amberGlowLight: 'rgba(236, 205, 65,.8)', //border color

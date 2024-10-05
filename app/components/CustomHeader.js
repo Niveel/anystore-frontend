@@ -51,14 +51,14 @@ const CustomHeader = ({showIcons, title="header",}) => {
                 >
                     <MaterialCommunityIcons name="heart" size={20} color={theme?.punch} />
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     onPress={handleNotification}
                     accessible={true}
-                    accessibilityLabel='Favorite stores'
+                    accessibilityLabel='Notifications'
                     style={[styles.icon, {backgroundColor: theme?.white}]}
                 >
                     <MaterialCommunityIcons name="bell" size={20} color={theme?.horizon} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity
                     onPress={handleCart}
                     accessible={true}

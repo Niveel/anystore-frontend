@@ -7,6 +7,7 @@ import { useTheme } from '../../utils/ThemeContext';
 const PopupModal = ({visible, children, closeModal}) => {
     if( !visible ) return null;
     const { theme } = useTheme();
+    const darkModeBgColor = theme?.amberGlow === "#e2521d" ? theme?.midnight : theme?.midnightLight
   return (
     <Modal
       animationType="slide"
@@ -14,7 +15,7 @@ const PopupModal = ({visible, children, closeModal}) => {
       onRequestClose={closeModal}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.container, {backgroundColor: theme?.midnightLight}]}>
+        <View style={[styles.container, {backgroundColor: darkModeBgColor}]}>
           <View style={[styles.head, {backgroundColor: theme?.horizon}]}>
               <TouchableOpacity
                   style={[styles.closeButton, {borderColor: theme?.white}]}

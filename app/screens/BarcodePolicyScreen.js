@@ -32,17 +32,19 @@ function BarcodePolicyScreen({ navigation }) {
   };  
 
   const openPrivacyPolicy = () => {
-    // WebBrowser.openBrowserAsync('https://www.niveel.com/privacy/');
+    WebBrowser.openBrowserAsync('https://www.niveel.com/privacy/');
 
   };
 
+  const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.amberGlow
+  const darkModeBgColor = theme?.amberGlow === "#e2521d" ? theme?.midnight : theme?.horizon
   return (
     <Screen 
       style={styles.screen} 
-      statusColor={theme?.horizon}
+      statusColor={darkModeBgColor}
     >
-      <View style={[styles.container, { backgroundColor: theme?.horizon }]}>
-        <AppText style={styles.text} color={theme?.white}>
+      <View style={[styles.container, { backgroundColor: darkModeBgColor }]}>
+        <AppText style={styles.text} color={darkModeTextColor}>
           You are responsible for content you post on the App. You agree not to post content that is illegal, harmful, or violates any third-party rights. Depending on the severity of the content, Shopwit reserves the rights to flag such content, warn or remove you from the platform for such behavior. You have the right to report users that indulge in such behavior too. You can also choose to exit any group chat that you dislike or find offensive. To learn more visit our privacy policy:
         </AppText>
         <TouchableHighlight
@@ -55,7 +57,7 @@ function BarcodePolicyScreen({ navigation }) {
             borderRadius: 5,
           }}
         >
-          <AppText style={{ textDecorationLine: 'underline' }} color={theme?.midnight}>
+          <AppText style={{ textDecorationLine: 'underline' }} color={darkModeTextColor}>
             Privacy Policy
           </AppText>
         </TouchableHighlight>
@@ -65,14 +67,14 @@ function BarcodePolicyScreen({ navigation }) {
             underlayColor="rgba(250,0,0,0.7)"
             onPress={disallowPolicy}
           >
-            <AppText color={theme?.white}>Disagree</AppText>
+            <AppText color={darkModeTextColor}>Disagree</AppText>
           </TouchableHighlight>
           <TouchableHighlight
             style={[styles.button, { backgroundColor: theme?.amberGlow }]}
             onPress={allowPolicy}
             underlayColor="rgba(0,250,0,0.6)"
           >
-            <AppText color={theme?.white}>Agree</AppText>
+            <AppText color={darkModeTextColor}>Agree</AppText>
           </TouchableHighlight>
         </View>
       </View>

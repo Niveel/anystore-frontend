@@ -1,24 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Image, FlatList, TouchableOpacity, Animated, TouchableWithoutFeedback, Modal, Dimensions } from 'react-native';
-import { PinchGestureHandler, State, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { View, StyleSheet, Image, FlatList, TouchableOpacity, Animated, TouchableWithoutFeedback, Dimensions } from 'react-native';
+import { PinchGestureHandler, State } from 'react-native-gesture-handler';
 
 import { useTheme } from '../utils/ThemeContext';
 import AppText from './AppText';
 import Icon from './Icon';
-
-// Default test images array
-const testImages = [
-  { id: 1, url: "https://img.freepik.com/free-psd/red-sports-sneakers-running-shoes-transparent-background_84443-2018.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1727222400&semt=ais_hybrid" },
-  { id: 2, url: "https://e7.pngegg.com/pngimages/382/622/png-clipart-sneakers-skate-shoe-nike-one-nike-shoe-purple-fashion.png" },
-  { id: 3, url: "https://w7.pngwing.com/pngs/624/596/png-transparent-nike-free-nike-air-max-sneakers-shoe-red-shoes-thumbnail.png" },
-  { id: 4, url: "https://png.pngtree.com/png-vector/20240407/ourmid/pngtree-nike-air-max-97-sneaker-in-silver-png-image_12266447.png" },
-  { id: 5, url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXy88SWy3C8-nbZY41r80vHJjgqJ52edCEyg&s" },
-  { id: 6, url: "https://image.similarpng.com/very-thumbnail/2020/09/Red-Nike-shoes-premium-vector-PNG.png" },
-];
+import ItemLoader from './loaders/ItemLoader';
 
 const { width, height } = Dimensions.get('window');
 
-const ImageSlider = ({ imagesData }) => {
+const ImageSlider = ({ imagesData, isImageLoading }) => {
   const { theme } = useTheme();
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -54,21 +45,18 @@ const ImageSlider = ({ imagesData }) => {
   };
   const closeModal = () => setIsModalVisible(false);
 
-  // Load imagesData first if available, otherwise use testImages
   useEffect(() => {
     if (imagesData.length > 0) {
       setFinalImages(imagesData);
       setSelectedImage(imagesData[0]?.url);
-    } else {
-      setFinalImages(testImages);
-      setSelectedImage(testImages[0]?.url);
-    }
+    } 
   }, [imagesData]);  
 
   const darkModeBgColor = theme?.amberGlow === "#e2521d" ? theme?.white : theme?.black
 
   return (
     <View style={styles.container}>
+      <ItemLoader visible={isImageLoading} />
       {/* Scrollable list of small images (thumbnails) */}
       <FlatList
         data={finalImages}

@@ -74,6 +74,8 @@ const ProductCard = ({
     return price.replace(/\$/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.amberGlow
+
   return (
     <TouchableOpacity
       activeOpacity={0.9}
@@ -99,7 +101,7 @@ const ProductCard = ({
           accessibilityLabel="Add to cart"
           accessibilityHint={`Double tap to add ${name} to cart`}
         >
-          <MaterialCommunityIcons name="cart-plus" color={theme?.amberGlow} size={16} />
+          <MaterialCommunityIcons name="cart-plus" color={darkModeTextColor} size={16} />
         </TouchableOpacity>
       )}
       {/* end of add to cart */}

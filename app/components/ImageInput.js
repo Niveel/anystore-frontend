@@ -1,15 +1,17 @@
 import React, {useEffect} from 'react';
 import { View, StyleSheet, Image, Alert, TouchableWithoutFeedback } from 'react-native';
 import * as ImagePicker from 'expo-image-picker'
-import axios from 'axios'
 
 import Icon from './Icon';
 import {useTheme} from '../utils/ThemeContext';
 import useAuth from '../auth/useAuth';
+import profilePic from '../api/profileImage'
 
 function ImageInput({imageUri, onChangeImage, style}) {
     const {user} = useAuth()
     const {theme} = useTheme()
+
+    console.log("User", user)
 
     const requestPermission = async () => {
         const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -29,22 +31,14 @@ function ImageInput({imageUri, onChangeImage, style}) {
 
     const upLoadImageToServer = async (userId, imageFile) => {
         try {
-            const formData = new FormData();
-            formData.append('profileImage', {
-                uri: imageFile.uri,
-                type: imageFile.type,
-                name: 'profile.jpg',
-            });
-            formData.append('userId', userId);
+            const response = await profilePic.uploadProfileImage(userId, imageFile.uri)
 
-            const response = await axios.post('https://pacific-sierra-04938-5becb39a6e4f.herokuapp.com/api/upload-profile-image', formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                },
-              });
-          
-              console.log("Image posting",response.data);
-              return response.data;
+            if(response.ok) {
+                console.log("Image uploaded successfully", response.data)
+            } else {
+                console.log("Error uploading an image", response.data)
+            }
+
         } catch (error) {
             console.log("Error uploading an image", error)
 
@@ -70,7 +64,7 @@ function ImageInput({imageUri, onChangeImage, style}) {
                 const imageFile = { uri: result.assets[0].uri, type: 'image/jpeg' }
                 onChangeImage(result.assets[0].uri)
                 upLoadImageToServer(user?._id, imageFile)
-                console.log("Image selected", imageFile)
+                // console.log("Image selected", imageFile)
             }
         } catch (error) {
             console.log("Error reading an image", error)

@@ -1,10 +1,10 @@
 import React, {useMemo} from 'react';
-import { View, StyleSheet, FlatList, TouchableHighlight, Alert, TouchableOpacity } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, StyleSheet, FlatList, Alert, } from 'react-native';
 
 import AppText from '../AppText';
 import { useTheme } from '../../utils/ThemeContext';
 import PopupModal from '../modals/PopupModal';
+import UserCard from '../UserCard';
 
 const ViewMembersModal = ({visible, groupName, isCreatedGroup, groupMembers, userId, removeMember, numOfUsersOnline,closeModal, ...otherProps}) => {
 
@@ -44,45 +44,29 @@ const ViewMembersModal = ({visible, groupName, isCreatedGroup, groupMembers, use
                 keyExtractor={member => member?.id?.toString()}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => (
-                  <TouchableOpacity 
-                    style={[styles.memberList, {
-                      backgroundColor: theme?.horizon,
-                    }]}
-                    activeOpacity={0.9}
-                  >
-                    <AppText style={{fontSize: 16}} color={theme?.white}>{item.username}</AppText>
-                    {item.id === userId && <View>
-                      <MaterialCommunityIcons name="account" size={24} color={theme?.midnight} />
-                      <AppText style={{fontSize: 12}} color={theme?.white}>You</AppText>
-                    </View>}
-                    {isCreatedGroup && item.id !== userId && <TouchableHighlight
-                      style={{
-                        backgroundColor: theme?.misty,
-                        padding: 5,
-                        borderRadius: 5,
-                      }}
-                      underlayColor={theme?.midnight}
-                      onPress={() => {
-                        Alert.alert(
-                          'Remove Member',
-                          `Are you sure you want to remove ${item.username} from the group?`,
-                          [
-                            {
-                              text: 'No',
-                              onPress: () => console.log('Cancel Pressed'),
-                              style: 'cancel'
-                            },
-                            { text: 'YES', 
-                              onPress: () => removeMember(item.id) }
-                          ],
-                          { cancelable: true }
-                        );
-                        
-                      }}
-                    >
-                      <MaterialCommunityIcons name="account-remove" size={24} color={theme?.amberGlow} />
-                    </TouchableHighlight>}
-                  </TouchableOpacity>
+                  <UserCard 
+                    bgColor={theme?.horizon}
+                    userName={item.username}
+                    isYou={item.id === userId}
+                    isAdmin={isCreatedGroup && item.id !== userId}
+                    removePress={() => {
+                      Alert.alert(
+                        'Remove Member',
+                        `Are you sure you want to remove ${item.username} from the group?`,
+                        [
+                          {
+                            text: 'No',
+                            onPress: () => console.log('Cancel Pressed'),
+                            style: 'cancel'
+                          },
+                          { text: 'YES', 
+                            onPress: () => removeMember(item.id) }
+                        ],
+                        { cancelable: true }
+                      );
+                      
+                    }}
+                  />
                 )}
               />
       </View>

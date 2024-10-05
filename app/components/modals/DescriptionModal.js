@@ -10,6 +10,7 @@ const { height } = Dimensions.get('window');
 const DescriptionModal = ({visible, children, header="heading", closeModal, ...otherProps}) => {
     if( !visible ) return null;
     const { theme } = useTheme();
+    const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
   return (
     <Modal
         visible={visible}
@@ -20,12 +21,14 @@ const DescriptionModal = ({visible, children, header="heading", closeModal, ...o
         transparent={true}
     >
         <View style={[styles.container, {backgroundColor: theme?.blackLight}]}>
-            <View style={styles.modal}>
+            <View style={[styles.modal, {
+                backgroundColor: theme?.midnight
+            }]}>
                 {/* head */}
                 <View style={[styles.header, {backgroundColor: theme?.horizon}]}>
-                    <AppText style={styles.headText} color={theme?.white}>{header}</AppText>
+                    <AppText style={styles.headText} color={darkModeTextColor}>{header}</AppText>
                     <TouchableOpacity
-                        style={[styles.closeButton, {borderColor: theme?.white}]}
+                        style={[styles.closeButton, {borderColor: darkModeTextColor}]}
                         onPress={closeModal}
                         accessible={true}
                         accessibilityLabel="Close"
@@ -33,7 +36,7 @@ const DescriptionModal = ({visible, children, header="heading", closeModal, ...o
                         <Icon 
                             name="close" 
                             size={25} 
-                            color={theme?.white}
+                            color={darkModeTextColor}
                         />
                     </TouchableOpacity>
                 </View>
@@ -79,7 +82,6 @@ const styles = StyleSheet.create({
         padding: 2,
     },
     modal: {
-        backgroundColor: 'white',
         height: height - 400,
         width: '100%',
     },

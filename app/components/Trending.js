@@ -1,26 +1,62 @@
-import React from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import { View, StyleSheet, FlatList, Dimensions} from 'react-native';
 
 import TitleBar from './TitleBar';
 import ProductCard from './ProductCard';
-import {products} from '../dummyData'
+import trendingProducts from '../api/trendingProducts';
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const Trending = (props) => {
+  const [products, setProducts] = useState([]);
 
   const priceRegex = (price) => {
     return price.replace(/\$/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
+
+  useEffect(() => {
+    const fetchTrendingProducts = async () => {
+      try {
+        const response = await trendingProducts.getTrendingProducts();
+
+        if (response.ok) {
+          setProducts(response.data);
+        }
+
+      } catch (error) {
+        console.log("Error fetching trending products", error);
+        if (error.response) {
+          console.log("Error getting trending products", error.response.data);
+        } else {
+          console.log("Error getting trending products", error.message);
+        }
+      }
+    };
+
+    fetchTrendingProducts();
+
+    const interval = setInterval(() => {
+      fetchTrendingProducts();
+    }, 300000);
+
+    return () => {
+      setProducts([])
+      clearInterval(interval);
+    };
+  }, []);
+
+  // slice the first 9 products
+  const slicedProducts = useMemo(() => products.slice(0, 20), [products]);
 
   return (
     <View style={styles.container}>
       <TitleBar title="Trending" />
 
       <FlatList
-        data={products}
-        keyExtractor={(product) => product.id.toString()}
+        data={slicedProducts}
+        keyExtractor={(product) => product.title.toString()}
         showsVerticalScrollIndicator={false}
+        numColumns={width > 300 ? 3: 2}
         renderItem={({ item }) => (
           <ProductCard
             name={item.title}
@@ -31,9 +67,10 @@ const Trending = (props) => {
             rating={item.rating}
             addToCartVisible
             item={item}
+            width={115}
+            height={height / 4.5}
           />
         )}
-        numColumns={width > 250 ? 2: 1}
         contentContainerStyle={{
           padding: 5, 
           justifyContent: 'center',

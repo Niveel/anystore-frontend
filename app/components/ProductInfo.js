@@ -110,20 +110,7 @@ const ProductInfo = ({
           header='Product Description'
         >
           <AppText style={{fontSize: 16, marginBottom: 10}}>
-            {description} blah blah black sheep blah blah black sheep 
-            blah blah black sheep blah blah black sheep blah blah black sheep
-            blah blah black sheep blah blah black sheep blah blah black sheep
-            blah blah black sheep blah blah black sheep blah blah black sheep
-            blah blah black sheep blah blah black sheep blah blah black sheep
-            blah blah black sheep blah blah black sheep blah blah black sheep
-            blah blah black sheep blah blah black sheep blah blah black sheep
-            blah blah black sheep blah blah black sheep blah blah black sheep
-            blah blah black sheep blah blah black sheep blah blah black sheep
-            blah blah black sheep blah blah black sheep blah blah black sheep
-            blah blah black sheep blah blah black sheep blah blah black sheep
-            blah blah black sheep blah blah black sheep blah blah black sheep
-            blah blah black sheep blah blah black sheep blah blah black sheep
-            blah blah black sheep blah blah black sheep blah blah black sheep
+            {description}
           </AppText>
         </DescriptionModal>
         {/* modal for product information */}
@@ -138,7 +125,7 @@ const ProductInfo = ({
             <AppText style={styles.infoBig}>STORE:</AppText>
             <AppText style={styles.infoSmall}>{store}</AppText>
           </View>
-          <View style={styles.infoBox}>
+          {/* <View style={styles.infoBox}>
             <AppText style={styles.infoBig}>CATEGORY:</AppText>
             <AppText style={styles.infoSmall}>{category}</AppText>
           </View>
@@ -149,19 +136,19 @@ const ProductInfo = ({
           <View style={styles.infoBox}>
             <AppText style={styles.infoBig}>TYPE:</AppText>
             <AppText style={styles.infoSmall}>{type}</AppText>
-          </View>
+          </View> */}
           {/* end of info boxes */}
         </DescriptionModal>
 
         {/* inner container */}
         <View style={styles.inner}>
-          <AppText color={theme?.white} numberOfLines={2}>{title} blah blah blah blah blah blah blah blah blah blah blah blah blah blah</AppText>
+          <AppText color={darkModeTextColor} numberOfLines={2}>{title}</AppText>
           {/* desc */}
           <TouchableOpacity 
             style={[styles.desc, {backgroundColor: theme?.mistyLight}]}
             onPress={openProductDescription}
           >
-            <AppText color={theme?.white} style={styles.smallText} numberOfLines={3}>{description} blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah</AppText>
+            <AppText color={darkModeTextColor} style={styles.smallText} numberOfLines={3}>{description}</AppText>
           </TouchableOpacity>
           {/* more info wrapper */}
           <View style={styles.moreInfo}>
@@ -200,8 +187,8 @@ const ProductInfo = ({
           {/* end of more info wrapper */}
           <AppButton
             height={38}
-            style={[{borderColor: theme?.white}, styles.productInfoBtn]}
-            textColor={theme?.white}
+            style={[{borderColor: darkModeTextColor}, styles.productInfoBtn]}
+            textColor={darkModeTextColor}
             title='Product Details'
             textStyle={{fontSize: 14}}
             onPress={openProductInfo}
@@ -219,7 +206,7 @@ const ProductInfo = ({
           <View style={styles.cartRadar}>
             <AppButton
               height={38}
-              textColor={theme?.white}
+              textColor={darkModeTextColor}
               title='Add to cart'
               textStyle={{fontSize: 14}}
               width='46%'
@@ -227,7 +214,7 @@ const ProductInfo = ({
             />
             <AppButton
               height={38}
-              textColor={theme?.white}
+              textColor={darkModeTextColor}
               title='Add to radar'
               textStyle={{fontSize: 14}}
               width='46%'
@@ -241,7 +228,7 @@ const ProductInfo = ({
               title='buy now'
               textStyle={{fontSize: 14}}
               style={{marginVertical: 5}}
-              color={theme?.white}
+              color={darkModeTextColor}
               onPress={handleBuyNow}
             />
         </View>
@@ -255,7 +242,7 @@ const ProductInfo = ({
               width='40%'
               style={{marginVertical: 10, alignSelf: 'center'}}
               height={38}
-              textColor={theme?.white}
+              textColor={darkModeTextColor}
               title='Crit'
               onPress={handleShare}
             />
@@ -276,7 +263,9 @@ const ProductInfo = ({
             <View style={styles.socialShareLinkWrapper}>
               {/* share to instagram */}
               <TouchableOpacity 
-                style={styles.shareSocialIcon}
+                style={[styles.shareSocialIcon, {
+                  borderColor: theme?.misty,
+                }]}
                 onPress={()=> shareToExternal(productId)}
               >
                 <Icon name='share-all-outline' size={40} color={theme?.horizon} />

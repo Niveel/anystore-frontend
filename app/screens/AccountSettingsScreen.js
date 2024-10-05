@@ -24,6 +24,8 @@ const AccountSettingsScreen = ({navigation}) => {
     setLogoutModalVisible(true)
   }
 
+  const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.amberGlow
+
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnightLight,}]}>
       <CustomHeader title='Account' showIcons/>
@@ -37,7 +39,7 @@ const AccountSettingsScreen = ({navigation}) => {
                   fontSize: 16,
                   textAlign: "center",
                 }}
-                color={theme?.white}
+                color={darkModeTextColor}
               >{user?.username.toUpperCase()}</AppText>
               <AppText 
                 style={{
@@ -58,11 +60,11 @@ const AccountSettingsScreen = ({navigation}) => {
         {/* List container */}
         <View style={styles.listContainer}>
           <ScrollView contentContainerStyle={{flexGrow: 1, gap: 15}}>
-            <List
+            {/* <List
               icon='bell-outline'
               title="Notifications" 
               onPress={() => navigation.navigate(routes.CART)}
-            />
+            /> */}
             <List
               icon='account-tie-outline'
               title="Account Settings" 
@@ -73,11 +75,11 @@ const AccountSettingsScreen = ({navigation}) => {
               title="Other Settings" 
               onPress={() => navigation.navigate(routes.OTHER_SETTINGS)}
             />
-            <List
+            {/* <List
               icon='headset'
               title="Help & Support" 
               onPress={() => navigation.navigate(routes.CART)}
-            />
+            /> */}
           </ScrollView>
         </View>
         {/* end of List container */}
@@ -87,7 +89,7 @@ const AccountSettingsScreen = ({navigation}) => {
             width='60%'
             color={theme?.horizon} 
             onPress={handleLogout} 
-            textColor={theme?.white}
+            textColor={darkModeTextColor}
             style={{marginTop:"auto", marginBottom: 30}}
           />
         </View>
@@ -105,7 +107,7 @@ const AccountSettingsScreen = ({navigation}) => {
             width='40%'
             color={theme?.horizon} 
             onPress={logOut} 
-            textColor={theme?.white}
+            textColor={darkModeTextColor}
             style={{marginTop: 20}}
           />
         </View>

@@ -152,7 +152,7 @@ function FriendlyScreen({navigation}) {
                 accessibilityLabel="Groups created tab"
               >
                 <AppText 
-                  color={tabOption === "Created" ? theme?.midnight : theme?.text}
+                  color={tabOption === "Created" ? theme?.white : theme?.text}
                   style={{fontSize: 12}}
                 >Groups Created</AppText>
               </TouchableOpacity>
@@ -168,7 +168,7 @@ function FriendlyScreen({navigation}) {
                 accessibilityLabel="Groups joined tab"
               >
                 <AppText 
-                  color={tabOption === "Joined" ? theme?.white : theme?.misty}
+                  color={tabOption === "Joined" ? theme?.white : theme?.text}
                   style={{fontSize: 12}}
                 >Groups Joined</AppText>
               </TouchableOpacity>

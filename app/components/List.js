@@ -9,6 +9,7 @@ const List = ({icon, title="list item", iconColor,accessibilityLabel, clickable=
     const {theme} = useTheme()
 
     iconColor = iconColor || theme.horizon
+    const christmasThemeTextColor = theme?.amberGlow === "#eccd41" || theme?.amberGlow === "#38f1e5" || theme?.amberGlow === "#25e69c" ? theme?.midnight : theme?.text
   return (
     <TouchableOpacity 
         style={[styles.container, {backgroundColor: theme.white, shadowColor: theme.black, }]}
@@ -21,7 +22,7 @@ const List = ({icon, title="list item", iconColor,accessibilityLabel, clickable=
             <Icon name={icon} size={30} color={iconColor} />
         </View>}
         <View>
-            <AppText style={styles.text}>{title}</AppText>
+            <AppText style={styles.text} color={christmasThemeTextColor}>{title}</AppText>
         </View>
         {clickable && <View style={styles.arrow}>
             <Icon name="chevron-right" size={35} color={iconColor} />

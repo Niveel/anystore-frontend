@@ -76,7 +76,7 @@ function RadarPriceCheckScreen({route, navigation}) {
       <View style={styles.container}>
         <AppText style={{fontSize: 20}}>Current Price:</AppText>
         <View style={[styles.currentPrice, {backgroundColor: theme?.light,}]}>
-          <AppText style={{fontSize: 25}}>${formatNumber(price)}</AppText>
+          <AppText style={{fontSize: 25}}>{formatNumber(price)}</AppText>
         </View>
       </View>
       <View style={[styles.setPriceContainer, {backgroundColor: theme?.misty,}]}>

@@ -1,13 +1,17 @@
-import React, {useState, useMemo, useEffect, useRef} from 'react';
+import React, {useState, useMemo, useEffect, useRef, useCallback} from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 
 import Screen from '../components/Screen';
 import CustomHeader from '../components/CustomHeader';
 import AppText from '../components/AppText';
 import { useTheme } from '../utils/ThemeContext';
-import { categories, products } from '../dummyData';
+// import { products } from '../dummyData';
 import ProductCard from '../components/ProductCard';
 import ItemEmpty from '../components/ItemEmpty';
+import BackBtnBar from '../components/BackBtnBar';
+import getCategories from '../api/categories';  
+import searchProducts from '../api/products';
+import ItemLoader from '../components/loaders/ItemLoader';
 
 const ITEM_WIDTH = 30; 
 const ITEM_PADDING = 28;
@@ -17,8 +21,58 @@ const {width} = Dimensions.get('window');
 const CategoriesScreen = ({route}) => {
     const {category} = route.params;
     const {theme} = useTheme();
-    const [selectedCategory, setSelectedCategory] = useState(category || categories[0]);
+    const [selectedCategory, setSelectedCategory] = useState(category);
+    const [categories, setCategories] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [productsLoading, setProductsLoading] = useState(true);
     const flatListRef = useRef(null);
+
+    // Fetch categories
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await getCategories.getCategories();
+
+                if(response.ok) {
+                    setCategories(response.data)
+                }
+
+            } catch (error) {
+                console.log("Error fetching categories", error)
+                if(error.response) {
+                    console.log("Error getting categories", error.response.data)
+                } else {
+                    console.log("Error getting categories", error.message)
+                }
+            }
+        }
+
+        fetchCategories();
+    }, [])
+
+    // Fetch products
+    const fetchProducts = useCallback(async () => {
+        if (!selectedCategory) {
+            console.log("No selected category")
+            return;
+        }
+        setProductsLoading(true);
+        try {
+            const response = await searchProducts.searchProducts(selectedCategory.name);
+            if (response.ok) {
+                setProducts(response.data);
+            }
+        } catch (error) {
+            console.error("Error fetching products", error);
+        } finally {
+            setProductsLoading(false);
+        }
+    }, [selectedCategory]);
+
+     // Trigger product fetching when `selectedCategory` changes
+    useEffect(() => {
+        fetchProducts();
+    }, [selectedCategory, fetchProducts]);
 
     // memoized selected category index
     const selectedCategoryIndex = useMemo(() => {
@@ -55,18 +109,21 @@ const CategoriesScreen = ({route}) => {
         });
     };
 
-     // Memoize filtered products based on selected category
-     const filteredProducts = useMemo(() => {
-        return products.filter(product => product.category === selectedCategory.name);
-    }, [selectedCategory]);
-
+    // switch selected category
     const selectTab = (category) => {
         setSelectedCategory(category);
     }
 
+     // Memoize filtered products based on selected category
+     const filteredProducts = useMemo(() => {
+        // return products.filter(product => product?.title.toLowerCase().includes("f"));
+        return products
+    }, [selectedCategory, products]);
+
   return (
     <Screen>
         <CustomHeader title="Categories" showIcons />
+        <BackBtnBar />
         {/* categories bar */}
         <View style={styles.tabBar}>
             <FlatList 
@@ -103,10 +160,11 @@ const CategoriesScreen = ({route}) => {
         {/* end of categories bar */}
         {/* main body */}
         <View style={styles.mainBody}>
+            <ItemLoader visible={productsLoading}/>
             {filteredProducts.length > 0 ? 
                 <FlatList
                     data={filteredProducts}
-                    keyExtractor={item => item.id.toString()}
+                    keyExtractor={item => item?.title?.toString()}
                     numColumns={width > 250 ? 2 : 1}
                     contentContainerStyle={{
                         paddingVertical: 20, 

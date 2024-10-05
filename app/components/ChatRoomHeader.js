@@ -5,7 +5,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AppText from './AppText';
 import MsgLongPressOptions from './MsgLongPressOptions';
 import { useTheme } from '../utils/ThemeContext';
-import userImg from '../assets/user.jpg';
 import Icon from './Icon';
 
 const {width} = Dimensions.get('window');
@@ -13,6 +12,7 @@ const {width} = Dimensions.get('window');
 const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, morePress, selectedMessages, deleteMsg, reportMsg, deselectMsgs, flagMsg, unFlagMsg, isFlagged, numberOfUsersOnline=1, groupImg }) => {
 
     const {theme} = useTheme();
+    const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
 
   return (
     <View style={[styles.header, {backgroundColor: theme?.misty,}]}>
@@ -28,13 +28,13 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
             <View>
                 <View style={[styles.imgBox, {backgroundColor: theme?.horizon}]}>
                     {groupImg ? 
-                    <Image source={{uri: groupImg}} style={{width: 40, height: 40, borderRadius: 20,}} /> : <Icon name="camera" size={25} color={theme?.white} />
+                    <Image source={{uri: groupImg}} style={{width: 40, height: 40, borderRadius: 20,}} /> : <Icon name="image-outline" size={25} color={darkModeTextColor} />
                     }
                     
                 </View>
             </View>
             <View style={styles.infoBox}>
-                <AppText style={styles.groupName} color={theme?.white} numberOfLines={1}>{groupName}</AppText>
+                <AppText style={styles.groupName} color={darkModeTextColor} numberOfLines={1}>{groupName}</AppText>
                 <View style={{
                     flexDirection: 'row',
                     gap: 10,
@@ -45,7 +45,7 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
                     <AppText style={{
                         fontSize: 10,
 
-                    }} color={theme?.white}>{numberOfUsersOnline} {numberOfUsersOnline == 1 ? 'member' : 'members'} online</AppText>
+                    }} color={darkModeTextColor}>{numberOfUsersOnline} {numberOfUsersOnline == 1 ? 'member' : 'members'} online</AppText>
                 </View>
             </View>
         </View>
@@ -59,7 +59,7 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
             accessible={true}
             accessibilityLabel="Add member"
         >
-            <MaterialCommunityIcons name="account-plus" size={25} color={theme?.white} />
+            <MaterialCommunityIcons name="account-plus" size={25} color={darkModeTextColor} />
         </TouchableOpacity>}
         <TouchableOpacity 
             onPress={morePress} 
@@ -68,7 +68,7 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
             accessible={true}
             accessibilityLabel="More options"
         >
-            <MaterialCommunityIcons name="dots-vertical" size={25} color={theme?.white} />
+            <MaterialCommunityIcons name="dots-vertical" size={25} color={darkModeTextColor} />
         </TouchableOpacity>
         </View>
 
