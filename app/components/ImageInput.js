@@ -11,7 +11,7 @@ function ImageInput({imageUri, onChangeImage, style}) {
     const {user} = useAuth()
     const {theme} = useTheme()
 
-    console.log("User", user)
+    // console.log("User from image input", user)
 
     const requestPermission = async () => {
         const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -21,23 +21,23 @@ function ImageInput({imageUri, onChangeImage, style}) {
         requestPermission()
       }, []) 
 
+    // const deleteImage = () => {
+    //     onChangeImage(null)
+    // }
+
     const handlePress = () => {
-        if (!imageUri) selectImage()
-        else Alert.alert("Delete", "Are you sure you want to delete this image? You must delete the current image to upload another.", [
-            {text: "Yes", onPress: ()=> onChangeImage(null)},
-            {text: "No"}
-        ])
+        selectImage()
     }
 
     const upLoadImageToServer = async (userId, imageFile) => {
         try {
             const response = await profilePic.uploadProfileImage(userId, imageFile.uri)
 
-            if(response.ok) {
-                console.log("Image uploaded successfully", response.data)
-            } else {
-                console.log("Error uploading an image", response.data)
-            }
+            // if(response.ok) {
+            //     // console.log("Image uploaded successfully", response.data)
+            // } else {
+            //     // console.log("Error uploading an image", response.data)
+            // }
 
         } catch (error) {
             console.log("Error uploading an image", error)
@@ -56,9 +56,12 @@ function ImageInput({imageUri, onChangeImage, style}) {
         try {
             const result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images, 
-                quality: 0.5,
+                quality: 0.6,
                 allowsEditing: true,
-                aspect: [1, 1]
+                aspect: [1, 1],
+                base64: true,
+                presentationStyle: 'overFullScreen',
+                exif: true,
             })
             if (!result.canceled) {
                 const imageFile = { uri: result.assets[0].uri, type: 'image/jpeg' }

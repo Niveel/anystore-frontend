@@ -36,7 +36,7 @@ function BarcodePolicyScreen({ navigation }) {
 
   };
 
-  const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.amberGlow
+  const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
   const darkModeBgColor = theme?.amberGlow === "#e2521d" ? theme?.midnight : theme?.horizon
   return (
     <Screen 

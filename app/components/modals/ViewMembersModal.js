@@ -6,13 +6,15 @@ import { useTheme } from '../../utils/ThemeContext';
 import PopupModal from '../modals/PopupModal';
 import UserCard from '../UserCard';
 
-const ViewMembersModal = ({visible, groupName, isCreatedGroup, groupMembers, userId, removeMember, numOfUsersOnline,closeModal, ...otherProps}) => {
+const ViewMembersModal = ({visible, groupName, isCreatedGroup, groupMembers, userId, userImg, removeMember, numOfUsersOnline,closeModal, ...otherProps}) => {
 
     const {theme} = useTheme();
 
     const memoisedList = useMemo(() => {
       return groupMembers.sort((a, b) => a.username.localeCompare(b.username));
     }, [groupMembers]);
+
+    // console.log("MEMOISED LIST", memoisedList);
 
   return (
     <PopupModal 
@@ -47,6 +49,7 @@ const ViewMembersModal = ({visible, groupName, isCreatedGroup, groupMembers, use
                   <UserCard 
                     bgColor={theme?.horizon}
                     userName={item.username}
+                    userImg={item?.profileImage}
                     isYou={item.id === userId}
                     isAdmin={isCreatedGroup && item.id !== userId}
                     removePress={() => {

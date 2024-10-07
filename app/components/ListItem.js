@@ -9,7 +9,7 @@ const ListItem = ({IconComponent, title, subtitle, onPress, Chevron, style}) => 
     const {theme} = useTheme()
   return (
     <TouchableHighlight onPress={onPress} underlayColor={theme?.lighter} >
-        <View style={[styles.listWrapper, {backgroundColor: theme?.light,}]}>
+        <View style={[styles.listWrapper, {backgroundColor: theme?.midnightLight,}]}>
             {IconComponent}
             <View style={styles.container}>
                 <AppText 

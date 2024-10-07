@@ -1,12 +1,12 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, TouchableWithoutFeedback } from 'react-native';
 
 import AppText from './AppText';
 import { useTheme } from '../utils/ThemeContext';
 import userImg from '../assets/user.jpg';
 import fetchMessages from '../api/fetchMessages';
 
-const GroupCard = ({groupName, groupId, onPress, date, ...otherProps}) => {
+const GroupCard = ({groupName, groupId, onPress, date, groupImg, openGroupImg, ...otherProps}) => {
     const [messages, setMessages] = useState([]);
     const [lastMessageToShow, setLastMessageToShow] = useState("");
     const {theme} = useTheme();
@@ -54,9 +54,15 @@ const GroupCard = ({groupName, groupId, onPress, date, ...otherProps}) => {
         activeOpacity={0.7}
         {...otherProps}
     >
-        <View style={styles.imageBox}>
-            <Image source={userImg} style={styles.image} />
-        </View>
+        <TouchableWithoutFeedback 
+            onPress={openGroupImg}
+            accessible={true}
+            accessibilityLabel={`View ${groupName} group image`}
+        >
+            <View style={styles.imageBox}>
+                <Image source={{ uri: groupImg}} style={styles.image} />
+            </View>
+        </TouchableWithoutFeedback>
         <View style={styles.info}>
             <AppText style={styles.name} numberOfLines={1}>{groupName}</AppText>
             {

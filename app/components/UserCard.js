@@ -22,14 +22,12 @@ const UserCard = ({userImg, userName, onPress, removePress, bgColor, textColor, 
             backgroundColor: theme?.amberGlowLight,
         }]}>
             {userImg && userImg?.length > 0 ? 
-            <Image source={userImg} style={{width: 50, height: 50, borderRadius: 25}} />
+            <Image source={{uri: userImg}} style={{width: 50, height: 50, borderRadius: 25}} />
             :<Icon name="image-outline" size={35} color={textColor} />}
         </View>
         <View style={styles.infoBox}>
             <AppText 
-                style={{
-                textTransform: "capitalize",
-                }}
+                style={{textTransform: "capitalize"}}
                 color={darkModeTextColor}
             >{userName}</AppText>
             {isYou && 

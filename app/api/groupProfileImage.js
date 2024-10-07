@@ -1,14 +1,14 @@
-import client from './client';
+import client from './client'
 
-const endpoint = '/profile';
+const endpoint = '/group-profile'
 
-const uploadProfileImage = (userId, profileImageUri) => {
+const uploadGroupProfileImage = (groupId, profileImageUri) => {
     const formData = new FormData();
     
-    formData.append('userId', userId);
+    formData.append('groupId', groupId);
     formData.append('profileImage', {
       uri: profileImageUri, 
-      name: 'profile.jpg',  
+      name: 'group-profile.jpg',  
       type: 'image/jpeg'    
     });
   
@@ -19,4 +19,4 @@ const uploadProfileImage = (userId, profileImageUri) => {
     });
 };
 
-export default {uploadProfileImage};
+export default {uploadGroupProfileImage};

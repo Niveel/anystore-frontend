@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, Dimensions, Image, FlatList, Text, } from 'react-native';
-import { Camera } from 'expo-camera';
+import { View, StyleSheet, TouchableOpacity, Dimensions, Image, Text, } from 'react-native';
+import { Camera, WhiteBalance } from 'expo-camera';
 
 import { useTheme } from '../utils/ThemeContext';
 import AppText from '../components/AppText';
 import Icon from '../components/Icon';
 import cameraBg from '../assets/camera_bg.jpeg';
 import AppBottomSheet from '../components/AppBottomSheet';
-import {products} from '../dummyData';
 import ProductCard from '../components/ProductCard';
 import CircleLoader from '../components/loaders/CircleLoader';
+import imageSearch from '../api/imageSearch';
+import DescriptionModal from '../components/modals/DescriptionModal';
+import productsApi from '../api/products';
+import ListItem from '../components/ListItem';
+import ItemLoader from '../components/loaders/ItemLoader';
 
 const { width, height } = Dimensions.get("window");
 
@@ -21,6 +25,9 @@ const CameraSearchScreen = ({navigation}) => {
     const [imageUri, setImageUri] = useState(null); 
     const bottomSheetRef = useRef(null);
     const [photoShootLoading, setPhotoShootLoading] = useState(false);
+    const [photoShootError, setPhotoShootError] = useState(false);
+    const [products, setProducts] = useState([]);
+    const [productsLoading, setProductsLoading] = useState(false);
 
     useEffect(() => {
         // Request camera permission
@@ -32,44 +39,76 @@ const CameraSearchScreen = ({navigation}) => {
         requestPermission();
     }, []);
 
-    // Capture image when button is pressed
+    // Capture image
     const takePicture = async () => {
         if (cameraRef) {
             setPhotoShootLoading(true);
             try {
-                const photo = await cameraRef.takePictureAsync({ base64: true });
+                const photo = await cameraRef.takePictureAsync({ 
+                    quality: 0.6,
+                    skipProcessing: true,
+                    // exposure: 2.0,
+                    exposureMode: Camera.Constants.WhiteBalance.auto,
+                    base64: false,
+                    width: 200,
+                    height: 200,
+
+                });
+
+                setProductsLoading(true);
                 // console.log("Photo taken: ", photo.uri);
+                sendImageToBackend(photo.uri); 
                 setImageUri(photo.uri); 
                 setPhotoTaken(true); 
-                bottomSheetRef.current.open();
-                // sendImageToBackend(photo.base64); 
+                bottomSheetRef?.current?.open();
             } catch (error) {
                 console.log("Error taking picture: ", error);
+                setPhotoShootError(true);
             } finally {
-                setPhotoShootLoading(false);
+                setPhotoShootLoading(false); 
             }
         }
     };
 
-    // Send the image to the backend for search
-    const sendImageToBackend = async (base64Image) => {
+    const searchForProducts = async (query) => {
         try {
-            const response = await fetch('https://your-backend-api-url.com/search-by-image', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    image: base64Image, 
-                }),
-            });
-
-            const result = await response.json();
-            console.log("Search results: ", result); 
+            console.log("Searching for products with query: ", query);
+            const response = await productsApi.searchProducts(query);
+6
+            if (response.ok) {
+                setProducts(response.data);
+            } else {
+                console.log("Error searching for products: ", response.data);
+            }
         } catch (error) {
-            console.error("Error sending image to backend: ", error);
+            console.error("Error searching for products (error): ", error);
+        } finally {
+            setProductsLoading(false);
+        }
+    }
+
+    const sendImageToBackend = async (image) => {
+        try {
+            const response = await imageSearch.uploadImageToSearch(image);
+
+            if (response.ok) {
+                const requestQuery = response?.data?.query
+
+                if (requestQuery) {
+                    searchForProducts(requestQuery);
+                } else {
+                    console.log("No query found in response: ", response.data);
+                }
+
+            } else {
+                console.log("Error sending image to backend: ", response.data);
+            }
+        } catch (error) {
+            console.error("Error sending image to backend : ", error);
         }
     };
+
+    // console.log("Products: ", products);
 
     const closeBottomSheet = () => {
         setPhotoTaken(false);
@@ -87,7 +126,7 @@ const CameraSearchScreen = ({navigation}) => {
             companyName={item.shop_name}
             addToCartVisible
             width={width / 2.5}
-            height={height / 5}
+            height={height / 4}
         />
     )
 
@@ -167,6 +206,7 @@ const CameraSearchScreen = ({navigation}) => {
                 ref={ref => {
                     setCameraRef(ref);
                 }}
+                useCamera2Api={true}
             />
             {/* take picture button */}
             {!photoTaken && <TouchableOpacity
@@ -221,8 +261,34 @@ const CameraSearchScreen = ({navigation}) => {
                         </View>
                     </View>
                     {/* end of image preview */}
+                    <View style={[styles.resultsPlaceholderBox, {
+                        height: productsLoading || products.length === 0 ? 290 : 0,
+                    }]}>
+                        {products?.length === 0 && 
+                            <ListItem
+                                title="No result found"
+                                subtitle="Try searching with another image or let the image be brighter."
+                                style={{ color: theme?.horizon, fontSize: 18, fontWeight: "bold" }}
+                                IconComponent={
+                                    <Icon iconName="alert-circle" size={35} color={theme?.punch} />
+                                }
+                            />}
+                        <ItemLoader visible={productsLoading} />
+                    </View>
                 </View>
         </AppBottomSheet>
+
+        {/* photo error modal */}
+        <DescriptionModal
+            header='Photo Error'
+            visible={photoShootError}
+            closeModal={() => setPhotoShootError(false)}
+        >
+            <View style={styles.photoModalInner}>
+                <AppText color={theme?.punch}>Could'nt successfully capture image!</AppText>
+                <AppText color={theme?.punch}>Please try again.</AppText>
+            </View>
+        </DescriptionModal>
     </View>
   );
 }
@@ -344,6 +410,12 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 50,
         borderBottomRightRadius: 50,
         padding: 20,
+    },
+    photoModalInner: {
+        flex: 1,
+    },
+    resultsPlaceholderBox: {
+        width: "100%",
     }
     
 });

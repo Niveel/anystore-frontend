@@ -24,7 +24,9 @@ const AccountSettingsScreen = ({navigation}) => {
     setLogoutModalVisible(true)
   }
 
-  const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.amberGlow
+  // console.log('user', user)
+
+  const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
 
   return (
     <Screen style={[styles.screen, {backgroundColor: theme?.midnightLight,}]}>
@@ -50,7 +52,7 @@ const AccountSettingsScreen = ({navigation}) => {
               >{user?.email.toLowerCase()}</AppText>
             </View>
             <ImageInput 
-              imageUri={imageUri} 
+              imageUri={imageUri || user?.profileImage} 
               onChangeImage={uri => setImageUri(uri)}
               style={styles.imageInput}
             />

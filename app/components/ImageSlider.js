@@ -95,7 +95,7 @@ const ImageSlider = ({ imagesData, isImageLoading }) => {
           accessibilityLabel="Large Image of the selected image"
         >
           <View style={[styles.page, { backgroundColor: theme?.white }]}>
-            <AppText style={[styles.pageText]}>{Number(indexOfImage) + 1} / {finalImages.length}</AppText>
+            <AppText style={[styles.pageText]}>{finalImages.length > 0 ? Number(indexOfImage) + 1 : 0} / {finalImages.length}</AppText>
           </View>
           <PinchGestureHandler
             onGestureEvent={onZoomEvent}

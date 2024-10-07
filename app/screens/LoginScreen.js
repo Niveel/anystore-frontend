@@ -34,7 +34,7 @@ const LoginScreen = () => {
         Keyboard.dismiss()
         setLoading(true)
         try {
-            const result = await authApi.login(email?.trim(), password)
+            const result = await authApi.login(email?.trim().toLowerCase(), password)
             setLoading(false)
     
             if (!result.ok) return setLoginFailed(true)

@@ -49,6 +49,7 @@ const AddMembersModal = ({visible, groupName, searchQuery, onChangeQueryText, se
                     accessibilityLabel={addedMembers.includes(item.id) ? `${item?.username} already added to group` : `Add ${item?.username} to ${groupName}`}
                     accessibilityHint='Double tap to add this user to the group.'
                     userName={item?.username}
+                    userImg={item?.profileImage}
                   />
                 )}
               />

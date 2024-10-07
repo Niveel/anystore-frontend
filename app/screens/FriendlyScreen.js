@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, FlatList, } from 'react-native';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, FlatList, Animated, BackHandler } from 'react-native';
 import axios from 'axios';
 import { Audio } from 'expo-av';
+import { PinchGestureHandler, State, PanGestureHandler } from 'react-native-gesture-handler';
 
 import Screen from '../components/Screen';
 import AppButton from '../components/AppButton';
@@ -24,6 +25,8 @@ function FriendlyScreen({navigation}) {
   const [groupName, setGroupName] = useState('');
   const [tabOption, setTabOption] = useState("Created")
   const [sound, setSound] = useState();
+  const [selectedGroupImage, setSelectedGroupImage] = useState(null);
+  const [imagePreviewed, setImagePreviewed] = useState(false);
 
   const { user } = useAuth();
   const userId = user?._id;
@@ -51,6 +54,22 @@ function FriendlyScreen({navigation}) {
   useEffect(() => {
     fetchGroups();
   }, [groups]);
+
+// back handler when image is previewed
+  useEffect(() => {
+    const backAction = () => {
+      if(imagePreviewed) {
+        setImagePreviewed(false);
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () => backHandler.remove();
+
+  }, [imagePreviewed]);
 
   const fetchGroups = async () => {
     try {
@@ -105,9 +124,80 @@ function FriendlyScreen({navigation}) {
       });
   }
   
-  const openChat = (name, id, isCreatedGroup) => {
-    navigation.navigate('Chatroom', {groupName: name.trim(), groupId: id, setGroups: setGroups, isCreatedGroup: isCreatedGroup});
+  const openChat = (name, id, isCreatedGroup, profileImg) => {
+    navigation.navigate('Chatroom', {
+      groupName: name.trim(), 
+      groupId: id, 
+      setGroups: setGroups, 
+      isCreatedGroup: isCreatedGroup,
+      profileImg: profileImg,
+    });
   }
+
+  const openGroupImg = (img) => {
+    if(!img) return;
+
+    setSelectedGroupImage(img);
+    setImagePreviewed(true);
+  }
+
+  // animating image preview
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(50)).current;
+
+  useEffect(() => {
+    if (imagePreviewed) {
+      Animated.parallel([
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateY, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        })
+      ]).start();
+    }
+  }, [imagePreviewed]);
+  
+
+  // Zoom gesture handling
+  const scale = new Animated.Value(1);
+  const onZoomEvent = Animated.event([{ nativeEvent: { scale: scale } }], {
+    useNativeDriver: true,
+  });
+
+  const onZoomStateChange = (event) => {
+    if (event.nativeEvent.oldState === State.ACTIVE) {
+      Animated.spring(scale, {
+        toValue: 1,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+
+  // swipe down to close image preview
+  const handleSwipeDown = ({ nativeEvent }) => {
+    if (nativeEvent.translationY > 100) {
+      Animated.parallel([
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateY, {
+          toValue: 50,
+          duration: 300,
+          useNativeDriver: true,
+        })
+      ]).start(() => {
+        setImagePreviewed(false); 
+      });
+    }
+  };
+  
 
   const sortedGroupsCreated = useMemo(() => {
     return groups?.createdGroups?.sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt));
@@ -200,8 +290,10 @@ function FriendlyScreen({navigation}) {
                 groupName={item.groupName}
                 groupId={item._id}
                 date={formatDate(item.createdAt)}
+                groupImg={item.profileImage}
+                openGroupImg={() => openGroupImg(item.profileImage)}
                 onPress={()=>{
-                  openChat(item.groupName, item._id, true)
+                  openChat(item.groupName, item._id, true, item.profileImage)
                   PlayOpenSound();
                 }}
               />
@@ -233,8 +325,10 @@ function FriendlyScreen({navigation}) {
                   groupName={item.groupName}
                   groupId={item._id}
                   date={formatDate(item.createdAt)}
+                  groupImg={item.profileImage}
+                  openGroupImg={() => openGroupImg(item.profileImage)}
                   onPress={()=>{
-                    openChat(item.groupName, item._id, false)
+                    openChat(item.groupName, item._id, false, item.profileImage)
                     PlayOpenSound();
                   }}
                 />
@@ -244,6 +338,34 @@ function FriendlyScreen({navigation}) {
         )}
 
       </View>
+
+      {/* group image preview */}
+      {imagePreviewed && (
+        <PanGestureHandler onGestureEvent={handleSwipeDown}>
+          <Animated.View 
+            style={[
+              styles.groupImagePreview, 
+              { 
+                backgroundColor: theme?.black,
+                opacity: opacity, 
+                transform: [{ translateY: translateY }]  
+              }]
+            }
+            accessible={true}
+            accessibilityLabel="Group image preview"
+            accessibilityHint="Swipe down to close"
+          >
+            <PinchGestureHandler onGestureEvent={onZoomEvent} onHandlerStateChange={onZoomStateChange}>
+              <Animated.Image
+                source={{ uri: selectedGroupImage || "https://res.cloudinary.com/dlcdmydjd/image/upload/v1728310882/profile_images/group-profile.jpg" }}
+                style={[styles.imageLarge, { transform: [{ scale: scale }] }]}
+                resizeMode="contain"
+              />
+            </PinchGestureHandler>
+          </Animated.View>
+        </PanGestureHandler>
+      )}
+
 
       {/* create group modal */}
       <PopupModal 
@@ -325,6 +447,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     gap: 10,
   },
+  groupImagePreview: {
+    position: 'absolute',
+    width: "100%",
+    height: "100%",
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  imageLarge: {
+    width: "100%",
+    aspectRatio: 1 / 1,
+  }
 });
 
 export default FriendlyScreen;

@@ -7,11 +7,13 @@ import { useTheme } from '../utils/ThemeContext';
 import TitleBar from './TitleBar';
 import routes from '../navigation/routes';
 import getCategories from '../api/categories';
+import ItemLoader from './loaders/ItemLoader';
 
 const {width} = Dimensions.get('window');
 
 const CategoryList = (props) => {
     const [categories, setCategories] = useState([])
+    const [loading, setLoading] = useState(true)
     const { theme } = useTheme();
     const navigation = useNavigation();
                                             //christmas theme                                                     //summer theme
@@ -32,6 +34,8 @@ const CategoryList = (props) => {
             } else {
                 console.log("Error getting categories", error.message)
             }
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -55,6 +59,11 @@ const CategoryList = (props) => {
   return (
     <View style={styles.container}>
         <TitleBar title="Categories" />
+
+        {loading && 
+            <View style={styles.loadingPlaceHolder}>
+                <ItemLoader />
+            </View>}
 
         <FlatList
             data={categories}
@@ -82,6 +91,10 @@ const styles = StyleSheet.create({
         margin: 5,
         width: 80,
         height: 70,
+    },
+    loadingPlaceHolder: {
+        width: "100%",
+        height: 200,
     }
 });
 

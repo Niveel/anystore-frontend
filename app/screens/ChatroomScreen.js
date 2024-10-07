@@ -27,6 +27,7 @@ import Icon from '../components/Icon';
 import DescriptionModal from '../components/modals/DescriptionModal';
 import AppText from '../components/AppText';
 import AppButton from '../components/AppButton';
+import groupProfileImage from '../api/groupProfileImage';
 
 const receive_sound = '../assets/sounds/receive_sound.wav';
 const send_sound = '../assets/sounds/send_sound.mp3';
@@ -56,19 +57,19 @@ function ChatroomScreen({route, navigation}) {
   const [flaggedMessages, setFlaggedMessages] = useState([]);
   const [toneFlaggedReason, setToneFlaggedReason] = useState('');
   const [showToneFlaggedReasonModal, setShowToneFlaggedReasonModal] = useState(false);
-  const [numOfUsersOnline, setNumOfUsersOnline] = useState(0);
+  const [numOfUsersOnline, setNumOfUsersOnline] = useState(1);
   const [replyMessage, setReplyMessage] = useState(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [groupImage, setGroupImage] = useState(null);
   const [showDeleteGroupModal, setShowDeleteGroupModal] = useState(false);
   const [showExitGroupModal, setShowExitGroupModal] = useState(false);
   
-  const scrollViewRef = useRef(null)
+  const scrollViewRef = useRef(null) 
   const socketRef = useRef(null);
   const swipeBubbleRef = useRef(null)
   const messageRefs = useRef({})
   const { user } = useAuth();
-  const { groupName, groupId, setGroups, isCreatedGroup } = route.params;
+  const { groupName, groupId, setGroups, isCreatedGroup, profileImg } = route.params;
   const { theme } = useTheme();
 
   // socket connections
@@ -590,6 +591,8 @@ function ChatroomScreen({route, navigation}) {
           // filter out the current user from the search results
           const filteredResults = response.data.filter((result) => result.username.trim() !== user.username.trim());
           setSearchResults(filteredResults);
+
+          // console.log('Search results:', filteredResults);
         } catch (error) {
           console.log('Error fetching members results:', error);
         }
@@ -639,7 +642,7 @@ function ChatroomScreen({route, navigation}) {
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 1,
+        quality: 0.5,
       });
   
       if (result.canceled) {
@@ -649,9 +652,25 @@ function ChatroomScreen({route, navigation}) {
         const selectedImageUri = result.assets[0].uri;
   
         setGroupImage(selectedImageUri); 
+        uploadGroupImageToServer(groupId, selectedImageUri);
         setMenuVisible(false)
       }
     };
+
+    const uploadGroupImageToServer = async (groupId, imageUri) => {
+      try {
+        const response = await groupProfileImage.uploadGroupProfileImage(groupId, imageUri);
+  
+        if (response.ok) {
+          console.log('Group image uploaded successfully:', response.data);
+        } else {
+          console.log('Error uploading group image:', response.data);
+        }
+      } catch (error) {
+        console.error('Error uploading group image:', error);
+      }
+    }
+
     // console.log("messages are:", messages)
     // console.log("selected messages are:", selectedMessages)
   return (
@@ -671,7 +690,7 @@ function ChatroomScreen({route, navigation}) {
         unFlagMsg={handleUnFlagMsg}
         isFlagged={selectedMessages.every(msg => flaggedMessages.includes(msg?._id))}
         numberOfUsersOnline={numOfUsersOnline}
-        groupImg={groupImage}
+        groupImg={groupImage || profileImg}
       />
       {/* end of header */}
       {/* menu */}
