@@ -8,7 +8,7 @@ import { useTheme } from '../utils/ThemeContext';
 
 const copy_sound = '../assets/sounds/copy_sound.mp3';
 
-function MsgLongPressOptions({style, deleteMsg, reportMsg, messages, deselectMsgs, flagMsg, unFlagMsg, isFlagged=false}) {
+function MsgLongPressOptions({style, deleteMsg, reportMsg, messages, deselectMsgs, flagMsg, unFlagMsg, isFlagged=false, isProduct=false}) {
     const [sound, setSound] = useState();
     const {theme} = useTheme();
 
@@ -67,15 +67,16 @@ function MsgLongPressOptions({style, deleteMsg, reportMsg, messages, deselectMsg
     <View 
         style={[styles.container, style]}
         accessible={true}
-        accessibilityLabel="Message options menu"
+        accessibilityLabel="Message options menu" 
+        accessibilityLiveRegion='assertive'
     >
         <View style={styles.row}>
             <TouchableOpacity style={[styles.button, {backgroundColor: buttonBgColor,}]} onPress={deleteMsg}>
                 <AppText style={styles.buttonText} color={theme?.midnight}>Delete</AppText>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, {backgroundColor: buttonBgColor,}]} onPress={handleCopyMessages}>
+           {!isProduct &&  <TouchableOpacity style={[styles.button, {backgroundColor: buttonBgColor,}]} onPress={handleCopyMessages}>
                 <AppText style={styles.buttonText} color={theme?.midnight}>Copy</AppText>
-            </TouchableOpacity>
+            </TouchableOpacity>}
             <TouchableOpacity style={[styles.button, {backgroundColor: buttonBgColor,}]} onPress={reportMsg}>
                 <AppText style={styles.buttonText} color={theme?.midnight}>Report</AppText>
             </TouchableOpacity>

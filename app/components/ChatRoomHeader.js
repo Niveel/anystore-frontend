@@ -9,7 +9,7 @@ import Icon from './Icon';
 
 const {width} = Dimensions.get('window');
 
-const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, morePress, selectedMessages, deleteMsg, reportMsg, deselectMsgs, flagMsg, unFlagMsg, isFlagged, numberOfUsersOnline=1, groupImg }) => {
+const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, morePress, selectedMessages, deleteMsg, reportMsg, deselectMsgs, flagMsg, unFlagMsg, isFlagged, numberOfUsersOnline=1, groupImg, isProduct=false }) => {
 
     const {theme} = useTheme();
     const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
@@ -92,6 +92,7 @@ const ChatRoomHeader = ({navigation, groupName, isCreatedGroup, addMember, moreP
                 flagMsg={() => flagMsg(selectedMessages)}
                 unFlagMsg={() => unFlagMsg(selectedMessages)}
                 isFlagged={isFlagged}
+                isProduct={isProduct}
             />}
           {/* end of longPressing messages options */}
     </View>

@@ -63,6 +63,7 @@ function ChatroomScreen({route, navigation}) {
   const [groupImage, setGroupImage] = useState(null);
   const [showDeleteGroupModal, setShowDeleteGroupModal] = useState(false);
   const [showExitGroupModal, setShowExitGroupModal] = useState(false);
+  const [isProduct, setIsProduct] = useState(false);
   
   const scrollViewRef = useRef(null) 
   const socketRef = useRef(null);
@@ -474,6 +475,7 @@ function ChatroomScreen({route, navigation}) {
     }
 
     const handleSelectMessageLongPress = (msg) => {
+      setIsProduct(msg?.isShared);
       setLongPressMsgState(true);
       setSelectedMessages([...selectedMessages, msg]);
     }
@@ -691,6 +693,7 @@ function ChatroomScreen({route, navigation}) {
         isFlagged={selectedMessages.every(msg => flaggedMessages.includes(msg?._id))}
         numberOfUsersOnline={numOfUsersOnline}
         groupImg={groupImage || profileImg}
+        isProduct={isProduct}
       />
       {/* end of header */}
       {/* menu */}

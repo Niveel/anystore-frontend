@@ -52,7 +52,6 @@ const CameraSearchScreen = ({navigation}) => {
                     base64: false,
                     width: 200,
                     height: 200,
-
                 });
 
                 setProductsLoading(true);

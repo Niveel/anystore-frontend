@@ -244,10 +244,8 @@ function ProductDetails({route, navigation}) {
                 handleShare={()=> handleShare(product)}
                 productImg={product?.images[0] || "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?size=626&ext=jpg&ga=GA1.1.1700460183.1713139200&semt=ais"}
                 store={product.shop_name}
-                category={product.category || "N/A"}
-                condition={product.condition || "N/A"}
-                type={product.type || "N/A"}
                 productId={product.id}
+                productLink={productData?.link || product?.link}
             />
         </ScrollView>
     </Screen>

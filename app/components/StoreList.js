@@ -147,6 +147,7 @@ function StoreList() {
               autoCorrect={false}
               iconColor={theme?.misty}
               onChangeText={text => setSearchText(text)}
+              // cameraSearchPress={}
             />
         </View>
         {loading && <ActivityIndicator animating={loading} size="large" color={theme?.punch} />}

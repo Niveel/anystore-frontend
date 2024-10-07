@@ -12,7 +12,7 @@
 
     return (
       <View style={[styles.searchBox,inputStyle, {borderColor: theme?.horizon,}]}>
-        {searchPress && <TouchableHighlight 
+        {cameraSearchPress && <TouchableHighlight 
           onPress={cameraSearchPress} 
           underlayColor={theme?.lighter}
           accessible={true}

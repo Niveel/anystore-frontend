@@ -18,11 +18,9 @@ const ProductInfo = ({
     rating, 
     price,
     store,
-    category,
-    condition,
-    type,
     askCafa,
     productId,
+    productLink,
     handleAddToFavStores,
     handleAddToCart,
     handleAddToRadar,
@@ -57,12 +55,12 @@ const ProductInfo = ({
       setShowProductInfoModal(true);
     }
 
-    const generateProductLink = (productId) => {
-      const productLink = Linking.createURL(`app/product/${productId}`);
-      return productLink;
-    }
+    // const generateProductLink = (productId) => {
+    //   const productLink = Linking.createURL(`app/product/${productId}`);
+    //   return productLink;
+    // }
 
-    const productLink = generateProductLink(productId);
+    // const productLink = generateProductLink(productId);
 
     const copyLink = async () => {
       await Clipboard.setStringAsync(productLink);
@@ -70,7 +68,6 @@ const ProductInfo = ({
     }
 
     const shareToExternal = async () => {
-      
       try {
         const result = await Share.share({
           message: `Check out this product from shopwit ${productLink}`,
@@ -266,7 +263,7 @@ const ProductInfo = ({
                 style={[styles.shareSocialIcon, {
                   borderColor: theme?.misty,
                 }]}
-                onPress={()=> shareToExternal(productId)}
+                onPress={()=> shareToExternal()}
               >
                 <Icon name='share-all-outline' size={40} color={theme?.horizon} />
                 <AppText style={{fontSize: 8, textAlign: 'center'}}>external</AppText>
