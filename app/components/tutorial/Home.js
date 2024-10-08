@@ -24,6 +24,9 @@ const Home = (props) => {
 
         <AppText style={styles.head} color={theme?.amberGlow}>Ask Cafa AI</AppText>
         <AppText style={styles.details} color={darkModeTextColor}>Get detailed product information by asking our AI chatbot. Cafa provides a polite and knowledgeable answers to questions about every product.</AppText>
+
+        <AppText style={styles.head} color={theme?.amberGlow}>IMAGE SEARCH</AppText>
+        <AppText style={styles.details} color={darkModeTextColor}>With this feature, users can capture images and search for similar or related products online. Click on the camera icon on the left side of the search bar, allow access to your camera, point your camera to the product you want to search and Shopwit will return results in a second.</AppText>
       </View>
     </ScrollView>
   );

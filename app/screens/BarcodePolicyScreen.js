@@ -104,7 +104,6 @@ const styles = StyleSheet.create({
   text: {
     marginBottom: 10,
     fontSize: 15,
-    textAlign: 'center',
     lineHeight: 17,
   },
   wrapper: {

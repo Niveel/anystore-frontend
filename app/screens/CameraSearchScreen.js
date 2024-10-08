@@ -28,6 +28,7 @@ const CameraSearchScreen = ({navigation}) => {
     const [photoShootError, setPhotoShootError] = useState(false);
     const [products, setProducts] = useState([]);
     const [productsLoading, setProductsLoading] = useState(false);
+    const [query, setQuery] = useState("");
 
     useEffect(() => {
         // Request camera permission
@@ -71,8 +72,10 @@ const CameraSearchScreen = ({navigation}) => {
 
     const searchForProducts = async (query) => {
         try {
-            console.log("Searching for products with query: ", query);
+            // console.log("Searching for products with query: ", query);
             const response = await productsApi.searchProducts(query);
+
+            setQuery(query);
 6
             if (response.ok) {
                 setProducts(response.data);
@@ -112,6 +115,8 @@ const CameraSearchScreen = ({navigation}) => {
     const closeBottomSheet = () => {
         setPhotoTaken(false);
         setImageUri(null);
+        setProducts([]);
+        setQuery("");
     };
 
     // render item for the bottom sheet (products)
@@ -251,12 +256,21 @@ const CameraSearchScreen = ({navigation}) => {
                         <View style={[styles.previewInfoBox, {
                             backgroundColor: theme.misty,
                         }]}>
-                            <Text style={[styles.previewText, {
-                                color: theme?.midnight,
-                            }]}>We found these products</Text>
-                            <Text style={[styles.previewText, {
-                                color: theme?.midnight,
-                            }]}>based on the photo you just took.</Text>
+                            <View>
+                                <Text style={{
+                                    color: theme?.amberGlow,
+                                    fontSize: 16,
+                                    fontWeight: "bold",
+                                }}>{query}</Text>
+                            </View>
+                            <View>
+                                <Text style={[styles.previewText, {
+                                    color: theme?.midnight,
+                                }]}>We found these products</Text>
+                                <Text style={[styles.previewText, {
+                                    color: theme?.midnight,
+                                }]}>based on the photo you just took.</Text>
+                            </View>
                         </View>
                     </View>
                     {/* end of image preview */}
@@ -393,7 +407,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 20,
         gap: 5,
-        justifyContent: "flex-end",
+        justifyContent: "space-between",
     },
     previewText: {
         fontSize: 12,

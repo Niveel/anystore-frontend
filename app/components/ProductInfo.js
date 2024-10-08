@@ -63,14 +63,14 @@ const ProductInfo = ({
     // const productLink = generateProductLink(productId);
 
     const copyLink = async () => {
-      await Clipboard.setStringAsync(productLink);
+      await Clipboard.setStringAsync(`Copied from Shoptwit: ${productLink}`);
       showLinkCopied();
     }
 
     const shareToExternal = async () => {
       try {
         const result = await Share.share({
-          message: `Check out this product from shopwit ${productLink}`,
+          message: `Check out this product: ${productLink} \n Sent from Shoptwit.`,
           url: productLink,
           title: 'Product Link',
         });
