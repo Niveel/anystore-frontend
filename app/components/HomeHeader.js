@@ -1,10 +1,14 @@
 import React, {useState} from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, SafeAreaView } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, Platform, Dimensions } from 'react-native';
+import Constants from 'expo-constants'
 
 import SearchInput from './SearchInput';
 import CustomHeader from './CustomHeader';
 import CodeSearch from './CodeSearch';
 import { useTheme } from '../utils/ThemeContext';
+
+const {height} = Dimensions.get('window');
+const isLargeIos = Platform.OS === 'ios' && height > 800;
 
 const HomeHeader = ({setSearchText, handleSearch, handleSearchByImage, handleFavorite, handleCart, handleNotification, showIcons, title}) => {
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -17,7 +21,6 @@ const HomeHeader = ({setSearchText, handleSearch, handleSearchByImage, handleFav
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView>
         <View 
           style={[styles.container, {backgroundColor: theme?.midnight}]}
           onLayout={handleHeaderLayout}
@@ -43,7 +46,6 @@ const HomeHeader = ({setSearchText, handleSearch, handleSearchByImage, handleFav
             />
             <CodeSearch />
         </View>
-      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 }
@@ -52,7 +54,7 @@ const styles = StyleSheet.create({
   container: {
     gap: 10,
     paddingBottom: 10,
-    
+    paddingTop: isLargeIos ? Constants.statusBarHeight + 10 : 0,
   }
 });
 

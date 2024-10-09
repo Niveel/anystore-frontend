@@ -115,6 +115,7 @@ const CafaAiScreen = ({ route }) => {
               onSubmitEditing={handleSend}
               multiline
               selectionColor={theme?.text}
+              verticalAlign='center'
             />
             <TouchableOpacity
               style={[styles.sendBtn, { backgroundColor: theme?.midnight }]}

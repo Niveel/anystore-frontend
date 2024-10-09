@@ -41,6 +41,7 @@ const ChatInput = ({message, setMessage, sendMessage, reply, clearReply, onScrol
                     onBlur={()=> onPressScroll()}
                     accessible={true}
                     accessibilityLabel="Type your message here"
+                    textAlignVertical="center"
                 />
                 <TouchableOpacity 
                     style={[styles.sendBtn, {backgroundColor: theme?.midnight,}]} 

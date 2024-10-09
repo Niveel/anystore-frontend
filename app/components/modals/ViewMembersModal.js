@@ -22,7 +22,7 @@ const ViewMembersModal = ({visible, groupName, isCreatedGroup, groupMembers, use
       closeModal={closeModal}
       {...otherProps}
     >
-      <SafeAreaView>
+      <SafeAreaView style={{flex: 1}}>
         <View style={[styles.memberBox, {backgroundColor: theme?.midnight,}]}>
               <AppText style={{
                 fontSize: 20, 
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
         padding: 10,
         height: "100%",
         borderRadius: 10,
+        flex: 1,
     },
     memberList: {
         flexDirection: 'row',

@@ -45,7 +45,7 @@ const AppInfoModal = ({visible=false, onClose}) => {
         animationType="slide"
         onRequestClose={onClose}
     >
-        <SafeAreaView>
+        <SafeAreaView style={{flex: 1}}>
             <View style={[styles.container, {backgroundColor: darkModeBgColor}]}>
                 <View style={styles.skipBox}>
                     <TouchableOpacity 

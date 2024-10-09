@@ -20,7 +20,7 @@ const AddMembersModal = ({visible, groupName, searchQuery, onChangeQueryText, se
         visible={visible}
         closeModal={closeModal}
       >
-        <SafeAreaView>
+        <SafeAreaView style={{flex: 1}}>
           <View style={[styles.memberBox, {backgroundColor: theme?.midnight,}]}>
                 <AppText style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10, textAlign: "center"}} color={theme?.misty}>Add members to {groupName}</AppText>
                 <View style={{

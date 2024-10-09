@@ -33,10 +33,10 @@ const AppNavigator = () => {
   const isLargeScreen = height > 768
   const isIos = Platform.OS === 'ios'
 
-  const tabBarHeight = isIos && isLargeScreen ? 60 : 50;
+  // const tabBarHeight = isIos && isLargeScreen ? 50 : 50;
 
   const tabBarStyle = {
-    height: tabBarHeight + insets.bottom,
+    height: 50 + insets.bottom,
     position: "absolute",
     bottom: 12,
     left: 14,

@@ -68,7 +68,7 @@ const Trending = (props) => {
             rating={item.rating}
             addToCartVisible
             item={item}
-            width={isLargeIos ? 240 : 115}
+            width={isLargeIos ? 120 : 115}
             height={height / 4.5}
           />
         )}

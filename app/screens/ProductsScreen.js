@@ -263,100 +263,98 @@ Notifications.setNotificationHandler({
         // console.log("products are", products)
 
         return (
-            <>
-                <Screen style={{ backgroundColor: theme?.midnight }}>
-                    <Animated.View 
-                        style={styles.main}>
-                        <Animated.View
-                            style={{
-                                transform: [
-                                    {translateY: translateY},
-                                ],
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                zIndex: 100,
-                                elevation: 5,
-                            }}
-                        >
-                            <HomeHeader 
-                                setSearchText={setSearchText}
-                                handleSearch={handleSearch}
-                                handleSearchByImage={()=> navigation.navigate(routes.CAMERA_SEARCH_SCREEN)}
-                                showIcons
-                                title="Home"
-                            />
-                        </Animated.View>
-                        {/* main body */}
-                        <Animated.View style={{flex: 1, marginTop: bodyTranslateY }}>
-                            {!hasSearched ? 
-                                (<AdHero/>) :
-                            ( 
-                                <View style={{flex: 1, paddingHorizontal: 5}}>
-                                    {/* sorting bar */}
-                                    {products?.length > 0 && (
-                                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                                            <View style={[styles.sortBar, {backgroundColor: theme?.horizon}]}>
-                                                {/* back button */}
-                                                <TouchableOpacity 
-                                                    onPress={backAction}
-                                                    style={[styles.backBtn, {borderColor: theme?.white}]}
-                                                >
-                                                    <MaterialCommunityIcons name="arrow-left" size={25} color={theme?.white} />
-                                                </TouchableOpacity>
-                                                <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
-                                                <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
-                                            </View>
-                                        </TouchableWithoutFeedback>
-                                    ) }
-                                    {/* end of sorting bar */}
-                                    <CardProducts
-                                        productData={filteredProducts.length > 0 ? filteredProducts : products}
-                                        onEndReached={handleLoadMore}
-                                        hasMore={hasMore}
-                                        onScroll={Animated.event(
-                                            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                                            { useNativeDriver: false }
-                                        )}
-                                    />
-                                    {resultNotFound === true &&
-                                        <View style={{
-                                            width: '100%',
-                                            height: "100%",
-                                            justifyContent: 'center',
-                                        }}>
-                                            <ListItem
-                                                title="No result found"
-                                                subtitle="Try searching with another keyword"
-                                                style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
-                                                IconComponent={
-                                                    <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
-                                                }
-                                            />
-                                        </View>}
-                                    {productLoaded === false &&
-                                        <View style={{
-                                            width: '100%',
-                                            height: "100%",
-                                            justifyContent: 'center',
-                                        }}>
-                                            <ListItem
-                                                title="No product loaded"
-                                                subtitle="There was an error loading products, please try again later."
-                                                style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
-                                                IconComponent={
-                                                    <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
-                                                }
-                                            />
-                                        </View>}
-                            </View>
-                            )}
-                        </Animated.View>
-                        {/* end of main body */}
+            <Screen style={{ backgroundColor: theme?.midnight }}>
+                <Animated.View 
+                    style={styles.main}>
+                    <Animated.View
+                        style={{
+                            transform: [
+                                {translateY: translateY},
+                            ],
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            zIndex: 100,
+                            elevation: 5,
+                        }}
+                    >
+                        <HomeHeader 
+                            setSearchText={setSearchText}
+                            handleSearch={handleSearch}
+                            handleSearchByImage={()=> navigation.navigate(routes.CAMERA_SEARCH_SCREEN)}
+                            showIcons
+                            title="Home"
+                        />
                     </Animated.View>
-                </Screen>
-            </>
+                    {/* main body */}
+                    <Animated.View style={{flex: 1, marginTop: bodyTranslateY }}>
+                        {!hasSearched ? 
+                            (<AdHero/>) :
+                        ( 
+                            <View style={{flex: 1, paddingHorizontal: 5}}>
+                                {/* sorting bar */}
+                                {products?.length > 0 && (
+                                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                                        <View style={[styles.sortBar, {backgroundColor: theme?.horizon}]}>
+                                            {/* back button */}
+                                            <TouchableOpacity 
+                                                onPress={backAction}
+                                                style={[styles.backBtn, {borderColor: theme?.white}]}
+                                            >
+                                                <MaterialCommunityIcons name="arrow-left" size={25} color={theme?.white} />
+                                            </TouchableOpacity>
+                                            <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
+                                            <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                ) }
+                                {/* end of sorting bar */}
+                                <CardProducts
+                                    productData={filteredProducts.length > 0 ? filteredProducts : products}
+                                    onEndReached={handleLoadMore}
+                                    hasMore={hasMore}
+                                    onScroll={Animated.event(
+                                        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                                        { useNativeDriver: false }
+                                    )}
+                                />
+                                {resultNotFound === true &&
+                                    <View style={{
+                                        width: '100%',
+                                        height: "100%",
+                                        justifyContent: 'center',
+                                    }}>
+                                        <ListItem
+                                            title="No result found"
+                                            subtitle="Try searching with another keyword"
+                                            style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
+                                            IconComponent={
+                                                <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
+                                            }
+                                        />
+                                    </View>}
+                                {productLoaded === false &&
+                                    <View style={{
+                                        width: '100%',
+                                        height: "100%",
+                                        justifyContent: 'center',
+                                    }}>
+                                        <ListItem
+                                            title="No product loaded"
+                                            subtitle="There was an error loading products, please try again later."
+                                            style={{ color: theme?.white, fontSize: 18, fontWeight: "bold" }}
+                                            IconComponent={
+                                                <MaterialCommunityIcons name="alert-circle" size={35} color={theme?.punch} />
+                                            }
+                                        />
+                                    </View>}
+                        </View>
+                        )}
+                    </Animated.View>
+                    {/* end of main body */}
+                </Animated.View>
+            </Screen>
         )
     }
 

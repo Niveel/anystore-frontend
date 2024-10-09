@@ -14,7 +14,7 @@ const PopupModal = ({visible, children, closeModal}) => {
       visible={visible}
       onRequestClose={closeModal}
     >
-      <SafeAreaView>
+      <SafeAreaView style={{flex: 1}}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={[styles.container, {backgroundColor: darkModeBgColor}]}>
             <View style={[styles.head, {backgroundColor: theme?.horizon}]}>

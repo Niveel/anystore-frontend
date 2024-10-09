@@ -59,7 +59,7 @@ const TutorialModal = () => {
             visible={isModalVisible} 
             animationType="slide"
         >
-            <SafeAreaView>
+            <SafeAreaView style={{flex: 1}}>
                 <View style={[styles.container, {backgroundColor: theme?.misty}]}>
                     <View style={styles.skipBox}>
                         <TouchableOpacity 

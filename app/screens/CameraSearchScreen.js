@@ -213,18 +213,21 @@ const CameraSearchScreen = ({navigation}) => {
                 useCamera2Api={true}
             />
             {/* take picture button */}
-            {!photoTaken && <TouchableOpacity
-                style={[styles.captureButton, {
-                    backgroundColor: theme.mistyLight,
-                }]}
-                onPress={takePicture}
-            >
-                <Icon
-                    name="camera"
-                    size={50}
-                    color={theme.white}
-                />
-            </TouchableOpacity>}
+            {!photoTaken && 
+                <TouchableOpacity
+                    style={[styles.captureButton, {
+                        backgroundColor: theme.mistyLight,
+                    }]}
+                    onPress={takePicture}
+                    accessible={true}
+                    accessibilityLabel="Take picture"
+                >
+                    <Icon
+                        name="camera"
+                        size={50}
+                        color={theme.white}
+                    />
+                </TouchableOpacity>}
             {/* end of take picture button */}
             {/* when photo shoot is loading */}
             {photoShootLoading && 
