@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useMemo} from 'react';
-import { View, StyleSheet, FlatList, Dimensions} from 'react-native';
+import { View, StyleSheet, FlatList, Dimensions, Platform} from 'react-native';
 
 import TitleBar from './TitleBar';
 import ProductCard from './ProductCard';
@@ -9,6 +9,7 @@ const { width, height } = Dimensions.get("window");
 
 const Trending = (props) => {
   const [products, setProducts] = useState([]);
+  const isLargeIos = Platform.OS === 'ios' && width > 300;
 
   const priceRegex = (price) => {
     return price.replace(/\$/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -67,13 +68,14 @@ const Trending = (props) => {
             rating={item.rating}
             addToCartVisible
             item={item}
-            width={115}
+            width={isLargeIos ? 240 : 115}
             height={height / 4.5}
           />
         )}
         contentContainerStyle={{
           padding: 5, 
           justifyContent: 'center',
+          alignItems: 'center',
         }}
       />
     </View>
@@ -83,6 +85,8 @@ const Trending = (props) => {
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 import { useTheme } from '../utils/ThemeContext';
 import ReplyMessage from './ReplyMessage';
@@ -59,10 +59,11 @@ const ChatInput = ({message, setMessage, sendMessage, reply, clearReply, onScrol
 const styles = StyleSheet.create({
     chatInput: {
         width: "85%",
-        height: "100%",
         fontSize: 15,
         borderRadius: 50,
         paddingHorizontal: 10,
+        // height: "100%",
+        minHeight: 50,
     },
     chatInputContainer: {
         flexDirection: 'row',

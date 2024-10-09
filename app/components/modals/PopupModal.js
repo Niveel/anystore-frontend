@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard, SafeAreaView } from 'react-native';
 
 import Icon from '../Icon';
 import { useTheme } from '../../utils/ThemeContext';
@@ -14,25 +14,27 @@ const PopupModal = ({visible, children, closeModal}) => {
       visible={visible}
       onRequestClose={closeModal}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.container, {backgroundColor: darkModeBgColor}]}>
-          <View style={[styles.head, {backgroundColor: theme?.horizon}]}>
-              <TouchableOpacity
-                  style={[styles.closeButton, {borderColor: theme?.white}]}
-                  onPress={closeModal}
-                  accessible={true}
-                  accessibilityLabel="Close"
-              >
-                  <Icon
-                      name="close"
-                      size={30}
-                      color={theme?.white}
-                  />
-              </TouchableOpacity>
+      <SafeAreaView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={[styles.container, {backgroundColor: darkModeBgColor}]}>
+            <View style={[styles.head, {backgroundColor: theme?.horizon}]}>
+                <TouchableOpacity
+                    style={[styles.closeButton, {borderColor: theme?.white}]}
+                    onPress={closeModal}
+                    accessible={true}
+                    accessibilityLabel="Close"
+                >
+                    <Icon
+                        name="close"
+                        size={30}
+                        color={theme?.white}
+                    />
+                </TouchableOpacity>
+            </View>
+            {children}
           </View>
-          {children}
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback> 
+      </SafeAreaView>
     </Modal>
   );
 }

@@ -73,7 +73,9 @@ const CategoryList = (props) => {
             contentContainerStyle={{
                 padding: 5,  
                 justifyContent: 'center', 
-                alignItems: 'center'
+                alignItems: 'center',
+                justifyContent: "center",
+                alignItems: "center",
             }}
         />
     </View>
@@ -81,9 +83,12 @@ const CategoryList = (props) => {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
     category: {
-        padding: 5,
+        // padding: 5,
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,

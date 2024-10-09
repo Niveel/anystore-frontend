@@ -103,7 +103,9 @@ const CafaAiScreen = ({ route }) => {
               <Text style={{ color: theme?.text }}>Cafa is thinking...</Text>
             </View>
           )}
-          <View style={[styles.inputContainer, { backgroundColor: theme?.horizon }]}>
+          <View style={[styles.inputContainer, 
+            { backgroundColor: theme?.horizon }
+            ]}>
             <TextInput
               style={[styles.textInput, { backgroundColor: theme?.midnight, color: theme?.text, borderColor: theme?.white }]}
               value={input}
@@ -155,11 +157,8 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 30,
     marginRight: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
     elevation: 5,
+    height: 60,
   },
   sendBtn: {
     padding: 5,
@@ -171,11 +170,12 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    padding: 10,
+    paddingHorizontal: 10,
     borderWidth: 1,
     borderRadius: 25,
     marginRight: 10,
     maxHeight: 80,
+    minHeight: 50,
   },
   loadingContainer: {
     flexDirection: 'row',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 
 import AppText from '../AppText';
 import { useTheme } from '../../utils/ThemeContext';
@@ -15,33 +15,35 @@ const ReportMsgModal = ({visible, msgString, reportPress, closeModal}) => {
         visible={visible}
         closeModal={closeModal}
       >
-        <View style={styles.modalInner}>
-          <View style={[styles.infoBox, {
-            backgroundColor: theme?.misty,
-          }]}>
-            <AppText style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10, textAlign: "center"}} color={theme?.white}>Report Message</AppText>
-              <AppText style={{fontSize: 16, marginBottom: 10}} color={theme?.white}>Are you sure you want to report {msgString}?</AppText>
-              <AppText style={{fontSize: 16}} color={theme?.white}>Allow up to 24 hours for us to review and get back to you.</AppText>
-          </View>
-          <View style={styles.buttonBox}>
-            <TouchableOpacity 
-              style={[styles.button, {
-                backgroundColor: theme?.punch,
-              }]}
-              onPress={closeModal}
-            >
-              <AppText style={{fontSize: 16}} color={theme?.white}>Cancel</AppText>
-              </TouchableOpacity>
+        <SafeAreaView>
+          <View style={styles.modalInner}>
+            <View style={[styles.infoBox, {
+              backgroundColor: theme?.misty,
+            }]}>
+              <AppText style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10, textAlign: "center"}} color={theme?.white}>Report Message</AppText>
+                <AppText style={{fontSize: 16, marginBottom: 10}} color={theme?.white}>Are you sure you want to report {msgString}?</AppText>
+                <AppText style={{fontSize: 16}} color={theme?.white}>Allow up to 24 hours for us to review and get back to you.</AppText>
+            </View>
+            <View style={styles.buttonBox}>
               <TouchableOpacity 
-                  style={[styles.button, {
-                    backgroundColor: theme?.horizon,
-                  }]}
-                  onPress={reportPress}
-                >
-                  <AppText style={{ fontSize: 16}} color={theme?.midnight}>Report</AppText>
+                style={[styles.button, {
+                  backgroundColor: theme?.punch,
+                }]}
+                onPress={closeModal}
+              >
+                <AppText style={{fontSize: 16}} color={theme?.white}>Cancel</AppText>
                 </TouchableOpacity>
+                <TouchableOpacity 
+                    style={[styles.button, {
+                      backgroundColor: theme?.horizon,
+                    }]}
+                    onPress={reportPress}
+                  >
+                    <AppText style={{ fontSize: 16}} color={theme?.midnight}>Report</AppText>
+                  </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </SafeAreaView>
       </PopupModal>
     </>
   );

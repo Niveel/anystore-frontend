@@ -31,7 +31,10 @@ const AdHero = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingLeft: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // padding: 1,
+    paddingHorizontal: 2,
   }
 });
 

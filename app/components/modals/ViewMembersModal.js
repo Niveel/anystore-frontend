@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import { View, StyleSheet, FlatList, Alert, } from 'react-native';
+import { View, StyleSheet, FlatList, Alert, SafeAreaView } from 'react-native';
 
 import AppText from '../AppText';
 import { useTheme } from '../../utils/ThemeContext';
@@ -22,57 +22,59 @@ const ViewMembersModal = ({visible, groupName, isCreatedGroup, groupMembers, use
       closeModal={closeModal}
       {...otherProps}
     >
-      <View style={[styles.memberBox, {backgroundColor: theme?.midnight,}]}>
-            <AppText style={{
-              fontSize: 20, 
-              fontWeight: 'bold', 
-              marginBottom: 10, 
-              textAlign: "center"
+      <SafeAreaView>
+        <View style={[styles.memberBox, {backgroundColor: theme?.midnight,}]}>
+              <AppText style={{
+                fontSize: 20, 
+                fontWeight: 'bold', 
+                marginBottom: 10, 
+                textAlign: "center"
 
-            }} color={theme?.misty}>Members in {groupName}</AppText>
-            {!isCreatedGroup && <AppText style={{
-              fontSize: 12, 
-              textAlign: "center", 
-              marginBottom: 10
+              }} color={theme?.misty}>Members in {groupName}</AppText>
+              {!isCreatedGroup && <AppText style={{
+                fontSize: 12, 
+                textAlign: "center", 
+                marginBottom: 10
 
-            }}>Group creator is hidden</AppText>}
-            <AppText style={{
-              fontSize: 12, 
-              textAlign: "right", 
-              marginBottom: 10
-            }} color={theme?.text}>{numOfUsersOnline} {numOfUsersOnline == 1 ? "User" : "Users"} online</AppText>
-              <FlatList
-                data={memoisedList}
-                keyExtractor={member => member?.id?.toString()}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => (
-                  <UserCard 
-                    bgColor={theme?.horizon}
-                    userName={item.username}
-                    userImg={item?.profileImage}
-                    isYou={item.id === userId}
-                    isAdmin={isCreatedGroup && item.id !== userId}
-                    removePress={() => {
-                      Alert.alert(
-                        'Remove Member',
-                        `Are you sure you want to remove ${item.username} from the group?`,
-                        [
-                          {
-                            text: 'No',
-                            onPress: () => console.log('Cancel Pressed'),
-                            style: 'cancel'
-                          },
-                          { text: 'YES', 
-                            onPress: () => removeMember(item.id) }
-                        ],
-                        { cancelable: true }
-                      );
-                      
-                    }}
-                  />
-                )}
-              />
-      </View>
+              }}>Group creator is hidden</AppText>}
+              <AppText style={{
+                fontSize: 12, 
+                textAlign: "right", 
+                marginBottom: 10
+              }} color={theme?.text}>{numOfUsersOnline} {numOfUsersOnline == 1 ? "User" : "Users"} online</AppText>
+                <FlatList
+                  data={memoisedList}
+                  keyExtractor={member => member?.id?.toString()}
+                  showsVerticalScrollIndicator={false}
+                  renderItem={({ item }) => (
+                    <UserCard 
+                      bgColor={theme?.horizon}
+                      userName={item.username}
+                      userImg={item?.profileImage}
+                      isYou={item.id === userId}
+                      isAdmin={isCreatedGroup && item.id !== userId}
+                      removePress={() => {
+                        Alert.alert(
+                          'Remove Member',
+                          `Are you sure you want to remove ${item.username} from the group?`,
+                          [
+                            {
+                              text: 'No',
+                              onPress: () => console.log('Cancel Pressed'),
+                              style: 'cancel'
+                            },
+                            { text: 'YES', 
+                              onPress: () => removeMember(item.id) }
+                          ],
+                          { cancelable: true }
+                        );
+                        
+                      }}
+                    />
+                  )}
+                />
+        </View>
+      </SafeAreaView>
     </PopupModal>
   );
 }

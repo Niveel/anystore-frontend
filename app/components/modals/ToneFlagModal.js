@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 
 import CustomModal from '../CustomModal';
 import AppText from '../AppText';
@@ -16,25 +16,27 @@ const ToneFlagModal = ({visible, message, sentimentColor, flagReason="neutral", 
       visible={visible}
       closeModal={closeModal}
     >
-      <View style={styles.modalInner}>
-        <View style={[styles.infoBox, {
-          backgroundColor: theme?.misty,
-        }]}>
-          <AppText style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10, textAlign: "center"}} color={theme?.white}>Flagged message</AppText>
-          <AppText style={{fontSize: 16, marginBottom: 10}} color={theme?.white}>This message has a <Text style={{color: sentimentColor}}>{flagReason}</Text> tone.</AppText>
-          <AppText style={{fontSize: 16}} color={theme?.white}>Messages with abusive/offensive language are not allowed.</AppText>
+      <SafeAreaView>
+        <View style={styles.modalInner}>
+          <View style={[styles.infoBox, {
+            backgroundColor: theme?.misty,
+          }]}>
+            <AppText style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10, textAlign: "center"}} color={theme?.white}>Flagged message</AppText>
+            <AppText style={{fontSize: 16, marginBottom: 10}} color={theme?.white}>This message has a <Text style={{color: sentimentColor}}>{flagReason}</Text> tone.</AppText>
+            <AppText style={{fontSize: 16}} color={theme?.white}>Messages with abusive/offensive language are not allowed.</AppText>
+          </View>
+          <View style={styles.buttonBox}>
+            <TouchableOpacity 
+              style={[styles.button, {
+                backgroundColor: theme?.punch,
+              }]}
+              onPress={closeModal}
+            >
+              <AppText style={{fontSize: 16}} color={theme?.white}>Close</AppText>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.buttonBox}>
-          <TouchableOpacity 
-            style={[styles.button, {
-              backgroundColor: theme?.punch,
-            }]}
-            onPress={closeModal}
-          >
-            <AppText style={{fontSize: 16}} color={theme?.white}>Close</AppText>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </SafeAreaView>
     </PopupModal>
     </>
   );

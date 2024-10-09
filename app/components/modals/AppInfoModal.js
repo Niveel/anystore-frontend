@@ -1,5 +1,5 @@
 import React, {useState, useRef} from 'react';
-import { View, StyleSheet, Modal, TouchableOpacity, Dimensions } from 'react-native';
+import { View, StyleSheet, Modal, TouchableOpacity, Dimensions, SafeAreaView, Platform } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 
 import { useTheme } from '../../utils/ThemeContext';
@@ -13,6 +13,7 @@ const AppInfoModal = ({visible=false, onClose}) => {
     const { theme } = useTheme();
     const [currentIndex, setCurrentIndex] = useState(0);
     const carouselRef = useRef(null);
+    const isIos = Platform.OS === 'ios';
 
     const tutorialScreens = [
         { key: 'home', component: <Home /> },
@@ -44,52 +45,54 @@ const AppInfoModal = ({visible=false, onClose}) => {
         animationType="slide"
         onRequestClose={onClose}
     >
-        <View style={[styles.container, {backgroundColor: darkModeBgColor}]}>
-            <View style={styles.skipBox}>
-                <TouchableOpacity 
-                    onPress={onClose} 
-                    style={[styles.skip, {backgroundColor: theme.punch}]}
-                >
-                    <AppText color={darkModeTextColor}>Skip</AppText>
-                </TouchableOpacity>
-            </View>
-            <View style={[styles.innerBox, {backgroundColor: theme?.horizon}]}>
-                {/* tutorial carousel */}
-                <Carousel
-                    ref={carouselRef}
-                    data={tutorialScreens}
-                    renderItem={({ item }) => (
-                        <View style={styles.carouselItem}>
-                            {item.component}
-                        </View>
-                    )}
-                    sliderWidth={screenWidth}
-                    itemWidth={screenWidth}
-                    onSnapToItem={(index) => setCurrentIndex(index)} // Update index when swiped
-                />
-                {/* end of tutorial carousel */}
-            </View>
-            {/* controls */}
-                <View style={[styles.controlBox, {backgroundColor: darkModeBgColor}]}>
-                    {currentIndex > 0 &&
-                        <AppButton 
-                        title="Prev" 
-                        onPress={goToPrev} 
-                        style={[styles.ctrlBtn]}
-                        width='35%'
-                        textColor={darkModeTextColor}
-                        color={theme?.amberGlow}
-                    />}
-                    <AppButton 
-                        title={currentIndex < tutorialScreens.length - 1 ? 'Next' : 'Finish'} 
-                        onPress={goToNext} 
-                        style={[styles.ctrlBtn, {backgroundColor: theme?.horizon}]}
-                        width='35%'
-                        textColor={darkModeTextColor}
-                    />
+        <SafeAreaView>
+            <View style={[styles.container, {backgroundColor: darkModeBgColor}]}>
+                <View style={styles.skipBox}>
+                    <TouchableOpacity 
+                        onPress={onClose} 
+                        style={[styles.skip, {backgroundColor: theme.punch}]}
+                    >
+                        <AppText color={darkModeTextColor}>Skip</AppText>
+                    </TouchableOpacity>
                 </View>
-            {/* end of controls */}
-        </View>
+                <View style={[styles.innerBox, {backgroundColor: theme?.horizon}]}>
+                    {/* tutorial carousel */}
+                    <Carousel
+                        ref={carouselRef}
+                        data={tutorialScreens}
+                        renderItem={({ item }) => (
+                            <View style={styles.carouselItem}>
+                                {item.component}
+                            </View>
+                        )}
+                        sliderWidth={screenWidth}
+                        itemWidth={screenWidth}
+                        onSnapToItem={(index) => setCurrentIndex(index)} // Update index when swiped
+                    />
+                    {/* end of tutorial carousel */}
+                </View>
+                {/* controls */}
+                    <View style={[styles.controlBox, {backgroundColor: darkModeBgColor}]}>
+                        {currentIndex > 0 &&
+                            <AppButton 
+                            title="Prev" 
+                            onPress={goToPrev} 
+                            style={[styles.ctrlBtn]}
+                            width='35%'
+                            textColor={darkModeTextColor}
+                            color={theme?.amberGlow}
+                        />}
+                        <AppButton 
+                            title={currentIndex < tutorialScreens.length - 1 ? 'Next' : 'Finish'} 
+                            onPress={goToNext} 
+                            style={[styles.ctrlBtn, {backgroundColor: theme?.horizon}]}
+                            width='35%'
+                            textColor={darkModeTextColor}
+                        />
+                    </View>
+                {/* end of controls */}
+            </View>
+        </SafeAreaView>
     </Modal>
   );
 }

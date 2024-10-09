@@ -2,6 +2,8 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Dimensions, Platform } from 'react-native';
 
 import AccountNavigator from './AccountNavigator'
 import ProductNavigator from './ProductNavigator'
@@ -22,12 +24,19 @@ const getRouteName = (route) => {
   }
 }
 
+const {width, height} = Dimensions.get('window')
+
 const AppNavigator = () => {
   const {theme} = useTheme() 
   const {user} = useAuth()
+  const insets = useSafeAreaInsets();
+  const isLargeScreen = height > 768
+  const isIos = Platform.OS === 'ios'
+
+  const tabBarHeight = isIos && isLargeScreen ? 60 : 50;
 
   const tabBarStyle = {
-    height: 50,
+    height: tabBarHeight + insets.bottom,
     position: "absolute",
     bottom: 12,
     left: 14,
@@ -59,7 +68,13 @@ const AppNavigator = () => {
               } else if (route.name === "Account") {
                   iconName = focused ? "account" : "account-outline"
               }
-              return <MaterialCommunityIcons name={iconName} size={focused ? size + 8 : size} color={color} />
+              const iconSize = isLargeScreen && isIos ? size + 15 : size + 8
+              return <MaterialCommunityIcons 
+                      name={iconName} 
+                      size={focused ? iconSize : size} 
+                      color={color} 
+                      style={{ marginBottom: -4 }}
+                    />
           },
           tabBarItemStyle: {
             borderRadius: 
