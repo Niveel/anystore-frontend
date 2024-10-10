@@ -8,7 +8,13 @@ import { useTheme } from '../utils/ThemeContext'
 const ListItem = ({IconComponent, title, subtitle, onPress, Chevron, style}) => {
     const {theme} = useTheme()
   return (
-    <TouchableHighlight onPress={onPress} underlayColor={theme?.lighter} >
+    <TouchableHighlight 
+        onPress={onPress} 
+        underlayColor={theme?.lighter} 
+        accessible={true}
+        accessibilityLabel={title}
+        accessibilityLiveRegion='assertive'
+    >
         <View style={[styles.listWrapper, {backgroundColor: theme?.midnightLight,}]}>
             {IconComponent}
             <View style={styles.container}>

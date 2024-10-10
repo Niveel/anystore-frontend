@@ -47,7 +47,7 @@ const Trending = (props) => {
   }, []);
 
   // slice the first 9 products
-  const slicedProducts = useMemo(() => products.slice(0, 20), [products]);
+  const slicedProducts = useMemo(() => products.slice(0, 18), [products]);
 
   return (
     <View style={styles.container}>
@@ -68,7 +68,7 @@ const Trending = (props) => {
             rating={item.rating}
             addToCartVisible
             item={item}
-            width={isLargeIos ? 120 : 115}
+            width={isLargeIos ? 117 : 115}
             height={height / 4.5}
           />
         )}

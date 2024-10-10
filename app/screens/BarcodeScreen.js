@@ -9,6 +9,7 @@ import { useTheme } from '../utils/ThemeContext';
 import CustomHeader from '../components/CustomHeader';
 import PopupModal from '../components/modals/PopupModal';
 import BackBtnBar from '../components/BackBtnBar';
+import routes from '../navigation/routes';
 
 const { height } = Dimensions.get("window");
 
@@ -50,16 +51,7 @@ function BarcodeScreen({navigation}) {
       }
 
       const openLink = async (url) => {
-        if (url) {
-          const supported = await Linking.canOpenURL(url);
-          if (supported) {
-            await Linking.openURL(url);
-          } else {
-            Alert.alert(`Product not found!`);
-          }
-        } else {
-          console.error('Attempted to open an undefined URL');
-        }
+        navigation.navigate(routes.BARCODE_RESULTS, {barcode: url});
       }
 
     return (
@@ -102,9 +94,9 @@ function BarcodeScreen({navigation}) {
                 </View>
                 <View style={styles.bottomPart}>
                   <AppButton 
-                    title={'Open Link'} 
+                    title="Search Product" 
                     onPress={() => openLink(scannedData)} 
-                    width='50%'
+                    width='60%'
                     textColor={theme?.midnight}
                   />
                 </View>

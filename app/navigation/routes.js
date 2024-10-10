@@ -21,4 +21,5 @@ export default Object.freeze({
     HOME: 'Product',
     EMAIL_RESET: 'EmailReset',
     CAMERA_SEARCH_SCREEN: 'CameraSearchScreen',
+    BARCODE_RESULTS: 'BarcodeResultsScreen',
 })

@@ -63,15 +63,15 @@ const ProductInfo = ({
     // const productLink = generateProductLink(productId);
 
     const copyLink = async () => {
-      await Clipboard.setStringAsync(`Copied from Shoptwit: ${productLink}`);
+      await Clipboard.setStringAsync(`Copied from Shopwit: ${productLink}`);
       showLinkCopied();
     }
 
     const shareToExternal = async () => {
       try {
         const result = await Share.share({
-          message: `Check out this product: ${productLink} \n Sent from Shoptwit.`,
-          url: productLink,
+          message: `Check out this product: ${productLink} Sent from Shopwit.`,
+          // url: productLink,
           title: 'Product Link',
         });
         if (result.action === Share.sharedAction) {
@@ -284,6 +284,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     paddingHorizontal: 30,
+    zIndex: 0
   },
   inner: {
     flex: 1,

@@ -10,6 +10,7 @@ import ProductInfoScreen from '../screens/ProductInfoScreen'
 import CafaAiScreen from '../screens/CafaAiScreen'
 import CategoriesScreen from '../screens/CategoriesScreen'
 import CameraSearchScreen from '../screens/CameraSearchScreen'
+import BarcodeResultsScreen from '../screens/BarcodeResultsScreen'
 import { useTheme } from '../utils/ThemeContext'
 import routes from './routes'
 
@@ -93,6 +94,13 @@ const ProductNavigator = () => {
             name={routes.CAMERA_SEARCH_SCREEN} 
             component={CameraSearchScreen}
             options={{headerShown: false}}
+        />
+        <Stack.Screen 
+            name={routes.BARCODE_RESULTS} 
+            component={BarcodeResultsScreen}
+            options={{
+                headerTitle: "Barcode Results",
+            }}
         />
     </Stack.Navigator>
   )
