@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Image, FlatList, TouchableOpacity, Animated, TouchableWithoutFeedback, Dimensions } from 'react-native';
+import { View, StyleSheet, Image, FlatList, TouchableOpacity, Animated, TouchableWithoutFeedback} from 'react-native';
 import { PinchGestureHandler, State } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 
 import { useTheme } from '../utils/ThemeContext';
 import AppText from './AppText';
-import Icon from './Icon';
 import ItemLoader from './loaders/ItemLoader';
-
-const { width, height } = Dimensions.get('window');
+import routes from '../navigation/routes';
 
 const ImageSlider = ({ imagesData, isImageLoading }) => {
   const { theme } = useTheme();
+  const navigation = useNavigation();
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [indexOfImage, setIndexOfImage] = useState(0);
   const [finalImages, setFinalImages] = useState([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
   // Function to handle image selection
   const handleImageSelect = (imageUrl) => {
@@ -39,11 +38,12 @@ const ImageSlider = ({ imagesData, isImageLoading }) => {
     }
   };
 
+  // go to images screen
   const openModal = () => {
-    setIsModalVisible(true)
     scale.setValue(1);
+    if(finalImages.length === 0) return;
+    navigation.navigate(routes.PRODUCT_IMAGES, { currentImage: selectedImage, images: finalImages });
   };
-  const closeModal = () => setIsModalVisible(false);
 
   useEffect(() => {
     if (imagesData.length > 0) {
@@ -51,8 +51,6 @@ const ImageSlider = ({ imagesData, isImageLoading }) => {
       setSelectedImage(imagesData[0]?.url);
     } 
   }, [imagesData]);  
-
-  const darkModeBgColor = theme?.amberGlow === "#e2521d" ? theme?.white : theme?.black
 
   return (
     <View style={styles.container}>
@@ -112,34 +110,6 @@ const ImageSlider = ({ imagesData, isImageLoading }) => {
         </View>
       </TouchableWithoutFeedback>
 
-      {/* enlarge image fullscreen modal */}
-
-      {isModalVisible && 
-        <View style={[styles.fullscreenBox, {
-          backgroundColor: darkModeBgColor,
-        }]}>
-          <TouchableOpacity onPress={closeModal} style={[styles.closeBtn, {
-            backgroundColor: theme?.mistyLight,
-          }]}>
-              <Icon name="close" size={30} color="white" />
-            </TouchableOpacity>
-
-            <PinchGestureHandler
-              onGestureEvent={onZoomEvent}
-              onHandlerStateChange={onZoomStateChange}
-            >
-              <Animated.Image
-                source={{ uri: selectedImage }}
-                style={[styles.largeImage, {
-                  transform: [{ scale: scale }],
-                }]}
-                resizeMode="contain"
-              />
-            </PinchGestureHandler>
-        </View>
-      }
-      
-      {/* end of enlarge image fullscreen modal */}
     </View>
   );
 };
@@ -189,17 +159,6 @@ const styles = StyleSheet.create({
   },
   pageText: {
     fontSize: 14,
-  },
-  fullscreenBox: {
-    flex: 1,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: width,
-    height: height,
-    zIndex: 30000,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   closeBtn: {
     position: 'absolute',
