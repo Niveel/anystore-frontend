@@ -17,7 +17,8 @@
     ],
     "ios": {
       "infoPlist": {
-        "NSCameraUsageDescription": "Camera access is required to scan Bar/QR Codes to perform searches. Results are for your viewing only and are not saved or shared by Shopwit."
+        "NSCameraUsageDescription": "Shopwit requires camera access to scan QR codes for product searches and to take pictures for image search functionality. This data is used only for your immediate search and is not stored or shared.",
+        "NSPhotoLibraryUsageDescription": "Shopwit needs access to your photo library to upload images for your profile and groups. The uploaded images are used only within the app and are not shared externally."
       },
       "entitlements": {
         "aps-environment": "production"
@@ -65,7 +66,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow Shopwit to access your camera",
+          "cameraPermission": "Allow Shopwit to access your camera to scan QR codes and take pictures for product searches.",
           "microphonePermission": "Allow Shopwit to access your microphone",
           "recordAudioAndroid": true
         }
