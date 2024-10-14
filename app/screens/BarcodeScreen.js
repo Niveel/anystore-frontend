@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, Linking, Alert, Dimensions} from 'react-native';
+import { View, StyleSheet, Dimensions} from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import * as WebBrowser from 'expo-web-browser';
 
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
@@ -50,8 +51,18 @@ function BarcodeScreen({navigation}) {
         return <AppText>No access to camera</AppText>;
       }
 
-      const openLink = async (url) => {
-        navigation.navigate(routes.BARCODE_RESULTS, {barcode: url});
+      const openLink = (url) => {
+        console.log("barcode URL", url);
+        // navigation.navigate(routes.BARCODE_RESULTS, {barcode: url});
+        if(!url) return;
+        const isValidUrl = url.startsWith("http://") || url.startsWith("https://");
+
+        if (isValidUrl) {
+          WebBrowser.openBrowserAsync(url);
+        } else {
+          const searchUrl = `https://www.google.com/search?q=${url}`;
+          WebBrowser.openBrowserAsync(searchUrl);
+        }
       }
 
     return (
