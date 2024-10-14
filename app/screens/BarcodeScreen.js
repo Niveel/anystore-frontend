@@ -52,7 +52,6 @@ function BarcodeScreen({navigation}) {
       }
 
       const openLink = (url) => {
-        console.log("barcode URL", url);
         // navigation.navigate(routes.BARCODE_RESULTS, {barcode: url});
         if(!url) return;
         const isValidUrl = url.startsWith("http://") || url.startsWith("https://");

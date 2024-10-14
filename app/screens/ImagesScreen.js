@@ -35,7 +35,10 @@ const ImagesScreen = ({ route, navigation }) => {
       onGestureEvent={onZoomEvent}
       onHandlerStateChange={onZoomStateChange}
     >
-      <Animated.View style={{ transform: [{ scale }] }}>
+      <Animated.View style={{ 
+          transform: [{ scale }], 
+        }}
+      >
         <Image
           source={{ uri: item.url }}
           style={styles.image}
@@ -71,7 +74,6 @@ const ImagesScreen = ({ route, navigation }) => {
             justifyContent: "center",
             paddingVertical: 10,
             backgroundColor: theme?.black,
-            gap: 10
           }}
           renderItem={renderItem}
           horizontal
@@ -98,8 +100,7 @@ const ImagesScreen = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "red",
-    flex: 1
+    flex: 1,
   },
   image: {
     width,
