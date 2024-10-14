@@ -67,10 +67,11 @@ const ImagesScreen = ({ route, navigation }) => {
           keyExtractor={(item) => item.id.toString()}
           ref={flatListRef}
           contentContainerStyle={{ 
-            flexGrow: 1,
+            flexGrow: 1, 
             justifyContent: "center",
             paddingVertical: 10,
             backgroundColor: theme?.black,
+            gap: 10
           }}
           renderItem={renderItem}
           horizontal

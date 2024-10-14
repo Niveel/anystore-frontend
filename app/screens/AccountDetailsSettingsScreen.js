@@ -154,7 +154,7 @@ const AccountDetailsSettingsScreen = ({navigation}) => {
             <View style={styles.modalInner}>
                 <View>
                     <AppText style={styles.bigText}>Delete your account permanently?</AppText>
-                    <AppText style={styles.smallText}>Are you sure your want account permanently?</AppText>
+                    <AppText style={styles.smallText}>Are you sure you want to delete your account permanently?</AppText>
                 </View>
                 <Icon
                     name="cancel"
