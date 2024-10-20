@@ -26,6 +26,7 @@ import registerDeviceToken from '../api/registerDeviceToken'
 import HomeHeader from '../components/HomeHeader'
 import { TouchableOpacity } from 'react-native'
 import routes from '../navigation/routes'
+import BackBtnBar from '../components/BackBtnBar'
 
 // notifications
 Notifications.setNotificationHandler({
@@ -35,6 +36,9 @@ Notifications.setNotificationHandler({
       shouldSetBadge: false,
     }),
 });
+
+const isIos = Platform.OS === "ios"
+const isAndroid = Platform.OS === "android"
 
     const ProductsScreen = () => {
         const [searchText, setSearchText] = useState("")
@@ -296,17 +300,23 @@ Notifications.setNotificationHandler({
                                 {/* sorting bar */}
                                 {products?.length > 0 && (
                                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                                        <View style={[styles.sortBar, {backgroundColor: theme?.horizon}]}>
-                                            {/* back button */}
-                                            <TouchableOpacity 
-                                                onPress={backAction}
-                                                style={[styles.backBtn, {borderColor: theme?.white}]}
-                                            >
-                                                <MaterialCommunityIcons name="arrow-left" size={25} color={theme?.white} />
-                                            </TouchableOpacity>
-                                            <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
-                                            <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
-                                        </View>
+                                        <>
+                                            {isAndroid && 
+                                                <View style={[styles.sortBar, {backgroundColor: theme?.horizon}]}>
+                                                    {/* back button */}
+                                                    <TouchableOpacity 
+                                                        onPress={backAction}
+                                                        style={[styles.backBtn, {borderColor: theme?.white}]}
+                                                    >
+                                                        <MaterialCommunityIcons name="arrow-left" size={25} color={theme?.white} />
+                                                    </TouchableOpacity>
+                                                    <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
+                                                    <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
+                                                </View>}
+                                            {isIos && 
+                                                <BackBtnBar />
+                                            }
+                                        </>
                                     </TouchableWithoutFeedback>
                                 ) }
                                 {/* end of sorting bar */}
