@@ -38,7 +38,6 @@ Notifications.setNotificationHandler({
 });
 
 const isIos = Platform.OS === "ios"
-const isAndroid = Platform.OS === "android"
 
     const ProductsScreen = () => {
         const [searchText, setSearchText] = useState("")
@@ -301,21 +300,19 @@ const isAndroid = Platform.OS === "android"
                                 {products?.length > 0 && (
                                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                                         <>
-                                            {isAndroid && 
-                                                <View style={[styles.sortBar, {backgroundColor: theme?.horizon}]}>
-                                                    {/* back button */}
-                                                    <TouchableOpacity 
-                                                        onPress={backAction}
-                                                        style={[styles.backBtn, {borderColor: theme?.white}]}
-                                                    >
-                                                        <MaterialCommunityIcons name="arrow-left" size={25} color={theme?.white} />
-                                                    </TouchableOpacity>
-                                                    <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
-                                                    <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
-                                                </View>}
-                                            {isIos && 
-                                                <BackBtnBar />
-                                            }
+                                            
+                                        <View style={[styles.sortBar, {backgroundColor: theme?.horizon}]}>
+                                            <TouchableOpacity 
+                                                onPress={backAction}
+                                                style={[styles.backBtn, {borderColor: theme?.white}]}
+                                            >
+                                                <MaterialCommunityIcons name="arrow-left" size={25} color={theme?.white} />
+                                            </TouchableOpacity>
+                                            <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
+                                            <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
+                                        </View>
+
+                                        {isIos && <BackBtnBar />}
                                         </>
                                     </TouchableWithoutFeedback>
                                 ) }

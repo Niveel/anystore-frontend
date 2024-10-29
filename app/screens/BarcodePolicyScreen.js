@@ -15,7 +15,7 @@ function BarcodePolicyScreen({ navigation }) {
 
   const disallowPolicy = async () => {
     try {
-      await AsyncStorage.setItem('policyAccepted', 'false');
+      await AsyncStorage.setItem('policyAccepted', 'false'); 
       navigation.goBack();
     } catch (error) {
       console.error('Error handling disallow policy:', error);

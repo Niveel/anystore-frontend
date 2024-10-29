@@ -15,7 +15,7 @@ const BarcodeResultsScreen = ({route}) => {
     const { barcode } = route.params;
 
     useEffect(() => {
-        const fetchProduct = async () => {
+        const fetchProduct = async () => { 
             try {
                 const response = await productsApi.searchProducts(barcode);
 
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+    
   }
 });
 

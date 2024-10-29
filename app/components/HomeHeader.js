@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   container: {
     gap: 10,
     paddingBottom: 10,
-    paddingTop: isLargeIos ? Constants.statusBarHeight + 10 : 0,
+    paddingTop: isLargeIos ? Constants.statusBarHeight : 0,
   }
 });
 

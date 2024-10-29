@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { View, StyleSheet, FlatList, Image, Dimensions, Animated, TouchableOpacity } from 'react-native';
 
 // custom imports
@@ -29,10 +29,32 @@ const AdCarousel = () => {
 
     const slidesRef = useRef(null);
     const scrollX = useRef(new Animated.Value(0)).current;
+
     const viewableItemsChanged = useRef(({ viewableItems }) => {
-        setCurrentIndex(viewableItems[0].index);
+        if (viewableItems.length > 0) {
+            setCurrentIndex(viewableItems[0].index);
+        }
     }).current;
     const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
+
+    // Auto scroll
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (currentIndex < ads.length - 1) {
+                slidesRef.current.scrollToIndex({ 
+                    index: currentIndex + 1,
+                    animated: true
+                });
+            } else {
+                slidesRef.current.scrollToIndex({ 
+                    index: 0,
+                    animated: true
+                });
+            }
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [currentIndex]);
 
     const IndexIndicator = () => (
         <View style={styles.indicatorContainer}>
