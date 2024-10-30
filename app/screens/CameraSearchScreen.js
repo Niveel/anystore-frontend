@@ -75,15 +75,15 @@ const CameraSearchScreen = ({navigation}) => {
             // console.log("Searching for products with query: ", query);
             const response = await productsApi.searchProducts(query);
 
-            setQuery(query);
-6
             if (response.ok) {
+                setQuery(query);
                 setProducts(response.data);
             } else {
                 console.log("Error searching for products: ", response.data);
             }
         } catch (error) {
             console.error("Error searching for products (error): ", error);
+            setQuery("An error occurred while searching for products.");
         } finally {
             setProductsLoading(false);
         }
@@ -162,42 +162,23 @@ const CameraSearchScreen = ({navigation}) => {
         {!photoTaken && <View style={[styles.infoContainer, {
             backgroundColor: theme.misty,
         }]}>
-            <View style={{justifyContent: "center", alignItems: "center"}}>
-                <AppText 
-                    color={theme?.midnight}
-                    style={{
-                        fontSize: 20,
-                        textAlign: "center",
-                    }}
-                >Search with an image. </AppText>
-                <AppText 
-                    color={theme?.midnight}
-                    style={{
-                        fontSize: 12,
-                        textAlign: "center",
-                    }}
+            <View style={{
+                justifyContent: "space-between", 
+                alignItems: "center",
+                flexDirection: "row"
+            }}>
+                <View style={{justifyContent: "flex-start", alignItems: "flex-start"}}>
+                    <AppText 
+                        color={theme?.midnight}
+                        style={{
+                            fontSize: 20,
+                            textAlign: "center",
+                        }}
+                    >Search with an image. </AppText>
+                    <AppText 
+                        color={theme?.midnight}
+                        style={{fontSize: 12,}}
                     >You need to allow access to your camera to search by image</AppText>
-            </View>
-            <View style={styles.infoBox}>
-                <Image
-                    source={cameraBg}
-                    style={styles.infoImage}
-                />
-                <View style={[styles.overlay, {
-                    backgroundColor: theme.blackLight,
-                }]}>
-                    <AppText
-                        style={{
-                            fontSize: 16,
-                        }}
-                        color={theme.white}
-                    >Take a pic to search</AppText>
-                    <AppText
-                        style={{
-                            fontSize: 16,
-                        }}
-                        color={theme.white}
-                    >for similar products</AppText>
                 </View>
             </View>
         </View>}
@@ -330,7 +311,7 @@ const styles = StyleSheet.create({
         overflow: "hidden",
     },
     cameraContainer: {
-        flex: 2.5,
+        flex: 8,
         marginTop: -50,
     },
     infoImage: {

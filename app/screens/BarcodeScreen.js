@@ -10,7 +10,6 @@ import { useTheme } from '../utils/ThemeContext';
 import CustomHeader from '../components/CustomHeader';
 import PopupModal from '../components/modals/PopupModal';
 import BackBtnBar from '../components/BackBtnBar';
-import routes from '../navigation/routes';
 
 const { height } = Dimensions.get("window");
 

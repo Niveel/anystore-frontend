@@ -296,6 +296,7 @@ const isIos = Platform.OS === "ios"
                             (<AdHero/>) :
                         ( 
                             <View style={{flex: 1, paddingHorizontal: 5}}>
+                                {isIos && <View style={{height: 20}}></View>}
                                 {/* sorting bar */}
                                 {products?.length > 0 && (
                                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

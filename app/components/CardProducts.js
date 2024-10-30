@@ -33,7 +33,8 @@ const CardProducts = ({ productData, onEndReached, hasMore, onScroll }) => {
       initialNumToRender={15}
       maxToRenderPerBatch={10}
       updateCellsBatchingPeriod={100}
-      removeClippedSubviews={true}
+      removeClippedSubviews={true} 
+      scrollEventThrottle={16}
       onScroll={onScroll}
       renderItem={({ item }) => (
         <ProductCard

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ImageBackground, SafeAreaView, Platform, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, SafeAreaView } from 'react-native'
 import React from 'react'
 
 import AppButton from '../components/AppButton'
@@ -8,23 +8,20 @@ import bg from '../assets/onboard_bg.jpeg'
 import { TouchableOpacity } from 'react-native'
 import Icon from '../components/Icon'
 
-const {width} = Dimensions.get("window")
-const isIos = Platform.OS === "ios"
-
-const isBigScreen = width > 300 
-
 const WelcomeScreen = ({ navigation }) => {
     const { theme } = useTheme()
 
     return (
+        <SafeAreaView style={{flex: 1}}>
         < ImageBackground style={styles.background} source={bg} blurRadius={1}>
-            <SafeAreaView>
                 {/* back button */}
                 <TouchableOpacity
                     onPress={() =>{
                         navigation.navigate(routes.HOME)
                         }}
                     style={[styles.backBtn, {backgroundColor: theme?.horizon}]}
+                    accessible={true}
+                    accessibilityLabel="Go back"
                 >
                     <Icon name="arrow-left" size={35} color={theme?.white} />
                 </TouchableOpacity>
@@ -68,8 +65,8 @@ const WelcomeScreen = ({ navigation }) => {
                         />
                     </View>
                 </View>
-            </SafeAreaView>
         </ImageBackground>
+        </SafeAreaView>
     )
 }
 
@@ -111,7 +108,7 @@ const styles = StyleSheet.create({
     },
     backBtn: {
         position: 'absolute',
-        top: isIos && isBigScreen ? 20 : 10,
+        top:  20,
         left: 10,
         padding: 5,
         borderRadius: 50,
