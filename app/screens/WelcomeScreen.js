@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     },
     backBtn: {
         position: 'absolute',
-        top: isIos && isBigScreen ? 30 : 10,
+        top: isIos && isBigScreen ? 20 : 10,
         left: 10,
         padding: 5,
         borderRadius: 50,

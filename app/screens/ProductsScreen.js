@@ -311,8 +311,6 @@ const isIos = Platform.OS === "ios"
                                             <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
                                             <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
                                         </View>
-
-                                        {isIos && <BackBtnBar />}
                                         </>
                                     </TouchableWithoutFeedback>
                                 ) }
