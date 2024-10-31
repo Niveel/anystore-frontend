@@ -2,6 +2,7 @@ import { FlatList, ActivityIndicator, View, Text, AccessibilityInfo, Animated, D
 import React, { useState, useEffect } from 'react';
 
 import ProductCard from './ProductCard';
+import ItemLoader from './loaders/ItemLoader';
 
 const { width } = Dimensions.get("window");
 
@@ -61,8 +62,16 @@ const CardProducts = ({ productData, onEndReached, hasMore, onScroll }) => {
           accessibilityLabel="Loading products"
           accessibilityLiveRegion="assertive"
           importantForAccessibility="yes"
+          style={{
+            height: 250,
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
         >
-          <ActivityIndicator size="large" color="orange" />
+          <ItemLoader />
           <Text style={{ display: 'none' }}>{loadingAnnouncement}</Text>
         </View>
       ) : null}

@@ -10,16 +10,18 @@ import Icon from './Icon';
 
 function OfflineNotice(props) {
     const {theme} = useTheme()
-  const  netInfo = useNetInfo()
+    const  netInfo = useNetInfo()
+
+    const darkModeTextColor = theme?.amberGlow === "#e2521d" ? theme?.text : theme?.white
 
     if(netInfo.type !== 'unknown' && netInfo.isInternetReachable === false)
         return (
             <Screen style={[styles.screen, {backgroundColor: theme?.midnight,}]}>
                 <View style={[styles.container, {backgroundColor: theme?.punch,}]}>
-                    <Icon name='wifi-off' backgroundColor={theme?.punch} color={theme?.amberGlow} size={45} />
-                    <AppText style={[styles.text, {color: theme?.white,}]}>No internet connection</AppText>
-                    <AppText style={[styles.text, {color: theme?.white,}]}>Please check your internet connection</AppText>
-                    <AppText style={[styles.infoText, {color: theme?.white,}]}>you need an internet connection to use Shopwit.</AppText>
+                    <Icon name='wifi-off' backgroundColor={theme?.punch} color={theme?.misty} size={45} />
+                    <AppText style={[styles.text]} color={darkModeTextColor}>No internet connection</AppText>
+                    <AppText style={[styles.text]} color={darkModeTextColor}>Please check your internet connection</AppText>
+                    <AppText style={[styles.infoText]} color={darkModeTextColor}>you need an internet connection to use Shopwit.</AppText>
                 </View>
             </Screen>
         );

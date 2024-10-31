@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, Dimensions} from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import * as WebBrowser from 'expo-web-browser';
+// import * as WebBrowser from 'expo-web-browser';
 
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
@@ -10,6 +10,7 @@ import { useTheme } from '../utils/ThemeContext';
 import CustomHeader from '../components/CustomHeader';
 import PopupModal from '../components/modals/PopupModal';
 import BackBtnBar from '../components/BackBtnBar';
+import routes from '../navigation/routes';
 
 const { height } = Dimensions.get("window");
 
@@ -34,7 +35,7 @@ function BarcodeScreen({navigation}) {
     };
 
     useEffect(() => {
-        getBarCodeScannerPermissions();
+      getBarCodeScannerPermissions();
     }, []);
 
     const handleBarCodeScanned = ({ type, data }) => {
@@ -51,16 +52,16 @@ function BarcodeScreen({navigation}) {
       }
 
       const openLink = (url) => {
-        // navigation.navigate(routes.BARCODE_RESULTS, {barcode: url});
-        if(!url) return;
-        const isValidUrl = url.startsWith("http://") || url.startsWith("https://");
+        navigation.navigate(routes.BARCODE_RESULTS, {barcode: url});
+        // if(!url) return;
+        // const isValidUrl = url.startsWith("http://") || url.startsWith("https://");
 
-        if (isValidUrl) {
-          WebBrowser.openBrowserAsync(url);
-        } else {
-          const searchUrl = `https://www.google.com/search?q=${url}`;
-          WebBrowser.openBrowserAsync(searchUrl);
-        }
+        // if (isValidUrl) {
+        //   WebBrowser.openBrowserAsync(url);
+        // } else {
+        //   const searchUrl = `https://www.google.com/search?q=${url}`;
+        //   WebBrowser.openBrowserAsync(searchUrl);
+        // }
       }
 
     return (

@@ -167,7 +167,7 @@ const CameraSearchScreen = ({navigation}) => {
                 alignItems: "center",
                 flexDirection: "row"
             }}>
-                <View style={{justifyContent: "flex-start", alignItems: "flex-start"}}>
+                <View style={{justifyContent: "center", alignItems: "center"}}>
                     <AppText 
                         color={theme?.midnight}
                         style={{
@@ -177,7 +177,7 @@ const CameraSearchScreen = ({navigation}) => {
                     >Search with an image. </AppText>
                     <AppText 
                         color={theme?.midnight}
-                        style={{fontSize: 12,}}
+                        style={{fontSize: 12, textAlign: "center"}}
                     >You need to allow access to your camera to search by image</AppText>
                 </View>
             </View>
@@ -245,7 +245,7 @@ const CameraSearchScreen = ({navigation}) => {
                                     color: theme?.amberGlow,
                                     fontSize: 16,
                                     fontWeight: "bold",
-                                }}>{query}</Text>
+                                }}>{query?.includes("error") ? "There was an error searching for products." : query}</Text>
                             </View>
                             <View>
                                 <Text style={[styles.previewText, {

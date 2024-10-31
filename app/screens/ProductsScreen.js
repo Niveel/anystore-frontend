@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import { View, StyleSheet, Platform, Linking, Alert , BackHandler, Animated, TouchableWithoutFeedback } from 'react-native'
+import { View, StyleSheet, Platform, Linking, Alert , BackHandler, Animated, TouchableWithoutFeedback, Dimensions } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Keyboard, ToastAndroid } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
@@ -37,6 +37,9 @@ Notifications.setNotificationHandler({
     }),
 });
 
+const {height} = Dimensions.get("window")
+
+const isBigScreen = height >= 700
 const isIos = Platform.OS === "ios"
 
     const ProductsScreen = () => {
@@ -296,12 +299,10 @@ const isIos = Platform.OS === "ios"
                             (<AdHero/>) :
                         ( 
                             <View style={{flex: 1, paddingHorizontal: 5}}>
-                                {isIos && <View style={{height: 20}}></View>}
+                                {isIos && isBigScreen && <View style={{height: 40}}></View>}
                                 {/* sorting bar */}
                                 {products?.length > 0 && (
                                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                                        <>
-                                            
                                         <View style={[styles.sortBar, {backgroundColor: theme?.horizon}]}>
                                             <TouchableOpacity 
                                                 onPress={backAction}
@@ -312,7 +313,6 @@ const isIos = Platform.OS === "ios"
                                             <SortingBar onSortOptionSelected={(option) => handleSortItem(option)} />
                                             <FilterBar onFilterApply={(priceRange) => handlePriceFilter(priceRange)} />
                                         </View>
-                                        </>
                                     </TouchableWithoutFeedback>
                                 ) }
                                 {/* end of sorting bar */}

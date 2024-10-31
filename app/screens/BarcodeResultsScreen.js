@@ -1,20 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Linking } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 
 import Screen from '../components/Screen';
 import barcodeSearch from '../api/barcodeSearch';
 import ListItem from '../components/ListItem';
 import ItemLoader from '../components/loaders/ItemLoader';
 import Icon from '../components/Icon';
-import { useTheme } from '../utils/ThemeContext';
+import ProductCard from '../components/ProductCard';
 
 const BarcodeResultsScreen = ({route}) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loaded, setLoaded] = useState(false);
     const { barcode } = route.params;
-
-    const { theme } = useTheme();
 
     useEffect(() => {
         const fetchProduct = async () => { 
@@ -36,6 +34,8 @@ const BarcodeResultsScreen = ({route}) => {
         fetchProduct();
     }, []);
 
+    console.log("Products: ", products[0].title);
+
   return (
     <Screen style={{paddingBottom: 50}}>
         {loading && <ItemLoader visible={loading} />}
@@ -47,33 +47,32 @@ const BarcodeResultsScreen = ({route}) => {
                     IconComponent={<Icon name="alert-circle" size={50} color="red" />}
                 />
             </View>}
-        {loaded && products?.length > 0 &&
-        products.map(item => {
-            return (
-                <View style={{
-                    padding: 10,
-                    marginVertical: 15,
-                }}>
-                    <Text style={{
-                        marginBottom: 20
-                    }}>Click on the link to visit the product's website.</Text>
-                    <TouchableOpacity 
-                        style={{
-                            backgroundColor: theme?.mistyLight,
-                            padding: 10,
-                            borderRadius: 5
-                        }}
-                        onPress={() => {
-                            Linking.openURL(item.link);
-                        }}
-                    >
-                        <Text>{item.link}</Text>
-                    </TouchableOpacity>
-                 </View>
-            )
-        })
-            
-        }
+            {loaded && products.length > 0 &&
+                <FlatList
+                    data={products}
+                    keyExtractor={(product) => product.title}
+                    numColumns={2}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        padding: 5, 
+                        justifyContent: 'center', 
+                        // alignItems: 'center',
+                        paddingBottom: 40
+                    }}
+                    renderItem={({item}) => (
+                        <ProductCard
+                            name={item.title}
+                            subTitle={item.price}
+                            image={item.images}
+                            item={item}
+                            companyName={item.shop_name}
+                            addToCartVisible
+                            rating={item.rating}
+                            price={"20"}
+                        />
+                    )}
+                />
+            }
     </Screen>
   );
 }

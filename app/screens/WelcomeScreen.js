@@ -14,6 +14,7 @@ const WelcomeScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={{flex: 1}}>
         < ImageBackground style={styles.background} source={bg} blurRadius={1}>
+                <View style={styles.overlay}/>
                 {/* back button */}
                 <TouchableOpacity
                     onPress={() =>{
@@ -86,12 +87,11 @@ const styles = StyleSheet.create({
         flex: 2,
     },
     header: {
-        fontSize: 34,
+        fontSize: 44,
         fontWeight: 'bold',
-        textAlign: 'center',
     },
     bigText: {
-        fontSize: 32,
+        fontSize: 28,
         fontWeight: '600',
         marginBottom: -8,
     },
@@ -114,6 +114,14 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         zIndex: 1,
         elevation: 2,
-    }
+    },
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    },
 })
 export default WelcomeScreen
