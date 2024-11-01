@@ -26,7 +26,6 @@ import registerDeviceToken from '../api/registerDeviceToken'
 import HomeHeader from '../components/HomeHeader'
 import { TouchableOpacity } from 'react-native'
 import routes from '../navigation/routes'
-import BackBtnBar from '../components/BackBtnBar'
 
 // notifications
 Notifications.setNotificationHandler({
@@ -270,6 +269,7 @@ const isIos = Platform.OS === "ios"
 
         return (
             <Screen style={{ backgroundColor: theme?.midnight }}>
+                {isIos && isBigScreen && <View style={{height: 50}}></View>}
                 <Animated.View 
                     style={styles.main}>
                     <Animated.View
@@ -295,6 +295,7 @@ const isIos = Platform.OS === "ios"
                     </Animated.View>
                     {/* main body */}
                     <Animated.View style={{flex: 1, marginTop: bodyTranslateY }}>
+                        {isIos && isBigScreen && <View style={{height: 50}}></View>}
                         {!hasSearched ? 
                             (<AdHero/>) :
                         ( 
