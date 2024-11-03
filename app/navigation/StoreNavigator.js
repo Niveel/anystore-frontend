@@ -1,9 +1,7 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { Platform } from 'react-native'
 
 import FavoriteStoreScreen from '../screens/FavoriteStoreScreen'
-import ProductDetails from '../screens/ProductDetailsScreen'
 import StoreScreen from '../screens/StoreScreen'
 import { useTheme } from '../utils/ThemeContext'
 
@@ -34,15 +32,8 @@ const StoreNavigator = () => {
             options={{title: 'Favorite Stores'}}
         />
         <Stack.Screen
-            name='Store'
+            name='Store' 
             component={StoreScreen}
-            options={{ 
-                headerShown: true,
-             }}
-        />
-        <Stack.Screen
-            name='ProductDetails'
-            component={ProductDetails}
             options={{ 
                 headerShown: true,
              }}

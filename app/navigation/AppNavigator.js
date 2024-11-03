@@ -19,7 +19,18 @@ const Tab = createBottomTabNavigator()
 const getRouteName = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route)
   
-  if(routeName?.includes("Welcome") || routeName?.includes("Login") || routeName?.includes("SignUp") || routeName?.includes("CafaAiScreen") || routeName?.includes("ProductDetails") || routeName?.includes("ShareScreen") || routeName?.includes(routes.CAMERA_SEARCH_SCREEN) || routeName?.includes("Favorites") || routeName?.includes(routes.PRODUCT_IMAGES)) {
+  if(routeName?.includes("Welcome") || 
+    routeName?.includes("Login") || 
+    routeName?.includes("SignUp") || 
+    routeName?.includes("CafaAiScreen") || 
+    routeName?.includes("ProductDetails") || 
+    routeName?.includes("ShareScreen") || 
+    routeName?.includes(routes.CAMERA_SEARCH_SCREEN) || 
+    routeName?.includes("Favorites") || 
+    routeName?.includes(routes.PRODUCT_IMAGES) ||
+    routeName?.includes("FavoriteStore") ||
+    routeName?.includes("Store")
+  ) {
     return "none"
   }
 }

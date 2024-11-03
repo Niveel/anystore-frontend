@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, FlatList, Keyboard, ActivityIndicator, Platform, ToastAndroid, Dimensions } from 'react-native';
+import { View, StyleSheet, FlatList, Keyboard, Platform, ToastAndroid, Dimensions } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -12,6 +12,7 @@ import ListItem from './ListItem';
 import { useTheme } from '../utils/ThemeContext';
 import SortingBar from './SortingBar';
 import FilterBar from './FilterBar';
+import ItemLoader from './loaders/ItemLoader';
 
 const { width } = Dimensions.get('window');
 
@@ -71,6 +72,8 @@ function StoreList() {
     const handleSearch = () => {
         setLoading(true)
         setProductLoaded(true)
+        setStoreProducts([])
+        setFilteredProducts([])
         Keyboard.dismiss()
 
         axios.get(`https://imprezbookkeeping.pythonanywhere.com/search-shop/?query=${searchText}&&shop=${storeName}`, {
@@ -150,7 +153,7 @@ function StoreList() {
               // cameraSearchPress={}
             />
         </View>
-        {loading && <ActivityIndicator animating={loading} size="large" color={theme?.punch} />}
+        {loading && <ItemLoader visible={loading} />}
         {storeProducts?.length > 0 && (
           <View style={{
             width: '100%',
