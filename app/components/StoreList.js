@@ -67,8 +67,6 @@ function StoreList() {
         navigation.navigate("ProductDetails", item);
     };
 
-    // console.log("store name", storeName)
-
     const handleSearch = () => {
         setLoading(true)
         setProductLoaded(true)

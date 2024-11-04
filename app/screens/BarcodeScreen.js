@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, Linking } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 // import * as WebBrowser from 'expo-web-browser';
 
@@ -9,8 +9,10 @@ import Screen from '../components/Screen';
 import { useTheme } from '../utils/ThemeContext';
 import CustomHeader from '../components/CustomHeader';
 import PopupModal from '../components/modals/PopupModal';
-import BackBtnBar from '../components/BackBtnBar';
+import BackBtnBar from '../components/BackBtnBar'; 
 import routes from '../navigation/routes';
+import barcodeSearch from '../api/barcodeSearch';
+
 
 const { height } = Dimensions.get("window");
 
@@ -19,11 +21,42 @@ function BarcodeScreen({navigation}) {
     const [scanned, setScanned] = useState(false);
     const [isScannedComplete, setIsScannedComplete] = useState(false);
     const [scannedData, setScannedData] = useState(null);
+    const [productLink, setProductLink] = useState("");
     const {theme} = useTheme()
 
     const goHome = () => {
       navigation.navigate('Product');
     }
+
+    // getting and setting the link from api when scanned
+    useEffect(() => {
+      const getLink = async () => {
+        try {
+          if (!isScannedComplete) return;
+
+          const response = await barcodeSearch.searchBarcode(scannedData);
+
+          if (response.ok) {
+            const productLink = response?.data?.link;
+            setProductLink(productLink);
+            
+            if(productLink) {
+              Linking.openURL(productLink);
+            }
+          } else {
+            console.log("Error getting barcode link: ", response);
+            alert("Error getting barcode link: ", response);
+          }
+        } catch (error) {
+          console.log("Error getting barcode link: ", error);
+        } finally {
+          setIsScannedComplete(false);
+          setScanned(false);
+        }
+      }
+
+      getLink();
+    }, [isScannedComplete]);
 
     const getBarCodeScannerPermissions = async () => {
         try {
@@ -51,18 +84,18 @@ function BarcodeScreen({navigation}) {
         return <AppText>No access to camera</AppText>;
       }
 
-      const openLink = (url) => {
-        navigation.navigate(routes.BARCODE_RESULTS, {barcode: url});
-        // if(!url) return;
-        // const isValidUrl = url.startsWith("http://") || url.startsWith("https://");
+      // const openLink = (url) => {
+      //   // navigation.navigate(routes.BARCODE_RESULTS, {barcode: url});
+      //   if(!url) return;
+      //   const isValidUrl = url.startsWith("http://") || url.startsWith("https://");
 
-        // if (isValidUrl) {
-        //   WebBrowser.openBrowserAsync(url);
-        // } else {
-        //   const searchUrl = `https://www.google.com/search?q=${url}`;
-        //   WebBrowser.openBrowserAsync(searchUrl);
-        // }
-      }
+      //   if (isValidUrl) {
+      //     Linking.openURL(url);
+      //   } else {
+      //     const searchUrl = `https://www.google.com/search?q=${url}`;
+      //     Linking.openURL(searchUrl);
+      //   }
+      // }
 
     return (
         <Screen style={{backgroundColor: theme?.midnight,}}>
@@ -91,7 +124,7 @@ function BarcodeScreen({navigation}) {
           </View>
             
             {/* modal when scan is complete */}
-            <PopupModal
+            {/* <PopupModal
               visible={isScannedComplete}
               closeModal={()=> setIsScannedComplete(false)}
             >
@@ -111,7 +144,7 @@ function BarcodeScreen({navigation}) {
                   />
                 </View>
               </View>
-            </PopupModal>
+            </PopupModal> */}
             {/* end of modal when scan is complete */}
         </Screen>
     );

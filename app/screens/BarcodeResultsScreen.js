@@ -12,7 +12,7 @@ const BarcodeResultsScreen = ({route}) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loaded, setLoaded] = useState(false);
-    const { barcode } = route.params;
+    const { barcode } = route.params; 
 
     useEffect(() => {
         const fetchProduct = async () => { 

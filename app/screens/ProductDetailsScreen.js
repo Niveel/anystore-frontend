@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import axios from 'axios';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
-import * as WebBrowser from 'expo-web-browser';
+// import * as WebBrowser from 'expo-web-browser';
 
 import Screen from '../components/Screen';
 import routes from '../navigation/routes';
@@ -130,7 +130,8 @@ function ProductDetails({route, navigation}) {
             Alert.alert("Link not available")
             return;
         }
-        WebBrowser.openBrowserAsync(link);
+        // WebBrowser.openBrowserAsync(link);
+        Linking.openURL(link);
     }
 
     const handleAddToRadar = async (productID) => {

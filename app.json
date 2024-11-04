@@ -2,7 +2,7 @@
   "expo": {
     "name": "Shopwit",
     "slug": "Shopwit",
-    "version": "2.0.0",
+    "version": "2.2.0",
     "orientation": "portrait",
     "icon": "./app/assets/a_icon.png",
     "userInterfaceStyle": "light",
