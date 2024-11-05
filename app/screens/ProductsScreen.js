@@ -269,7 +269,7 @@ const isIos = Platform.OS === "ios"
 
         return (
             <Screen style={{ backgroundColor: theme?.midnight }}>
-                {isIos && isBigScreen && <View style={{height: 50}}></View>}
+                {isIos && isBigScreen && <View style={{height: 20}}></View>}
                 <Animated.View 
                     style={styles.main}>
                     <Animated.View
