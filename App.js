@@ -3,6 +3,8 @@ import 'react-native-gesture-handler';
 import React, { useState, useEffect, } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppRegistry } from 'react-native';
+import { name as appName } from './app.json';
 
 // custom imports
 import OfflineNotice from './app/components/OfflineNotice';
@@ -15,7 +17,7 @@ import {TutorialProvider} from './app/utils/TutorialContext';
 import { linking } from './app/config/linking';
 import TutorialModal from './app/components/modals/TutorialModal';
 
-export default function App() {
+const App = () => {
   const [user, setUser] = useState()
   const [isAppFirstLaunched, setIsAppFirstLaunched] = useState(null)
 
@@ -63,3 +65,7 @@ export default function App() {
     </ThemeProvider>
   );
 }
+
+AppRegistry.registerComponent(appName, () => App);
+
+export default App;

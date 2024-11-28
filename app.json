@@ -18,7 +18,8 @@
     "ios": {
       "infoPlist": {
         "NSCameraUsageDescription": "Shopwit requires camera access to scan QR codes for product searches and to take pictures for image search functionality. This data is used only for your immediate search and is not stored or shared.",
-        "NSPhotoLibraryUsageDescription": "Shopwit needs access to your photo library to upload images for your profile and groups. The uploaded images are used only within the app and are not shared externally."
+        "NSPhotoLibraryUsageDescription": "Shopwit needs access to your photo library to upload images for your profile and groups. The uploaded images are used only within the app and are not shared externally.",
+        "UIBackgroundModes": ["remote-notification"]
       },
       "entitlements": {
         "aps-environment": "production"

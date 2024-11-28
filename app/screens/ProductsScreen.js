@@ -192,35 +192,28 @@ const isIos = Platform.OS === "ios"
         useEffect(() => {
             if(authToken)
                 registerForPushNotificationsAsync().then(token => {
-                if(authToken && user) {
-                    // console.log("Device Token: ", token, "authToken: ", authToken, "Username: ", user?.username);
-                    registerDeviceToken(authToken, user?.username, token).then(response => {
-                    console.log(response.data.message);
-                    }).catch(error => {
-                    console.log("Device Registration Error:",error);
-                    });
-                }
+                    if(authToken && user) {
+                        // console.log("Device Token: ", token, "authToken: ", authToken, "Username: ", user?.username);
+                        registerDeviceToken(authToken, user?.username, token).then(response => {
+                        console.log(response.data.message);
+                        }).catch(error => {
+                            console.log("Device Registration Error:",error);
+                        });
+                    }
                 });
-          }, [authToken]);
+          }, [authToken, user]);
 
           // register for push notifications
         const registerForPushNotificationsAsync = async () => {
             let token;
 
-            if (Platform.OS === 'android') {
-            await Notifications.setNotificationChannelAsync('default', {
-                name: 'default',
-                importance: Notifications.AndroidImportance.MAX,
-                vibrationPattern: [0, 250, 250, 250],
-                lightColor: '#FF231F7C',
-            });
-
+            // check for physical device
             if (Device.isDevice) {
                 const { status: existingStatus } = await Notifications.getPermissionsAsync();
                 let finalStatus = existingStatus;
                 if (existingStatus !== 'granted') {
-                const { status } = await Notifications.requestPermissionsAsync();
-                finalStatus = status;
+                    const { status } = await Notifications.requestPermissionsAsync();
+                    finalStatus = status;
                 }
                 if (finalStatus !== 'granted') {
                     Alert.alert(
@@ -232,28 +225,39 @@ const isIos = Platform.OS === "ios"
                             text: 'Open Settings',
                             onPress: () => {
                               if (Platform.OS === 'ios') {
-                                Linking.openURL('app-settings:'); // For iOS
+                                Linking.openURL('app-settings:'); 
                               } else {
-                                Linking.openSettings(); // For Android
+                                Linking.openSettings(); 
                               }
                             },
                           },
                         ]
                       );
-                      return;
+                      return null;
                 }
+
+                // Set up notification channel for Android
+                if (Platform.OS === 'android') {
+                    await Notifications.setNotificationChannelAsync('default', {
+                        name: 'default',
+                        importance: Notifications.AndroidImportance.MAX,
+                        vibrationPattern: [0, 250, 250, 250],
+                        lightColor: '#FF231F7C',
+                });
+
                 try {
-                const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-                if (!projectId) {
-                    throw new Error('Project ID not found');
-                }
-                token = (
-                    await Notifications.getExpoPushTokenAsync({
-                    projectId,
-                    })
-                ).data;
+                    const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+                    if (!projectId) {
+                        throw new Error('Project ID not found');
+                    }
+                    token = (
+                        await Notifications.getExpoPushTokenAsync({
+                            projectId,
+                            devicePush: true 
+                        })
+                    ).data;
                 } catch (e) {
-                token = `Error ${e}`;
+                    token = `Error ${e}`;
                 }
             } else {
                 alert('Must use physical device for Push Notifications');
@@ -264,6 +268,23 @@ const isIos = Platform.OS === "ios"
             return token;
         }
         }
+
+        // navigation with notification
+        useEffect(() => {
+            const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
+                console.log("Notification response", response);
+                const {screen, params} = response.notification.request.content.data || {};
+                
+                if (screen) {
+                    navigation.navigate(screen, params);
+                }
+                
+            });
+
+            return () => {
+                responseListener.remove();
+            };
+        }, [navigation]);
 
         // console.log("products are", products)
 
